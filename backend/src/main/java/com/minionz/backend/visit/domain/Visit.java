@@ -31,7 +31,7 @@ public class Visit extends BaseEntity {
     }
 
     //==연관관계 편의 메소드==//
-    public void setShop(Shop shop) {
+    private void setShop(Shop shop) {
         this.shop = shop;
         shop.getVisitList().add(this);
     }
