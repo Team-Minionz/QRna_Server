@@ -23,6 +23,12 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, unique = true)
     private String nickName;
 
     @Column(nullable = false, unique = true)
@@ -35,9 +41,11 @@ public class User extends BaseEntity {
     private List<Visit> visitList = new ArrayList<>();
 
     @Builder
-    public User(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String nickName, String telNumber, Address address) {
+    public User(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String nickName, String telNumber, Address address) {
         super(id, createdDate, modifiedDate);
         this.name = name;
+        this.email = email;
+        this.password = password;
         this.nickName = nickName;
         this.telNumber = telNumber;
         this.address = address;
