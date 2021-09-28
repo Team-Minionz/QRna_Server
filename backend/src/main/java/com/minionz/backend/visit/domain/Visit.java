@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "VISIT_ID"))
+@AttributeOverride(name = "id", column = @Column(name = "visit_id"))
 public class Visit extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHOP_ID")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder

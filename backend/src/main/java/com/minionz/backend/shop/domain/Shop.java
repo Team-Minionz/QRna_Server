@@ -16,15 +16,16 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@AttributeOverride(name = "id", column = @Column(name = "SHOP_ID"))
+@AttributeOverride(name = "id", column = @Column(name = "shop_id"))
 public class Shop extends BaseEntity {
 
-    @Column(name = "SHOP_NAME")
+    @Column(name = "shop_name", nullable = false)
     private String name;
 
     @Embedded
     private Address address;
 
+    @Column(nullable = false, unique = true)
     private String telNumber;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)

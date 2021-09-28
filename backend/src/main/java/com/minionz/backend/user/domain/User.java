@@ -16,10 +16,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "USER_ID"))
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class User extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String name;
 
     @Column(nullable = false, unique = true)
