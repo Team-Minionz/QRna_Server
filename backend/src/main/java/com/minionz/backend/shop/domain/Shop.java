@@ -26,17 +26,15 @@ public class Shop extends BaseEntity {
     private Address address;
 
     private String telNumber;
-    private int maxPopulation;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<Visit> visitList = new ArrayList<>();
 
     @Builder
-    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, int maxPopulation) {
+    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber) {
         super(id, createDate, lastModifiedDate);
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
-        this.maxPopulation = maxPopulation;
     }
 }
