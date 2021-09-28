@@ -6,8 +6,6 @@ import com.minionz.backend.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,14 +25,14 @@ public class Visit extends BaseEntity {
 
     @Builder
     public Visit(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, User user) {
-        super(id, createdDate, modifiedDate );
+        super(id, createdDate, modifiedDate);
         setShop(shop);
         setUser(user);
     }
 
     //==연관관계 편의 메소드==//
-    public void setShop(Shop shop ) {
-        this.shop =shop;
+    public void setShop(Shop shop) {
+        this.shop = shop;
         shop.getVisitList().add(this);
     }
 
@@ -42,5 +40,4 @@ public class Visit extends BaseEntity {
         this.user = user;
         user.getVisitList().add(this);
     }
-
 }

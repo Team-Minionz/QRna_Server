@@ -26,7 +26,6 @@ public class Shop extends BaseEntity {
     private Address address;
 
     private String telNumber;
-
     private int maxPopulation;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)

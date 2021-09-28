@@ -31,13 +31,12 @@ public class User extends BaseEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Visit> visitList = new ArrayList<>();
 
-
     @Builder
-    public User(Long id,LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, String nickName, String telNumber, Address address) {
-        super(id, createDate, lastModifiedDate);
+    public User(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String nickName, String telNumber, Address address) {
+        super(id, createdDate, modifiedDate);
         this.name = name;
         this.nickName = nickName;
         this.telNumber = telNumber;
