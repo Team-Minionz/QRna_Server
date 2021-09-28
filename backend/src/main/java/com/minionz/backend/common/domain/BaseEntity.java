@@ -18,7 +18,6 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
     private Long id;
 
     @CreatedDate
