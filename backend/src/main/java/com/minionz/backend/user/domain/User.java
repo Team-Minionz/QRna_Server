@@ -16,12 +16,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "USER_ID"))
 public class User extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -40,8 +36,8 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(LocalDateTime createDate, LocalDateTime lastModifiedDate,String name, String nickName, String telNumber, Address address) {
-        super(createDate,lastModifiedDate);
+    public User(Long id,LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, String nickName, String telNumber, Address address) {
+        super(id, createDate, lastModifiedDate);
         this.name = name;
         this.nickName = nickName;
         this.telNumber = telNumber;

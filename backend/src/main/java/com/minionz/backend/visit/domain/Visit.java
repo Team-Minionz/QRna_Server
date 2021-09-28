@@ -6,17 +6,16 @@ import com.minionz.backend.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "VISIT_ID"))
 public class Visit extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "VISIT_ID")
-    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SHOP_ID")
@@ -27,7 +26,8 @@ public class Visit extends BaseEntity {
     private User user;
 
     @Builder
-    public Visit(Shop shop, User user) {
+    public Visit(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, User user) {
+        super(id, createdDate, modifiedDate );
         setShop(shop);
         setUser(user);
     }

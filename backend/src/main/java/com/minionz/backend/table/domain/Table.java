@@ -7,16 +7,13 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @javax.persistence.Table(name = "TABLES")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "TABLE_ID"))
 public class Table extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TABLE_ID")
-    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SHOP_ID")
@@ -28,7 +25,8 @@ public class Table extends BaseEntity {
     private UseStatus useStatus;
 
     @Builder
-    public Table(Shop shop, int maxCapacity, UseStatus useStatus) {
+    public Table(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDateShop,Shop shop, int maxCapacity, UseStatus useStatus) {
+        super(id, createDate, lastModifiedDateShop);
         setShop(shop);
         this.maxCapacity = maxCapacity;
         this.useStatus = useStatus;

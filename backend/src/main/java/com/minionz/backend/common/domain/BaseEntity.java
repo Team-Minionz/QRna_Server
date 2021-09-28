@@ -7,8 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -16,13 +15,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 public abstract class BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column()
+    private Long id;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    protected BaseEntity(LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    protected BaseEntity(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        this.id = id;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
