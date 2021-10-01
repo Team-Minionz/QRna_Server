@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserJoinResponse {
+
     private String email;
     private int statusCode;
 

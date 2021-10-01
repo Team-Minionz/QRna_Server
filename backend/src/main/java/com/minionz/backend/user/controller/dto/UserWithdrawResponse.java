@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserWithdrawResponse {
+
     private String email;
     private int statusCode;
 

@@ -122,9 +122,7 @@ class UserControllerTest extends ApiDocument {
         UserJoinRequest signUpRequest= new UserJoinRequest("정재욱","wodnr@naver.com","라이언","010-9969-9776","111");
         UserJoinResponse signUpResponse= new UserJoinResponse(User.builder().name("재욱").build());
         willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
-        //when
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        //then
         유저_회원가입_성공함(signUpResponse, response);
     }
 
@@ -133,12 +131,9 @@ class UserControllerTest extends ApiDocument {
     void user_sign_up_fail() throws Exception {
         UserJoinRequest signUpRequest= new UserJoinRequest("정재욱","wodnr@naver.com","라이언","010-9969-9776","111");
         UserJoinResponse signUpResponse= new UserJoinResponse(User.builder().name("null").build());
-        //given
         signUpResponse.setStatusCode(StatusCode.BAD_REQUEST);
-        //when
         willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        //then
         유저_회원가입_실패(signUpResponse, response);
     }
 
