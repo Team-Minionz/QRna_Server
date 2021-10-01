@@ -26,10 +26,24 @@ public class UserController {
             UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
             userLoginResponseDto.setStatusCode(StatusCode.OK);
             return userLoginResponseDto;
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             UserLoginResponseDto userLoginResponseDtoFail = new UserLoginResponseDto("null");
             userLoginResponseDtoFail.setStatusCode(StatusCode.BAD_REQUEST);
             return userLoginResponseDtoFail;
+        }
+    }
+
+    @GetMapping("/logout/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserLogoutResponseDto logout(@PathVariable("email") String email) {
+        try {
+            UserLogoutResponseDto user = userService.logout(email);
+            user.setStatusCode(StatusCode.OK);
+            return user;
+        } catch (Exception e) {
+            UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(email);
+            userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
+            return userLogoutResponseDto;
         }
     }
 }
