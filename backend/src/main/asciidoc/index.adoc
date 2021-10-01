@@ -60,3 +60,9 @@ endif::[]
 === 로그인
 === 로그아웃
 === QR 인증
+==== 성공
+.request
+include::{snippets}/visit-checkin/http-request.adoc[]
+
+.response
+include::{snippets}/visit-checkin/http-response.adoc[]
