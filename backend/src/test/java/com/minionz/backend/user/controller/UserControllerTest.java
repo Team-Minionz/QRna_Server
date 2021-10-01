@@ -52,7 +52,7 @@ class UserControllerTest extends ApiDocument {
         final UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("email1", "password");
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(User.builder().email("null").build());
         userLoginResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
-        //willReturn(userLoginResponseDto).given(userService).login(any(UserLoginRequestDto.class));
+        willReturn(userLoginResponseDto).given(userService).login(any(UserLoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(userLoginRequestDto);
         유저_로그인_실패(userLoginResponseDto, resultActions);
     }
@@ -71,7 +71,7 @@ class UserControllerTest extends ApiDocument {
         final String email = "email";
         UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(User.builder().email("email").build());
         userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
-        //willReturn(userLogoutResponseDto).given(userService).logout(email);
+        willReturn(userLogoutResponseDto).given(userService).logout(email);
         final ResultActions resultActions = 유저_로그아웃_요청(email);
         유저_로그아웃_실패(userLogoutResponseDto,resultActions);
     }
