@@ -1,8 +1,6 @@
 package com.minionz.backend.user.controller;
 
-import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserLoginResponseDto;
-import com.minionz.backend.user.controller.dto.UserLogoutResponseDto;
+import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,5 +23,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserLogoutResponseDto logout(@PathVariable("email") String email) {
         return userService.logout(email);
+    }
+
+    @PostMapping("/join")
+    @ResponseStatus(HttpStatus.OK)
+    public UserJoinResponse singUp(@RequestBody UserJoinRequest userJoinRequest) {
+        return userService.signUp(userJoinRequest);
+    }
+
+    @DeleteMapping("/withdraw/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserWithdrawResponse withdraw(@PathVariable("email") String email) {
+        return userService.withdraw(email);
     }
 }
