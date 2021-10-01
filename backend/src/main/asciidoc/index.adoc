@@ -56,7 +56,31 @@ endif::[]
 
 == 기능
 === 회원가입
+==== 성공
+.request
+include::{snippets}/user-signup-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-signup-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-signup-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-signup-fail/http-response.adoc[]
 === 회원 탈퇴
+==== 성공
+.request
+include::{snippets}/user-withdraw-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-withdraw-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-withdraw-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-withdraw-fail/http-response.adoc[]
 === 로그인
 ==== 성공
 .request
