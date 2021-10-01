@@ -44,7 +44,7 @@ class UserControllerTest extends ApiDocument {
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(User.builder().email("email").build());
         willReturn(userLoginResponseDto).given(userService).login(any(UserLoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(userLoginRequestDto);
-        유저_로그인_성공(userLoginResponseDto,resultActions);
+        유저_로그인_성공(userLoginResponseDto, resultActions);
     }
 
     @Test
@@ -63,7 +63,7 @@ class UserControllerTest extends ApiDocument {
         UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(User.builder().email("email").build());
         willReturn(userLogoutResponseDto).given(userService).logout(email);
         final ResultActions resultActions = 유저_로그아웃_요청(email);
-        유저_로그아웃_성공(userLogoutResponseDto,resultActions);
+        유저_로그아웃_성공(userLogoutResponseDto, resultActions);
     }
 
     @Test
@@ -73,7 +73,7 @@ class UserControllerTest extends ApiDocument {
         userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
         willReturn(userLogoutResponseDto).given(userService).logout(email);
         final ResultActions resultActions = 유저_로그아웃_요청(email);
-        유저_로그아웃_실패(userLogoutResponseDto,resultActions);
+        유저_로그아웃_실패(userLogoutResponseDto, resultActions);
     }
 
     private void 유저_로그아웃_실패(UserLogoutResponseDto userLogoutResponseDto, ResultActions resultActions) throws Exception {
@@ -91,7 +91,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_로그아웃_요청(String email) throws Exception {
-        return mockMvc.perform(get("/api/v1/users/logout/"+email)
+        return mockMvc.perform(get("/api/v1/users/logout/" + email)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -109,7 +109,7 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-login-success"));
     }
 
-    private ResultActions 유저_로그인_요청(UserLoginRequestDto userLoginRequestDto) throws Exception{
+    private ResultActions 유저_로그인_요청(UserLoginRequestDto userLoginRequestDto) throws Exception {
         String content = objectMapper.writeValueAsString(userLoginRequestDto);
         return mockMvc.perform(post("/api/v1/users/login")
                 .content(content)
@@ -119,8 +119,8 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("가입 성공")
     @Test
     void user_sign_up_success() throws Exception {
-        UserJoinRequest signUpRequest= new UserJoinRequest("정재욱","wodnr@naver.com","라이언","010-9969-9776","111");
-        UserJoinResponse signUpResponse= new UserJoinResponse(User.builder().name("재욱").build());
+        UserJoinRequest signUpRequest = new UserJoinRequest("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
+        UserJoinResponse signUpResponse = new UserJoinResponse(User.builder().name("재욱").build());
         willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
         유저_회원가입_성공함(signUpResponse, response);
@@ -129,8 +129,8 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("가입 실패")
     @Test
     void user_sign_up_fail() throws Exception {
-        UserJoinRequest signUpRequest= new UserJoinRequest("정재욱","wodnr@naver.com","라이언","010-9969-9776","111");
-        UserJoinResponse signUpResponse= new UserJoinResponse(User.builder().name("null").build());
+        UserJoinRequest signUpRequest = new UserJoinRequest("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
+        UserJoinResponse signUpResponse = new UserJoinResponse(User.builder().name("null").build());
         signUpResponse.setStatusCode(StatusCode.BAD_REQUEST);
         willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
@@ -141,24 +141,24 @@ class UserControllerTest extends ApiDocument {
     @Test
     void user_withdraw_success() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse= new UserWithdrawResponse(User.builder().email("email").build());
+        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
         willReturn(userWithdrawResponse).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
-        유저_회원탈퇴_성공(userWithdrawResponse,response);
+        유저_회원탈퇴_성공(userWithdrawResponse, response);
     }
 
     @DisplayName("탈퇴 실패")
     @Test
     void user_withdraw_fail() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse= new UserWithdrawResponse(User.builder().email("email").build());
+        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
         userWithdrawResponse.setStatusCode(StatusCode.BAD_REQUEST);
         willReturn(userWithdrawResponse).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
-        유저_회원탈퇴_실패(userWithdrawResponse,response);
+        유저_회원탈퇴_실패(userWithdrawResponse, response);
     }
 
-    private void 유저_회원탈퇴_실패(UserWithdrawResponse userWithdrawResponse, ResultActions response) throws Exception{
+    private void 유저_회원탈퇴_실패(UserWithdrawResponse userWithdrawResponse, ResultActions response) throws Exception {
         response.andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(userWithdrawResponse)))
                 .andDo(print())
@@ -166,7 +166,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_회원탈퇴_요청(String email) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/"+email)
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + email)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 

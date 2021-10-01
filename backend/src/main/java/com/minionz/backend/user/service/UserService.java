@@ -23,7 +23,7 @@ public class UserService {
         return null;
     }
 
-    public UserWithdrawResponse withdraw(String email){
+    public UserWithdrawResponse withdraw(String email) {
         return null;
     }
 }
