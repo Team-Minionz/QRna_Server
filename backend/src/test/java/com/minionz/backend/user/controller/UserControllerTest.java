@@ -5,6 +5,7 @@ import com.minionz.backend.ApiDocument;
 import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginResponseDto;
+import com.minionz.backend.user.controller.dto.UserLogoutResponseDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,44 @@ class UserControllerTest extends ApiDocument {
         //willReturn(userLoginResponseDto).given(userService).login(any(UserLoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(userLoginRequestDto);
         유저_로그인_실패(userLoginResponseDto, resultActions);
+    }
+
+    @Test
+    public void 유저로그아웃테스트_성공() throws Exception {
+        final String email = "email";
+        UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(User.builder().email("email").build());
+        willReturn(userLogoutResponseDto).given(userService).logout(email);
+        final ResultActions resultActions = 유저_로그아웃_요청(email);
+        유저_로그아웃_성공(userLogoutResponseDto,resultActions);
+    }
+
+    @Test
+    public void 유저로그아웃테스트_실패() throws Exception {
+        final String email = "email";
+        UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(User.builder().email("email").build());
+        userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
+        //willReturn(userLogoutResponseDto).given(userService).logout(email);
+        final ResultActions resultActions = 유저_로그아웃_요청(email);
+        유저_로그아웃_실패(userLogoutResponseDto,resultActions);
+    }
+
+    private void 유저_로그아웃_실패(UserLogoutResponseDto userLogoutResponseDto, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(userLogoutResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user-logout-fail"));
+    }
+
+    private void 유저_로그아웃_성공(UserLogoutResponseDto userLogoutResponseDto, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(userLogoutResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user-logout-success"));
+    }
+
+    private ResultActions 유저_로그아웃_요청(String email) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/logout/"+email)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     private void 유저_로그인_실패(UserLoginResponseDto userLoginResponseDto, ResultActions resultActions) throws Exception {
