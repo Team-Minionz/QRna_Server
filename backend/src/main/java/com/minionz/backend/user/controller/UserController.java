@@ -1,6 +1,5 @@
 package com.minionz.backend.user.controller;
 
-import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginResponseDto;
 import com.minionz.backend.user.controller.dto.UserLogoutResponseDto;
