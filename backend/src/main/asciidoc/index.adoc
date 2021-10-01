@@ -58,7 +58,31 @@ endif::[]
 === 회원가입
 === 회원 탈퇴
 === 로그인
+==== 성공
+.request
+include::{snippets}/user-login-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-login-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-login-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-login-fail/http-response.adoc[]
 === 로그아웃
+==== 성공
+.request
+include::{snippets}/user-logout-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-logout-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-logout-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-logout-fail/http-response.adoc[]
 === QR 인증
 ==== 성공
 .request
