@@ -1,5 +1,6 @@
 package com.minionz.backend;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -19,7 +20,7 @@ public class ApiDocument {
     @Autowired
     protected MockMvc mockMvc;
 
-    protected static OperationRequestPreprocessor getDocumentRequest() {
+    protected OperationRequestPreprocessor getDocumentRequest() {
         return preprocessRequest(
                 modifyUris()
                         .scheme("http")
@@ -28,21 +29,21 @@ public class ApiDocument {
                 prettyPrint());
     }
 
-    protected static OperationResponsePreprocessor getDocumentResponse() {
+    protected OperationResponsePreprocessor getDocumentResponse() {
         return preprocessResponse(prettyPrint());
     }
 
-    protected static RestDocumentationResultHandler toDocument(String title) {
+    protected RestDocumentationResultHandler toDocument(String title) {
         return document(title, getDocumentRequest(), getDocumentResponse());
     }
 
-    protected static String toJson(Object object) {
+    protected String toJson(Object object) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             return objectMapper.writeValueAsString(object);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalStateException("직렬화 오류");
         }
     }
