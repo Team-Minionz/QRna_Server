@@ -1,9 +1,12 @@
 package com.minionz.backend.user.service;
 
 import com.minionz.backend.user.controller.dto.*;
+import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +22,21 @@ public class UserService {
         return null;
     }
 
+    @Transactional
     public UserJoinResponse signUp(UserJoinRequest userJoinRequest) {
-        return null;
+        final User user = User.builder()
+                .name(userJoinRequest.getName())
+                .nickName(userJoinRequest.getNickName())
+                .password(userJoinRequest.getPassword())
+                .email(userJoinRequest.getEmail())
+                .telNumber(userJoinRequest.getTelNumber())
+                .build();
+        return new UserJoinResponse(user);
     }
 
+    @Transactional
     public UserWithdrawResponse withdraw(String email) {
-        return null;
+        User user = userRepository.deleteByEmail(email);
+        return new UserWithdrawResponse(user);
     }
 }

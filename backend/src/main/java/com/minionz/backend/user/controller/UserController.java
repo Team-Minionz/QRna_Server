@@ -1,5 +1,6 @@
 package com.minionz.backend.user.controller;
 
+import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,18 @@ public class UserController {
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
     public UserJoinResponse singUp(@RequestBody UserJoinRequest userJoinRequest) {
-        return userService.signUp(userJoinRequest);
+
+        UserJoinResponse userJoinResponse = userService.signUp(userJoinRequest);
+        userJoinResponse.setStatusCode(StatusCode.OK);
+        return userJoinResponse;
     }
 
     @DeleteMapping("/withdraw/{email}")
     @ResponseStatus(HttpStatus.OK)
     public UserWithdrawResponse withdraw(@PathVariable("email") String email) {
-        return userService.withdraw(email);
+        UserWithdrawResponse userWithdrawResponse = userService.withdraw(email);
+        userWithdrawResponse.setStatusCode(StatusCode.OK);
+        return userWithdrawResponse;
     }
 }
+
