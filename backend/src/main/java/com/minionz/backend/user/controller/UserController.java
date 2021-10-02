@@ -1,6 +1,5 @@
 package com.minionz.backend.user.controller;
 
-import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,29 +16,13 @@ public class UserController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public UserLoginResponseDto login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        try {
-            UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
-            userLoginResponseDto.setStatusCode(StatusCode.OK);
-            return userLoginResponseDto;
-        } catch (Exception e) {
-            UserLoginResponseDto userLoginResponseDtoFail = new UserLoginResponseDto("null");
-            userLoginResponseDtoFail.setStatusCode(StatusCode.BAD_REQUEST);
-            return userLoginResponseDtoFail;
-        }
+        return userService.login(userLoginRequestDto);
     }
 
     @GetMapping("/logout/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public UserLogoutResponseDto logout(@PathVariable("email") String email) {
-        try {
-            UserLogoutResponseDto user = userService.logout(email);
-            user.setStatusCode(StatusCode.OK);
-            return user;
-        } catch (Exception e) {
-            UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(email);
-            userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
-            return userLogoutResponseDto;
-        }
+    public UserLogoutResponseDto logout(@PathVariable String email) {
+        return userService.logout(email);
     }
 
     @PostMapping("/join")
