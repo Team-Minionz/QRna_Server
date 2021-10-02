@@ -24,19 +24,16 @@ public class UserService {
 
     @Transactional
     public UserJoinResponse signUp(UserJoinRequest userJoinRequest) {
-        final User user = User.builder()
-                .name(userJoinRequest.getName())
-                .nickName(userJoinRequest.getNickName())
-                .password(userJoinRequest.getPassword())
-                .email(userJoinRequest.getEmail())
-                .telNumber(userJoinRequest.getTelNumber())
-                .build();
-        return new UserJoinResponse(user);
+        User userIn = userRepository.findByEmail(userJoinRequest.getEmail());
+        User userOut = userJoinRequest.toEntity(userIn);
+        userRepository.save(userOut);
+        return new UserJoinResponse(userRepository.save(userOut));
     }
 
     @Transactional
     public UserWithdrawResponse withdraw(String email) {
-        User user = userRepository.deleteByEmail(email);
-        return new UserWithdrawResponse(user);
+        User user = userRepository.findByEmail(email);
+        userRepository.delete(user);
+        return new UserWithdrawResponse(email);
     }
 }
