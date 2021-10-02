@@ -141,7 +141,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     void user_withdraw_success() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
+        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(email);
         willReturn(userWithdrawResponse).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
         유저_회원탈퇴_성공(userWithdrawResponse, response);
@@ -151,7 +151,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     void user_withdraw_fail() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
+        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(email);
         userWithdrawResponse.setStatusCode(StatusCode.BAD_REQUEST);
         willReturn(userWithdrawResponse).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
