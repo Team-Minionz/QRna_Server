@@ -24,10 +24,7 @@ public class VisitService {
     public CheckInResponseDto checkIn(CheckInRequestDto checkInRequestDto) {
         User user = userRepository.findByEmail(checkInRequestDto.getUserEmail());
         Shop shop = shopRepository.findByTelNumber(checkInRequestDto.getShopTelNumber());
-        Visit visit = Visit.builder()
-                .user(user)
-                .shop(shop)
-                .build();
+        Visit visit = checkInRequestDto.toEntity(user, shop);
         visitRepository.save(visit);
         return new CheckInResponseDto(user.getId(), shop.getId());
     }
