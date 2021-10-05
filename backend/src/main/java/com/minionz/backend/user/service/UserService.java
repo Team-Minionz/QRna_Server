@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class UserService {
 
+    private static final String NO_SUCH_USER_MESSAGE = "해당 로그인 정보에 대한 유저가 존재하지 않습니다.";
     private final UserRepository userRepository;
 
     @Transactional
@@ -21,7 +22,7 @@ public class UserService {
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
         try {
             User user = userRepository.findByEmailAndPassword(userLoginRequestDto.getEmail(), userLoginRequestDto.getPassword())
-                    .orElseThrow(() -> new NoSuchElementException("찾을 수 없음"));
+                    .orElseThrow(() -> new NoSuchElementException(NO_SUCH_USER_MESSAGE));
             userLoginResponseDto.setEmail(user.getEmail());
             userLoginResponseDto.setStatusCode(StatusCode.OK);
             return userLoginResponseDto;
@@ -37,7 +38,7 @@ public class UserService {
         UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto();
         try {
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new NoSuchElementException("찾을 수 없음"));
+                    .orElseThrow(() -> new NoSuchElementException(NO_SUCH_USER_MESSAGE));
             userLogoutResponseDto.setEmail(user.getEmail());
             userLogoutResponseDto.setStatusCode(StatusCode.OK);
             return userLogoutResponseDto;
