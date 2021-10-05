@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -21,7 +23,7 @@ public class UserController {
 
     @GetMapping("/logout/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public UserLogoutResponseDto logout(@PathVariable String email) {
+    public UserLogoutResponseDto logout(@PathVariable("email") String email) {
         return userService.logout(email);
     }
 
