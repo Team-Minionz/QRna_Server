@@ -17,7 +17,6 @@ public class VisitController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CheckInResponseDto checkIn(@RequestBody CheckInRequestDto checkInRequestDto) {
-        final CheckInResponseDto checkInResponseDto = visitService.checkIn(checkInRequestDto);
-        return checkInResponseDto;
+        return visitService.checkIn(checkInRequestDto);
     }
 }
