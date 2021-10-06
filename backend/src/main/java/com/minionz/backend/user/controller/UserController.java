@@ -39,7 +39,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserWithdrawResponse withdraw(@PathVariable("email") String email) {
         UserWithdrawResponse userWithdrawResponse = userService.withdraw(email);
-        userWithdrawResponse.setStatusCode(StatusCode.OK);
+        userWithdrawResponse.setStatsCode(StatusCode.OK);
         return userWithdrawResponse;
     }
 }
