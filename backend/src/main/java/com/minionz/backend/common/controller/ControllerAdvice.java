@@ -1,6 +1,6 @@
 package com.minionz.backend.common.controller;
 
-import com.minionz.backend.common.exception.ErrorMessage;
+import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -13,13 +13,13 @@ public class ControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
-    public ErrorMessage BadRequestException(RuntimeException runtimeException) {
-        return new ErrorMessage(runtimeException.getMessage());
+    public Message BadRequestException(RuntimeException runtimeException) {
+        return new Message(runtimeException.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NotFoundException.class})
-    public ErrorMessage NotFoundException(RuntimeException runtimeException) {
-        return new ErrorMessage(runtimeException.getMessage());
+    public Message NotFoundException(RuntimeException runtimeException) {
+        return new Message(runtimeException.getMessage());
     }
 }
