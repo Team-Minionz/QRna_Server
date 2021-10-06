@@ -1,6 +1,8 @@
 package com.minionz.backend.visit.controller;
 
 import com.minionz.backend.ApiDocument;
+import com.minionz.backend.common.exception.ErrorMessage;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
 import com.minionz.backend.visit.controller.dto.CheckInResponseDto;
 import com.minionz.backend.visit.service.VisitService;
@@ -13,10 +15,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(VisitController.class)
 class VisitControllerTest extends ApiDocument {
@@ -40,6 +42,22 @@ class VisitControllerTest extends ApiDocument {
         방문_기록_성공(checkInResponseDto, resultActions);
     }
 
+    @DisplayName("방문 기록 실패")
+    @Test
+    void checkIn_fail() throws Exception {
+        // given
+        final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
+                .userEmail("minion")
+                .shopTelNumber("032-888-1111")
+                .build();
+        final ErrorMessage errorMessage = new ErrorMessage("check-in fail");
+        // when
+        willThrow(new BadRequestException("check-in fail")).given(visitService).checkIn(any(CheckInRequestDto.class));
+        final ResultActions resultActions = 방문_기록_요청(checkInRequestDto);
+        // then
+        방문_기록_실패(errorMessage, resultActions);
+    }
+
     private ResultActions 방문_기록_요청(CheckInRequestDto checkInRequestDto) throws Exception {
         return mockMvc.perform(post("/api/v1/visits")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,5 +69,12 @@ class VisitControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(checkInResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("visit-checkin"));
+    }
+
+    private void 방문_기록_실패(ErrorMessage errorMessage, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("visit-checkin-fail"));
     }
 }
