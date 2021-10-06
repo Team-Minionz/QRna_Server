@@ -2,8 +2,8 @@ package com.minionz.backend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
-import com.minionz.backend.common.ErrorMessage;
 import com.minionz.backend.common.domain.StatusCode;
+import com.minionz.backend.common.exception.ErrorMessage;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.service.UserService;
@@ -82,7 +82,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_로그아웃_실패(ErrorMessage errorMessage, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isBadRequest())
+        resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("user-logout-fail"));
@@ -101,7 +101,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_로그인_실패(ErrorMessage errorMessage, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isBadRequest())
+        resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("user-login-fail"));
