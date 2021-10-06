@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/logout/{email}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public UserLogoutResponseDto logout(@PathVariable("email") String email) {
         return userService.logout(email);
     }
