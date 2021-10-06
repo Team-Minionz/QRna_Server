@@ -26,13 +26,13 @@ public class UserJoinRequest {
         this.password = password;
     }
 
-    public User toEntity(User user) {
-        return user.builder()
-                .name(user.getName())
-                .nickName(user.getNickName())
-                .password(user.getPassword())
-                .email(user.getEmail())
-                .telNumber(user.getTelNumber())
+    public User toEntity() {
+        return User.builder()
+                .name(name)
+                .nickName(nickName)
+                .password(password)
+                .email(email)
+                .telNumber(telNumber)
                 .build();
     }
 }
