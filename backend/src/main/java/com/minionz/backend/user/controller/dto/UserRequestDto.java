@@ -1,16 +1,15 @@
 package com.minionz.backend.user.controller.dto;
 
-import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserLoginResponseDto {
+public class UserRequestDto {
 
     private String email;
 
-    public UserLoginResponseDto(User user) {
-        this.email = user.getEmail();
+    public UserRequestDto(String email) {
+        this.email = email;
     }
 }

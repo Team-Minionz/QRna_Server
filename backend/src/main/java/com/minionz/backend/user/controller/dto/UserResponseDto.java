@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserLogoutResponseDto {
+public class UserResponseDto {
 
     private String email;
 
-    public UserLogoutResponseDto(User user) {
+    public UserResponseDto(User user) {
         this.email = user.getEmail();
     }
 }
