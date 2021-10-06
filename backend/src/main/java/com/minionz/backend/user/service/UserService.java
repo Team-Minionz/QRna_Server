@@ -1,7 +1,9 @@
 package com.minionz.backend.user.service;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.user.controller.dto.*;
+import com.minionz.backend.user.controller.dto.UserJoinRequest;
+import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
+import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
+    private static final String NO_SUCH_USER_MESSAGE = "해당 로그인 정보에 대한 유저가 존재하지 않습니다.";
     private final UserRepository userRepository;
 
     public Message login(UserLoginRequestDto userLoginRequestDto) {
