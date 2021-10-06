@@ -1,6 +1,5 @@
 package com.minionz.backend.user.controller.dto;
 
-import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,7 @@ import lombok.Setter;
 public class UserWithdrawResponse {
 
     private String email;
-    private int statusCode;
+    private int statsCode;
 
     public UserWithdrawResponse(String email) {
         this.email = email;
