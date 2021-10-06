@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @DeleteMapping("/withdraw/{email}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public UserWithdrawResponse withdraw(@PathVariable("email") String email) {
         return userService.withdraw(email);
     }
