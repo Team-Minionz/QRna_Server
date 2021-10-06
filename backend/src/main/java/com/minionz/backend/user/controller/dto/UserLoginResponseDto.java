@@ -1,14 +1,13 @@
 package com.minionz.backend.user.controller.dto;
 
 import com.minionz.backend.user.domain.User;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class UserLoginResponseDto {
 
     private String email;
@@ -16,9 +15,5 @@ public class UserLoginResponseDto {
 
     public UserLoginResponseDto(User user) {
         this.email = user.getEmail();
-    }
-
-    public UserLoginResponseDto(String email) {
-        this.email = email;
     }
 }
