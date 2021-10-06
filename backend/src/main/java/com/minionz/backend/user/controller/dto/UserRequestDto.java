@@ -2,13 +2,14 @@ package com.minionz.backend.user.controller.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class UserLogoutResponseDto {
+public class UserRequestDto {
 
     private String email;
-    private int statusCode;
+
+    public UserRequestDto(String email) {
+        this.email = email;
+    }
 }

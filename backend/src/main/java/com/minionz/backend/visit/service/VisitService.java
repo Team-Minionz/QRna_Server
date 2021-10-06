@@ -1,11 +1,11 @@
 package com.minionz.backend.visit.service;
 
+import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
-import com.minionz.backend.visit.controller.dto.CheckInResponseDto;
 import com.minionz.backend.visit.domain.Visit;
 import com.minionz.backend.visit.domain.VisitRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +25,13 @@ public class VisitService {
     private final VisitRepository visitRepository;
 
     @Transactional
-    public CheckInResponseDto checkIn(CheckInRequestDto checkInRequestDto) {
+    public Message checkIn(CheckInRequestDto checkInRequestDto) {
         User user = userRepository.findByEmail(checkInRequestDto.getUserEmail())
                 .orElseThrow(() -> new NoSuchElementException(NO_USER_ERROR_MESSAGE));
         Shop shop = shopRepository.findByTelNumber(checkInRequestDto.getShopTelNumber())
                 .orElseThrow(() -> new NoSuchElementException(NO_SHOP_ERROR_MESSAGE));
         Visit visit = checkInRequestDto.toEntity(user, shop);
         visitRepository.save(visit);
-        return new CheckInResponseDto(user.getId(), shop.getId());
+        return null;
     }
 }
