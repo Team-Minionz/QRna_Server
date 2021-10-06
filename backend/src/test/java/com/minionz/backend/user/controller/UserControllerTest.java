@@ -2,12 +2,11 @@ package com.minionz.backend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
-import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.common.exception.ErrorMessage;
+import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.service.UserService;
-import com.minionz.backend.common.exception.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -121,58 +120,44 @@ class UserControllerTest extends ApiDocument {
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @DisplayName("가입 성공")
+    @DisplayName("회원가입 성공")
     @Test
     void user_sign_up_success() throws Exception {
         UserJoinRequest signUpRequest = new UserJoinRequest("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
-        UserJoinResponse signUpResponse = new UserJoinResponse(User.builder().name("재욱").build());
+        UserJoinResponse signUpResponse = new UserJoinResponse(User.builder().email("wodnr@naver.com").build());
         willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        유저_회원가입_성공함(signUpResponse, response);
+        유저_회원가입_성공(signUpResponse, response);
     }
 
-    @DisplayName("가입 실패")
+    @DisplayName("회원가입 실패")
     @Test
     void user_sign_up_fail() throws Exception {
         UserJoinRequest signUpRequest = new UserJoinRequest("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
-        UserJoinResponse signUpResponse = new UserJoinResponse(User.builder().name("null").build());
-        signUpResponse.setStatusCode(StatusCode.BAD_REQUEST);
-        willReturn(signUpResponse).given(userService).signUp(any(UserJoinRequest.class));
+        ErrorMessage errorMessage = new ErrorMessage("회원가입 실패");
+        willThrow(new NotFoundException("회원가입 실패")).given(userService).signUp(any(UserJoinRequest.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        유저_회원가입_실패(signUpResponse, response);
+        유저_회원가입_실패(errorMessage, response);
     }
 
-    @DisplayName("탈퇴 성공")
+    @DisplayName("회원탈퇴 성공")
     @Test
     void user_withdraw_success() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
+        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email(null).build());
         willReturn(userWithdrawResponse).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
         유저_회원탈퇴_성공(userWithdrawResponse, response);
     }
 
-    @DisplayName("탈퇴 실패")
+    @DisplayName("회원탈퇴 실패")
     @Test
     void user_withdraw_fail() throws Exception {
         final String email = "email";
-        UserWithdrawResponse userWithdrawResponse = new UserWithdrawResponse(User.builder().email("email").build());
-        userWithdrawResponse.setStatusCode(StatusCode.BAD_REQUEST);
-        willReturn(userWithdrawResponse).given(userService).withdraw(email);
+        ErrorMessage errorMessage = new ErrorMessage("회원탈퇴 실패");
+        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(email);
         final ResultActions response = 유저_회원탈퇴_요청(email);
-        유저_회원탈퇴_실패(userWithdrawResponse, response);
-    }
-
-    private void 유저_회원탈퇴_실패(UserWithdrawResponse userWithdrawResponse, ResultActions response) throws Exception {
-        response.andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(userWithdrawResponse)))
-                .andDo(print())
-                .andDo(toDocument("user-withdraw-fail"));
-    }
-
-    private ResultActions 유저_회원탈퇴_요청(String email) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + email)
-                .contentType(MediaType.APPLICATION_JSON));
+        유저_회원탈퇴_실패(errorMessage, response);
     }
 
     private ResultActions 유저_회원가입_요청(UserJoinRequest signUpRequest) throws Exception {
@@ -181,24 +166,36 @@ class UserControllerTest extends ApiDocument {
                 .content(toJson(signUpRequest)));
     }
 
-    private void 유저_회원탈퇴_성공(UserWithdrawResponse userWithdrawResponse, ResultActions response) throws Exception {
+    private ResultActions 유저_회원탈퇴_요청(String email) throws Exception {
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + email)
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private void 유저_회원가입_성공(UserJoinResponse signUpResponse, ResultActions response) throws Exception {
         response.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(toJson(signUpResponse)))
+                .andDo(print())
+                .andDo(toDocument("user-signup-success"));
+    }
+
+    private void 유저_회원가입_실패(ErrorMessage errorMessage, ResultActions response) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("user-signup-fail"));
+    }
+
+    private void 유저_회원탈퇴_성공(UserWithdrawResponse userWithdrawResponse, ResultActions response) throws Exception {
+        response.andExpect(status().isNoContent())
                 .andExpect(MockMvcResultMatchers.content().json(toJson(userWithdrawResponse)))
                 .andDo(print())
                 .andDo(toDocument("user-withdraw-success"));
     }
 
-    private void 유저_회원가입_실패(UserJoinResponse signUpResponse, ResultActions response) throws Exception {
-        response.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(toJson(signUpResponse)))
+    private void 유저_회원탈퇴_실패(ErrorMessage errorMessage, ResultActions response) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
-                .andDo(toDocument("user-signup-fail"));
-    }
-
-    private void 유저_회원가입_성공함(UserJoinResponse signUpResponse, ResultActions response) throws Exception {
-        response.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(toJson(signUpResponse)))
-                .andDo(print())
-                .andDo(toDocument("user-signup-success"));
+                .andDo(toDocument("user-withdraw-fail"));
     }
 }
