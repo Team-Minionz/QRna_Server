@@ -9,7 +9,6 @@ import lombok.Setter;
 public class UserJoinResponse {
 
     private String email;
-    private int statusCode;
 
     public UserJoinResponse(User user) {
         this.email = user.getEmail();
