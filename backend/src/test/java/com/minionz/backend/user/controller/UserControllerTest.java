@@ -2,10 +2,12 @@ package com.minionz.backend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
+import com.minionz.backend.common.ErrorMessage;
 import com.minionz.backend.common.domain.StatusCode;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.service.UserService;
+import com.minionz.backend.common.exception.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -38,6 +41,7 @@ class UserControllerTest extends ApiDocument {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @DisplayName("로그인 성공")
     @Test
     public void 유저로그인테스트_성공() throws Exception {
         final UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("email", "password");
@@ -47,16 +51,17 @@ class UserControllerTest extends ApiDocument {
         유저_로그인_성공(userLoginResponseDto, resultActions);
     }
 
+    @DisplayName("로그인 실패")
     @Test
     public void 유저로그인테스트_실패() throws Exception {
         final UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("email1", "password");
-        UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(User.builder().email("null").build());
-        userLoginResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
-        willReturn(userLoginResponseDto).given(userService).login(any(UserLoginRequestDto.class));
+        ErrorMessage errorMessage = new ErrorMessage("로그인 실패");
+        willThrow(new NotFoundException("로그인 실패")).given(userService).login(any(UserLoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(userLoginRequestDto);
-        유저_로그인_실패(userLoginResponseDto, resultActions);
+        유저_로그인_실패(errorMessage, resultActions);
     }
 
+    @DisplayName("로그아웃 성공")
     @Test
     public void 유저로그아웃테스트_성공() throws Exception {
         final String email = "email";
@@ -66,25 +71,25 @@ class UserControllerTest extends ApiDocument {
         유저_로그아웃_성공(userLogoutResponseDto, resultActions);
     }
 
+    @DisplayName("로그아웃 실패")
     @Test
     public void 유저로그아웃테스트_실패() throws Exception {
         final String email = "email";
-        UserLogoutResponseDto userLogoutResponseDto = new UserLogoutResponseDto(User.builder().email("email").build());
-        userLogoutResponseDto.setStatusCode(StatusCode.BAD_REQUEST);
-        willReturn(userLogoutResponseDto).given(userService).logout(email);
+        ErrorMessage errorMessage = new ErrorMessage("로그아웃 실패");
+        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(email);
         final ResultActions resultActions = 유저_로그아웃_요청(email);
-        유저_로그아웃_실패(userLogoutResponseDto, resultActions);
+        유저_로그아웃_실패(errorMessage, resultActions);
     }
 
-    private void 유저_로그아웃_실패(UserLogoutResponseDto userLogoutResponseDto, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(userLogoutResponseDto)))
+    private void 유저_로그아웃_실패(ErrorMessage errorMessage, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("user-logout-fail"));
     }
 
     private void 유저_로그아웃_성공(UserLogoutResponseDto userLogoutResponseDto, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isNoContent())
                 .andExpect(content().json(objectMapper.writeValueAsString(userLogoutResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("user-logout-success"));
@@ -95,9 +100,9 @@ class UserControllerTest extends ApiDocument {
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    private void 유저_로그인_실패(UserLoginResponseDto userLoginResponseDto, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(userLoginResponseDto)))
+    private void 유저_로그인_실패(ErrorMessage errorMessage, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("user-login-fail"));
     }
