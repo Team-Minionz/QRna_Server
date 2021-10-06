@@ -1,5 +1,6 @@
 package com.minionz.backend.user.controller;
 
+import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,25 +16,25 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public UserLoginResponseDto login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
+    public Message login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         return userService.login(userLoginRequestDto);
     }
 
     @GetMapping("/logout/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public UserLogoutResponseDto logout(@PathVariable("email") String email) {
-        return userService.logout(email);
+    public Message logout(@PathVariable("email") UserRequestDto userRequestDto) {
+        return userService.logout(userRequestDto);
     }
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
-    public UserJoinResponse singUp(@RequestBody UserJoinRequest userJoinRequest) {
+    public Message singUp(@RequestBody UserJoinRequest userJoinRequest) {
         return userService.signUp(userJoinRequest);
     }
 
     @DeleteMapping("/withdraw/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public UserWithdrawResponse withdraw(@PathVariable("email") String email) {
-        return userService.withdraw(email);
+    public Message withdraw(@PathVariable("email") UserRequestDto userRequestDto) {
+        return userService.withdraw(userRequestDto);
     }
 }

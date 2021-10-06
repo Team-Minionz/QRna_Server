@@ -1,5 +1,6 @@
 package com.minionz.backend.user.service;
 
+import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,19 +12,19 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto) {
+    public Message login(UserLoginRequestDto userLoginRequestDto) {
         return null;
     }
 
-    public UserLogoutResponseDto logout(String email) {
+    public Message logout(UserRequestDto userRequestDto) {
         return null;
     }
 
-    public UserJoinResponse signUp(UserJoinRequest userJoinRequest) {
+    public Message signUp(UserJoinRequest userJoinRequest) {
         return null;
     }
 
-    public UserWithdrawResponse withdraw(String email) {
+    public Message withdraw(UserRequestDto userRequestDto) {
         return null;
     }
 }
