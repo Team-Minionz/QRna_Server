@@ -1,7 +1,6 @@
-package com.minionz.backend.visit.domain;
+package com.minionz.backend.visit.controller;
 
 import com.minionz.backend.ApiDocument;
-import com.minionz.backend.visit.controller.VisitController;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
 import com.minionz.backend.visit.controller.dto.CheckInResponseDto;
 import com.minionz.backend.visit.service.VisitService;
