@@ -8,7 +8,7 @@ import lombok.Setter;
 public class UserWithdrawResponse {
 
     private String email;
-    private int statsCode;
+    private int statusCode;
 
     public UserWithdrawResponse(String email) {
         this.email = email;
