@@ -49,9 +49,9 @@ class VisitControllerTest extends ApiDocument {
                 .userEmail("minion")
                 .shopTelNumber("032-888-1111")
                 .build();
-        final Message errorMessage = new Message("check-in fail");
+        final Message errorMessage = new Message("방문 기록 실패");
         // when
-        willThrow(new BadRequestException("check-in fail")).given(visitService).checkIn(any(CheckInRequestDto.class));
+        willThrow(new BadRequestException("방문 기록 실패")).given(visitService).checkIn(any(CheckInRequestDto.class));
         final ResultActions resultActions = 방문_기록_요청(checkInRequestDto);
         // then
         방문_기록_실패(errorMessage, resultActions);
