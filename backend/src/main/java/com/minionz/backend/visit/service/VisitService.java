@@ -32,6 +32,6 @@ public class VisitService {
                 .orElseThrow(() -> new NoSuchElementException(NO_SHOP_ERROR_MESSAGE));
         Visit visit = checkInRequestDto.toEntity(user, shop);
         visitRepository.save(visit);
-        return null;
+        return new Message("방문 기록 성공");
     }
 }
