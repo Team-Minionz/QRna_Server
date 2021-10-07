@@ -1,9 +1,9 @@
-package com.minionz.backend.visit.domain;
+package com.minionz.backend.visit.controller;
 
 import com.minionz.backend.ApiDocument;
-import com.minionz.backend.visit.controller.VisitController;
+import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
-import com.minionz.backend.visit.controller.dto.CheckInResponseDto;
 import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +14,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(VisitController.class)
 class VisitControllerTest extends ApiDocument {
@@ -33,12 +33,28 @@ class VisitControllerTest extends ApiDocument {
                 .userEmail("minion")
                 .shopTelNumber("032-888-1111")
                 .build();
-        final CheckInResponseDto checkInResponseDto = new CheckInResponseDto(1L, 1L);
+        Message message = new Message("방문 기록 성공");
         // when
-        willReturn(checkInResponseDto).given(visitService).checkIn(any(CheckInRequestDto.class));
+        willReturn(message).given(visitService).checkIn(any(CheckInRequestDto.class));
         final ResultActions resultActions = 방문_기록_요청(checkInRequestDto);
         // then
-        방문_기록_성공(checkInResponseDto, resultActions);
+        방문_기록_성공(message, resultActions);
+    }
+
+    @DisplayName("방문 기록 실패")
+    @Test
+    void checkIn_fail() throws Exception {
+        // given
+        final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
+                .userEmail("minion")
+                .shopTelNumber("032-888-1111")
+                .build();
+        final Message errorMessage = new Message("check-in fail");
+        // when
+        willThrow(new BadRequestException("check-in fail")).given(visitService).checkIn(any(CheckInRequestDto.class));
+        final ResultActions resultActions = 방문_기록_요청(checkInRequestDto);
+        // then
+        방문_기록_실패(errorMessage, resultActions);
     }
 
     private ResultActions 방문_기록_요청(CheckInRequestDto checkInRequestDto) throws Exception {
@@ -47,10 +63,17 @@ class VisitControllerTest extends ApiDocument {
                 .content(toJson(checkInRequestDto)));
     }
 
-    private void 방문_기록_성공(CheckInResponseDto checkInResponseDto, ResultActions resultActions) throws Exception {
+    private void 방문_기록_성공(Message message, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isCreated())
-                .andExpect(content().json(toJson(checkInResponseDto)))
+                .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("visit-checkin"));
+    }
+
+    private void 방문_기록_실패(Message errorMessage, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("visit-checkin-fail"));
     }
 }

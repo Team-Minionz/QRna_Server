@@ -1,5 +1,8 @@
 package com.minionz.backend.visit.controller.dto;
 
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.user.domain.User;
+import com.minionz.backend.visit.domain.Visit;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +19,12 @@ public class CheckInRequestDto {
     public CheckInRequestDto(String userEmail, String shopTelNumber) {
         this.userEmail = userEmail;
         this.shopTelNumber = shopTelNumber;
+    }
+
+    public Visit toEntity(User user, Shop shop) {
+        return Visit.builder()
+                .user(user)
+                .shop(shop)
+                .build();
     }
 }

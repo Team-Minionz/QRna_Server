@@ -1,16 +1,15 @@
 package com.minionz.backend.user.controller.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-public class UserWithdrawResponse {
+@NoArgsConstructor
+public class UserRequestDto {
 
     private String email;
-    private int statusCode;
 
-    public UserWithdrawResponse(String email) {
+    public UserRequestDto(String email) {
         this.email = email;
     }
 }
