@@ -26,7 +26,6 @@ public class UserService {
     @Transactional
     public UserJoinResponse signUp(UserJoinRequest userJoinRequest) {
         User user = userJoinRequest.toEntity();
-        userRepository.save(user);
         return new UserJoinResponse(userRepository.save(user));
     }
 
