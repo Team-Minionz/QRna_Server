@@ -1,5 +1,6 @@
 package com.minionz.backend.user.controller.dto;
 
+import com.minionz.backend.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,15 @@ public class UserJoinRequest {
         this.nickName = nickName;
         this.telNumber = telNumber;
         this.password = password;
+    }
+
+    public User toEntity() {
+        return User.builder()
+                .name(name)
+                .nickName(nickName)
+                .password(password)
+                .email(email)
+                .telNumber(telNumber)
+                .build();
     }
 }

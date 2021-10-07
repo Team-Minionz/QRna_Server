@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final String NO_SUCH_USER_MESSAGE = "해당 로그인 정보에 대한 유저가 존재하지 않습니다.";
+    private static final String NO_SUCH_USER_MESSAGE = "해당 유저가 존재하지 않습니다.";
     private final UserRepository userRepository;
 
     public Message login(UserLoginRequestDto userLoginRequestDto) {
