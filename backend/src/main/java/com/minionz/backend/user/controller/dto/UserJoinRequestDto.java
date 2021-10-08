@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserJoinRequest {
+public class UserJoinRequestDto {
 
     private String name;
     private String email;
@@ -18,7 +18,7 @@ public class UserJoinRequest {
     private String password;
 
     @Builder
-    public UserJoinRequest(String name, String email, String nickName, String telNumber, String password) {
+    public UserJoinRequestDto(String name, String email, String nickName, String telNumber, String password) {
         this.name = name;
         this.email = email;
         this.nickName = nickName;
