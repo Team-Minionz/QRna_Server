@@ -2,6 +2,7 @@ package com.minionz.backend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
+import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.*;
@@ -81,7 +82,8 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("회원가입 성공")
     @Test
     void user_sign_up_success() throws Exception {
-        UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
+        Address address = new Address("안산시","상록구","성포동");
+        UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언","010-9969-9776","111",address);
         Message message = new Message("회원가입 성공");
         willReturn(message).given(userService).signUp(any(UserJoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
@@ -91,7 +93,8 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("회원가입 실패")
     @Test
     void user_sign_up_fail() throws Exception {
-        UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111");
+        Address address = new Address("안산시","상록구","성포동");
+        UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "12345", address);
         Message errorMessage = new Message("회원가입 실패");
         willThrow(new NotFoundException("회원가입 실패")).given(userService).signUp(any(UserJoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
