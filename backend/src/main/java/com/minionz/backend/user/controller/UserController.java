@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public Message login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         return userService.login(userLoginRequestDto);
     }
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public Message singUp(@RequestBody UserJoinRequestDto userJoinRequestDto) {
         return userService.signUp(userJoinRequestDto);
     }
