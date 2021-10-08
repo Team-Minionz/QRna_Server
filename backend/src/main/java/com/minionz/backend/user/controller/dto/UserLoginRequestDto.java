@@ -1,11 +1,12 @@
 package com.minionz.backend.user.controller.dto;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserLoginRequestDto {
 
     private String email;
