@@ -81,7 +81,7 @@ public class UserServiceTest {
         userRepository.save(user);
         UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "wodnr8462@naver.com", "라이언", "11111", "adf", address);
         assertThatThrownBy(() -> userService.signUp(userJoinRequestDto)).isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 중복입니다");
+                .hasMessage("해당 유저 이메일이 중복입니다.");
     }
 
     @Test
@@ -117,7 +117,7 @@ public class UserServiceTest {
         //when
         //then
         assertThatThrownBy(() -> userService.login(userLoginRequestDto)).isInstanceOf(NotFoundException.class)
-                .hasMessage("이메일에 해당하는 유저가 존재하지 않습니다.");
+                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
     @Test
