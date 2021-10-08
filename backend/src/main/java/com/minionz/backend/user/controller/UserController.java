@@ -1,7 +1,7 @@
 package com.minionz.backend.user.controller;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.user.controller.dto.UserJoinRequest;
+import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.service.UserService;
@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public Message login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         return userService.login(userLoginRequestDto);
     }
@@ -30,8 +30,8 @@ public class UserController {
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
-    public Message singUp(@RequestBody UserJoinRequest userJoinRequest) {
-        return userService.signUp(userJoinRequest);
+    public Message singUp(@RequestBody UserJoinRequestDto userJoinRequestDto) {
+        return userService.signUp(userJoinRequestDto);
     }
 
     @DeleteMapping("/withdraw/{email}")
