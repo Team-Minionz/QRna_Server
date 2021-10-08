@@ -16,15 +16,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final String NO_SUCH_USER_MESSAGE = "해당 유저가 존재하지 않습니다.";
     private static final String NO_FOUND_USER_EMAIL_MESSAGE = "이메일에 해당하는 유저가 존재하지 않습니다.";
     private static final String NOT_EQUALS_PASSWORD_MESSAGE = "비밀번호가 일치하지 않습니다.";
     private static final String NOT_ENTERED_EMAIL = "이메일이 입력되지 않았습니다.";
     private static final String LOGIN_SUCCESS = "로그인 성공";
+    private static final String LOGOUT_SUCCESS = "로그아웃 성공";
     private final UserRepository userRepository;
 
     public Message login(UserLoginRequestDto userLoginRequestDto) {
-        System.out.println(userLoginRequestDto.getEmail());
         validateEnteredEmail(userLoginRequestDto);
         User findUser = userRepository.findByEmail(userLoginRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(NO_FOUND_USER_EMAIL_MESSAGE));
@@ -33,7 +32,9 @@ public class UserService {
     }
 
     public Message logout(UserRequestDto userRequestDto) {
-        return null;
+        userRepository.findByEmail(userRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(NO_FOUND_USER_EMAIL_MESSAGE));
+        return new Message(LOGOUT_SUCCESS);
     }
 
     public Message signUp(UserJoinRequest userJoinRequest) {
