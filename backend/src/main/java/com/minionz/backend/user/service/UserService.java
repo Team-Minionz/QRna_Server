@@ -29,10 +29,10 @@ public class UserService {
     }
 
     public Message signUp(UserJoinRequestDto userJoinRequestDto) {
-        if (userRepository.findByEmail(userJoinRequestDto.getEmail()).orElseGet(null) != null) {
+        if (userRepository.existsByEmail(userJoinRequestDto.getEmail())) {
             throw new NotFoundException(DUPLICATE_USER_MESSAGE);
         }
-        User user = userRepository.save(userJoinRequestDto.toEntity());
+        User user = userJoinRequestDto.toEntity();
         userRepository.save(user);
         return new Message(SIGN_UP_SUCCESS);
     }
