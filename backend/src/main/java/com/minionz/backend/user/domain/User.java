@@ -50,4 +50,8 @@ public class User extends BaseEntity {
         this.telNumber = telNumber;
         this.address = address;
     }
+
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
 }
