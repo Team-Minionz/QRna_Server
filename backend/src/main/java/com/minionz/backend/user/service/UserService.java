@@ -15,48 +15,48 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private static final String LOGIN_SUCCESS = "로그인 성공";
-    private static final String LOGOUT_SUCCESS = "로그아웃 성공";
-    private static final String SIGN_UP_SUCCESS = "회원가입 성공";
-    private static final String WITHDRAW_SUCCESS = "회원탈퇴 성공";
-    private static final String NO_FOUND_USER_EMAIL_MESSAGE = "해당 유저가 존재하지 않습니다.";
-    private static final String NOT_EQUALS_PASSWORD_MESSAGE = "비밀번호가 일치하지 않습니다.";
-    private static final String DUPLICATE_USER_MESSAGE = "해당 유저 이메일이 중복입니다";
+    private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
+    private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
+    private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
+    private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
+    private static final String USER_NOT_FOUND_MESSAGE = "해당 유저 이메일이 존재하지 않습니다.";
+    private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
+    private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
 
     private final UserRepository userRepository;
 
     public Message login(UserLoginRequestDto userLoginRequestDto) {
         User findUser = userRepository.findByEmail(userLoginRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(NO_FOUND_USER_EMAIL_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         validatePassword(userLoginRequestDto, findUser);
-        return new Message(LOGIN_SUCCESS);
+        return new Message(LOGIN_SUCCESS_MESSAGE);
     }
 
     public Message logout(UserRequestDto userRequestDto) {
         userRepository.findByEmail(userRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(NO_FOUND_USER_EMAIL_MESSAGE));
-        return new Message(LOGOUT_SUCCESS);
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
     public Message signUp(UserJoinRequestDto userJoinRequestDto) {
         if (userRepository.existsByEmail(userJoinRequestDto.getEmail())) {
-            throw new NotFoundException(DUPLICATE_USER_MESSAGE);
+            throw new NotFoundException(USER_DUPLICATION_MESSAGE);
         }
         User user = userJoinRequestDto.toEntity();
         userRepository.save(user);
-        return new Message(SIGN_UP_SUCCESS);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
     public Message withdraw(UserRequestDto userRequestDto) {
         User user = userRepository.findByEmail(userRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(NO_FOUND_USER_EMAIL_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         userRepository.delete(user);
-        return new Message(WITHDRAW_SUCCESS);
+        return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
     private void validatePassword(UserLoginRequestDto userLoginRequestDto, User findUser) {
         if (!findUser.validatePassword(userLoginRequestDto.getPassword())) {
-            throw new NotEqualsException(NOT_EQUALS_PASSWORD_MESSAGE);
+            throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
         }
     }
 }

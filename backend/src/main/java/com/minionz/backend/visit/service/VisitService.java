@@ -21,6 +21,7 @@ public class VisitService {
     private static final String NO_USER_ERROR_MESSAGE = "해당 유저가 존재하지 않습니다.";
     private static final String NO_SHOP_ERROR_MESSAGE = "해당 업체가 존재하지 않습니다.";
     private static final String CHECKIN_SUCCESS_MESSAGE = "방문 기록 성공";
+
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
     private final VisitRepository visitRepository;
