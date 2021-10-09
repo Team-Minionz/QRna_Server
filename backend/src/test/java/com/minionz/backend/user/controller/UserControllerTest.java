@@ -144,7 +144,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_회원가입_실패(Message errorMessage, ResultActions response) throws Exception {
-        response.andExpect(status().isNotFound())
+        response.andExpect(status().isBadRequest())
                 .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("user-signup-fail"));
