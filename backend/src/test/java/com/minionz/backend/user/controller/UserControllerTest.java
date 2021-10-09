@@ -136,7 +136,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
-        response.andExpect(status().isOk())
+        response.andExpect(status().isCreated())
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-signup-success"));
