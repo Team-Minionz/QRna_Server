@@ -2,6 +2,7 @@ package com.minionz.backend.user.service;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
@@ -80,7 +81,7 @@ public class UserServiceTest {
                 .build();
         userRepository.save(user);
         UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "wodnr8462@naver.com", "라이언", "11111", "adf", address);
-        assertThatThrownBy(() -> userService.signUp(userJoinRequestDto)).isInstanceOf(NotFoundException.class)
+        assertThatThrownBy(() -> userService.signUp(userJoinRequestDto)).isInstanceOf(BadRequestException.class)
                 .hasMessage("해당 유저 이메일이 중복입니다.");
     }
 
