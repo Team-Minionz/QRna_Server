@@ -1,6 +1,7 @@
 package com.minionz.backend.user.service;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
@@ -40,7 +41,7 @@ public class UserService {
 
     public Message signUp(UserJoinRequestDto userJoinRequestDto) {
         if (userRepository.existsByEmail(userJoinRequestDto.getEmail())) {
-            throw new NotFoundException(USER_DUPLICATION_MESSAGE);
+            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         User user = userJoinRequestDto.toEntity();
         userRepository.save(user);
