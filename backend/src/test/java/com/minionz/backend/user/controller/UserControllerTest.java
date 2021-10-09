@@ -107,7 +107,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     void user_withdraw_success() throws Exception {
         final UserRequestDto userRequestDto = new UserRequestDto("email");
-        Message message = new Message("회원가입 성공");
+        Message message = new Message("회원탈퇴 성공");
         willReturn(message).given(userService).withdraw(any(UserRequestDto.class));
         final ResultActions response = 유저_회원탈퇴_요청(userRequestDto);
         유저_회원탈퇴_성공(message, response);
