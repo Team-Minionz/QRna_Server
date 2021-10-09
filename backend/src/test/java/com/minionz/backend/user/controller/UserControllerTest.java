@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
@@ -98,7 +99,7 @@ class UserControllerTest extends ApiDocument {
         final Address address = new Address("안산시", "상록구", "성포동");
         UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "12345", address);
         Message errorMessage = new Message("회원가입 실패");
-        willThrow(new NotFoundException("회원가입 실패")).given(userService).signUp(any(UserJoinRequestDto.class));
+        willThrow(new BadRequestException("회원가입 실패")).given(userService).signUp(any(UserJoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
         유저_회원가입_실패(errorMessage, response);
     }
