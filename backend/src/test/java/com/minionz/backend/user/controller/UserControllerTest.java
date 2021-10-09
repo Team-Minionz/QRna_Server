@@ -84,7 +84,6 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("회원가입 성공")
     @Test
     void user_sign_up_success() throws Exception {
-
         Address address = new Address("안산시", "상록구", "성포동");
         UserJoinRequestDto signUpRequest = new UserJoinRequestDto("정재욱", "wodnr@naver.com", "라이언", "010-9969-9776", "111", address);
         Message message = new Message("회원가입 성공");
