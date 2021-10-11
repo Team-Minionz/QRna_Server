@@ -11,6 +11,7 @@ import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Message login(UserLoginRequestDto userLoginRequestDto) {
         User findUser = userRepository.findByEmail(userLoginRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
@@ -33,12 +35,14 @@ public class UserService {
         return new Message(LOGIN_SUCCESS_MESSAGE);
     }
 
+    @Transactional(readOnly = true)
     public Message logout(UserRequestDto userRequestDto) {
         userRepository.findByEmail(userRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
+    @Transactional
     public Message signUp(UserJoinRequestDto userJoinRequestDto) {
         if (userRepository.existsByEmail(userJoinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
@@ -48,6 +52,7 @@ public class UserService {
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
+    @Transactional
     public Message withdraw(UserRequestDto userRequestDto) {
         User user = userRepository.findByEmail(userRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
