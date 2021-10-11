@@ -7,7 +7,6 @@ import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -62,9 +61,9 @@ public class UserServiceTest {
                 .telNumber("1111111")
                 .address(address)
                 .build();
-        UserRequestDto userRequestDto = new UserRequestDto("wodnr8462@naver.com");
         userRepository.save(user);
-        Message message = userService.withdraw(userRequestDto);
+        final String email = "wodnr8462@naver.com";
+        Message message = userService.withdraw(email);
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 

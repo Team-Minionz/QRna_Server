@@ -8,7 +8,6 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,20 +64,20 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("로그아웃 성공")
     @Test
     public void 유저로그아웃테스트_성공() throws Exception {
-        final UserRequestDto userRequestDto = new UserRequestDto("email");
+        final String email = "email";
         Message message = new Message("로그아웃 성공");
-        willReturn(message).given(userService).logout(any(UserRequestDto.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(userRequestDto);
+        willReturn(message).given(userService).logout(any(String.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(email);
         유저_로그아웃_성공(message, resultActions);
     }
 
     @DisplayName("로그아웃 실패")
     @Test
     public void 유저로그아웃테스트_실패() throws Exception {
-        final UserRequestDto userRequestDto = new UserRequestDto("email");
+        final String email = "email";
         Message errorMessage = new Message("로그아웃 실패");
-        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(UserRequestDto.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(userRequestDto);
+        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(String.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(email);
         유저_로그아웃_실패(errorMessage, resultActions);
     }
 
@@ -107,20 +106,20 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("회원탈퇴 성공")
     @Test
     void user_withdraw_success() throws Exception {
-        final UserRequestDto userRequestDto = new UserRequestDto("email");
+        final String email = "email";
         Message message = new Message("회원탈퇴 성공");
-        willReturn(message).given(userService).withdraw(any(UserRequestDto.class));
-        final ResultActions response = 유저_회원탈퇴_요청(userRequestDto);
+        willReturn(message).given(userService).withdraw(any(String.class));
+        final ResultActions response = 유저_회원탈퇴_요청(email);
         유저_회원탈퇴_성공(message, response);
     }
 
     @DisplayName("회원탈퇴 실패")
     @Test
     void user_withdraw_fail() throws Exception {
-        final UserRequestDto userRequestDto = new UserRequestDto("email");
+        final String email = "email";
         Message errorMessage = new Message("회원탈퇴 실패");
-        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(UserRequestDto.class));
-        final ResultActions response = 유저_회원탈퇴_요청(userRequestDto);
+        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(String.class));
+        final ResultActions response = 유저_회원탈퇴_요청(email);
         유저_회원탈퇴_실패(errorMessage, response);
     }
 
@@ -130,10 +129,10 @@ class UserControllerTest extends ApiDocument {
                 .content(toJson(signUpRequest)));
     }
 
-    private ResultActions 유저_회원탈퇴_요청(UserRequestDto userRequestDto) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + userRequestDto.getEmail())
+    private ResultActions 유저_회원탈퇴_요청(String email) throws Exception {
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + email)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(userRequestDto)));
+                .content(email));
     }
 
     private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
@@ -178,10 +177,10 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-logout-success"));
     }
 
-    private ResultActions 유저_로그아웃_요청(UserRequestDto userRequestDto) throws Exception {
-        return mockMvc.perform(get("/api/v1/users/logout/" + userRequestDto.getEmail())
+    private ResultActions 유저_로그아웃_요청(String email) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/logout/" + email)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(userRequestDto)));
+                .content(email));
     }
 
     private void 유저_로그인_실패(Message errorMessage, ResultActions resultActions) throws Exception {
