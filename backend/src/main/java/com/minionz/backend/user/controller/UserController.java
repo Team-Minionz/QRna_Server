@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/logout/{email}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public Message logout(@PathVariable("email") String email) {
         Message logoutSuccess = userService.logout(email);
         log.info(logoutSuccess.getMessage());
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @DeleteMapping("/withdraw/{email}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public Message withdraw(@PathVariable("email") String email) {
         Message withdrawSuccess = userService.withdraw(email);
         log.info(withdrawSuccess.getMessage());
