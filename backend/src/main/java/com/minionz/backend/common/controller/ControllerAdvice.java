@@ -34,7 +34,7 @@ public class ControllerAdvice {
     @ExceptionHandler({NotEqualsException.class})
     public Message NotEqualsException(RuntimeException runtimeException) {
         Message message = new Message(runtimeException.getMessage());
-        log.info(message.getMessage());
+        log.warn(message.getMessage());
         return message;
     }
 }
