@@ -5,9 +5,11 @@ import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -18,24 +20,32 @@ public class UserController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public Message login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        return userService.login(userLoginRequestDto);
+        Message loginSuccess = userService.login(userLoginRequestDto);
+        log.info(loginSuccess.getMessage());
+        return loginSuccess;
     }
 
     @GetMapping("/logout/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Message logout(@PathVariable("email") String email) {
-        return userService.logout(email);
+        Message logoutSuccess = userService.logout(email);
+        log.info(logoutSuccess.getMessage());
+        return logoutSuccess;
     }
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
-    public Message singUp(@RequestBody UserJoinRequestDto userJoinRequestDto) {
-        return userService.signUp(userJoinRequestDto);
+    public Message signUp(@RequestBody UserJoinRequestDto userJoinRequestDto) {
+        Message signUpSuccess = userService.signUp(userJoinRequestDto);
+        log.info(signUpSuccess.getMessage());
+        return signUpSuccess;
     }
 
     @DeleteMapping("/withdraw/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Message withdraw(@PathVariable("email") String email) {
-        return userService.withdraw(email);
+        Message withdrawSuccess = userService.withdraw(email);
+        log.info(withdrawSuccess.getMessage());
+        return withdrawSuccess;
     }
 }
