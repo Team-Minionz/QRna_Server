@@ -2,7 +2,7 @@ package com.minionz.backend.visit.controller;
 
 import com.minionz.backend.ApiDocument;
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.common.exception.BadRequestException;
+import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
 import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,8 @@ import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(VisitController.class)
 class VisitControllerTest extends ApiDocument {
@@ -51,7 +52,7 @@ class VisitControllerTest extends ApiDocument {
                 .build();
         final Message errorMessage = new Message("방문 기록 실패");
         // when
-        willThrow(new BadRequestException("방문 기록 실패")).given(visitService).checkIn(any(CheckInRequestDto.class));
+        willThrow(new NotFoundException("방문 기록 실패")).given(visitService).checkIn(any(CheckInRequestDto.class));
         final ResultActions resultActions = 방문_기록_요청(checkInRequestDto);
         // then
         방문_기록_실패(errorMessage, resultActions);
@@ -71,7 +72,7 @@ class VisitControllerTest extends ApiDocument {
     }
 
     private void 방문_기록_실패(Message errorMessage, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isBadRequest())
+        resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
                 .andDo(toDocument("visit-checkin-fail"));
