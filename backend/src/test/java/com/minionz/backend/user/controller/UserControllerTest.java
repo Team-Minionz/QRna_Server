@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willReturn;
-import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -68,7 +67,7 @@ class UserControllerTest extends ApiDocument {
         Message message = new Message("로그아웃 성공");
         willReturn(message).given(userService).logout(any(String.class));
         final ResultActions resultActions = 유저_로그아웃_요청(email);
-        유저_로그아웃_성공(message, resultActions);
+        유저_로그아웃_성공(resultActions);
     }
 
     @DisplayName("로그아웃 실패")
@@ -110,7 +109,7 @@ class UserControllerTest extends ApiDocument {
         Message message = new Message("회원탈퇴 성공");
         willReturn(message).given(userService).withdraw(any(String.class));
         final ResultActions response = 유저_회원탈퇴_요청(email);
-        유저_회원탈퇴_성공(message, response);
+        유저_회원탈퇴_성공(response);
     }
 
     @DisplayName("회원탈퇴 실패")
@@ -149,9 +148,8 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-signup-fail"));
     }
 
-    private void 유저_회원탈퇴_성공(Message message, ResultActions response) throws Exception {
-        response.andExpect(status().isOk())
-                .andExpect(content().json(toJson(message)))
+    private void 유저_회원탈퇴_성공(ResultActions response) throws Exception {
+        response.andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(toDocument("user-withdraw-success"));
     }
@@ -170,9 +168,8 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-logout-fail"));
     }
 
-    private void 유저_로그아웃_성공(Message message, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(message)))
+    private void 유저_로그아웃_성공(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(toDocument("user-logout-success"));
     }
