@@ -150,7 +150,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_회원탈퇴_성공(Message message, ResultActions response) throws Exception {
-        response.andExpect(status().isNoContent())
+        response.andExpect(status().isOk())
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-withdraw-success"));
@@ -171,7 +171,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private void 유저_로그아웃_성공(Message message, ResultActions resultActions) throws Exception {
-        resultActions.andExpect(status().isNoContent())
+        resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-logout-success"));
