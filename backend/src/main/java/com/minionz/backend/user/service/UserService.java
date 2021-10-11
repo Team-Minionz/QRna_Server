@@ -6,7 +6,6 @@ import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +35,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Message logout(UserRequestDto userRequestDto) {
-        userRepository.findByEmail(userRequestDto.getEmail())
+    public Message logout(String email) {
+        userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
@@ -53,8 +52,8 @@ public class UserService {
     }
 
     @Transactional
-    public Message withdraw(UserRequestDto userRequestDto) {
-        User user = userRepository.findByEmail(userRequestDto.getEmail())
+    public Message withdraw(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         userRepository.delete(user);
         return new Message(WITHDRAW_SUCCESS_MESSAGE);

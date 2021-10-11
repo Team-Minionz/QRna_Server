@@ -3,7 +3,6 @@ package com.minionz.backend.user.controller;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserRequestDto;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,8 +23,8 @@ public class UserController {
 
     @GetMapping("/logout/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Message logout(@PathVariable("email") UserRequestDto userRequestDto) {
-        return userService.logout(userRequestDto);
+    public Message logout(@PathVariable("email") String email) {
+        return userService.logout(email);
     }
 
     @PostMapping("/join")
@@ -36,7 +35,7 @@ public class UserController {
 
     @DeleteMapping("/withdraw/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Message withdraw(@PathVariable("email") UserRequestDto userRequestDto) {
-        return userService.withdraw(userRequestDto);
+    public Message withdraw(@PathVariable("email") String email) {
+        return userService.withdraw(email);
     }
 }
