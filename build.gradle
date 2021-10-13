@@ -40,3 +40,5 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+ext['tomcat.version'] = '10.0.12'
