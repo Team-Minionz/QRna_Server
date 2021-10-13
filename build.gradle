@@ -34,7 +34,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.2-rc'
+    implementation 'org.mariadb.jdbc:mariadb-java-client'
 }
 
 test {
