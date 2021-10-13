@@ -1,6 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "message" : "방문 기록 실패"
-}
-----

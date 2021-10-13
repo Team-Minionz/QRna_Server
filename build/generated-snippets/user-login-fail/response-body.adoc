@@ -1,6 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "message" : "로그인 실패"
-}
-----

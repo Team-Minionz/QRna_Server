@@ -1,6 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "message" : "회원가입 실패"
-}
-----
