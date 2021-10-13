@@ -1,0 +1,10 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 201 Created
+Content-Type: application/json
+Content-Length: 39
+
+{
+  "message" : "회원가입 성공"
+}
+----

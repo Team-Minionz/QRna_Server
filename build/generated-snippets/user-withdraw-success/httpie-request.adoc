@@ -1,0 +1,5 @@
+[source,bash]
+----
+$ echo 'email' | http DELETE 'http://localhost/api/v1/users/withdraw/email' \
+    'Content-Type:application/json;charset=UTF-8'
+----

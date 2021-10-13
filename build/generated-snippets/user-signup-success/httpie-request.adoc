@@ -1,0 +1,16 @@
+[source,bash]
+----
+$ echo '{
+  "name" : "정재욱",
+  "email" : "wodnr@naver.com",
+  "nickName" : "라이언",
+  "telNumber" : "010-9969-9776",
+  "password" : "111",
+  "address" : {
+    "zipcode" : "안산시",
+    "street" : "상록구",
+    "city" : "성포동"
+  }
+}' | http POST 'http://localhost/api/v1/users/join' \
+    'Content-Type:application/json;charset=UTF-8'
+----

@@ -1,0 +1,8 @@
+[source,bash]
+----
+$ echo '{
+  "userEmail" : "minion",
+  "shopTelNumber" : "032-888-1111"
+}' | http POST 'http://localhost/api/v1/visits' \
+    'Content-Type:application/json;charset=UTF-8'
+----

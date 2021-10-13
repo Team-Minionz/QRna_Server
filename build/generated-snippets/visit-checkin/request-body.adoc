@@ -1,0 +1,7 @@
+[source,options="nowrap"]
+----
+{
+  "userEmail" : "minion",
+  "shopTelNumber" : "032-888-1111"
+}
+----
