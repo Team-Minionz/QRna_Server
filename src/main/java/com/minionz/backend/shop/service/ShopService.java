@@ -13,28 +13,33 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShopService {
 
+    private static final String NOT_FOUND_SHOP_MESSAGE = "존재 하지 않는 Shop 입니다.";
+    private static final String SHOP_SAVE_SUCCESS = "SHOP 등록 성공";
+    private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
+    private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
+
     private final ShopRepository shopRepository;
 
     @Transactional
     public Message save(ShopRequestDto shopRequestDto) {
         Shop shop = shopRequestDto.toEntity();
         shopRepository.save(shop);
-        return new Message("Shop 등록 성공");
+        return new Message(SHOP_SAVE_SUCCESS);
     }
 
     @Transactional
     public Message update(Long id, ShopRequestDto shopRequestDto) {
         Shop shop = shopRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재 하지 않는 Shop 입니다."));
+                        .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         shop.update(shopRequestDto);
-        return new Message("Shop Update 성공");
+        return new Message(SHOP_UPDATE_SUCCESS);
     }
 
     @Transactional
     public Message delete(Long id) {
         Shop shop = shopRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재 하지 않는 Shop 입니다."));
+                        .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         shopRepository.delete(shop);
-        return new Message("Shop delete 성공");
+        return new Message(SHOP_DELETE_SUCCESS);
     }
 }
