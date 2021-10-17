@@ -134,7 +134,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 상점_등록_요청(ShopRequestDto shopRequestDto) throws Exception {
-        return mockMvc.perform(post("/api/v1/shops/")
+        return mockMvc.perform(post("/api/v1/shops")
                 .content(objectMapper.writeValueAsString(shopRequestDto))
                 .contentType(MediaType.APPLICATION_JSON));
     }

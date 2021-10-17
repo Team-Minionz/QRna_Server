@@ -14,7 +14,7 @@ public class ShopController {
 
     private final ShopService shopService;
 
-    @PostMapping("/")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Message save(@RequestBody ShopRequestDto shopRequestDto) {
         return shopService.save(shopRequestDto);
