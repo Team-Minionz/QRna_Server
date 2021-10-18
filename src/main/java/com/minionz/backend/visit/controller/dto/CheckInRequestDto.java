@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public class CheckInRequestDto {
 
     private String userEmail;
-    private String shopTelNumber;
+    public Long tableId;
 
     @Builder
-    public CheckInRequestDto(String userEmail, String shopTelNumber) {
+    public CheckInRequestDto(String userEmail, Long tableId) {
         this.userEmail = userEmail;
-        this.shopTelNumber = shopTelNumber;
+        this.tableId = tableId;
     }
 
     public Visit toEntity(User user, Shop shop) {
