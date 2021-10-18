@@ -37,4 +37,8 @@ public class ShopTable extends BaseEntity {
         this.countUser = countUser;
         this.useStatus = useStatus;
     }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }

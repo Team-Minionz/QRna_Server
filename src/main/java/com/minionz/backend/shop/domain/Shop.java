@@ -2,7 +2,6 @@ package com.minionz.backend.shop.domain;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
-import com.minionz.backend.table.domain.Table;
 import com.minionz.backend.visit.domain.Visit;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,13 +32,27 @@ public class Shop extends BaseEntity {
     private List<Visit> visitList = new ArrayList<>();
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
-    private List<Table> tableList = new ArrayList<>();
+    private List<ShopTable> tableList = new ArrayList<>();
+
+    @Column(nullable = false)
+    private int maxNumberOfPeople;
+
+    private String degreeOfCongestion;
 
     @Builder
-    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber) {
+    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, int maxNumberOfPeople, String degreeOfCongestion, List<ShopTable> tableList) {
         super(id, createDate, lastModifiedDate);
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
+        this.tableList = tableList;
+        this.maxNumberOfPeople = maxNumberOfPeople;
+        this.degreeOfCongestion = degreeOfCongestion;
+    }
+
+    public void mapShopWithTable() {
+        for (ShopTable table : tableList) {
+            table.setShop(this);
+        }
     }
 }
