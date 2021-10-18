@@ -15,14 +15,12 @@ public class ShopSaveRequestDto {
     private Address address;
     private String telNumber;
     private List<ShopTable> tableList;
-    private int maxNumberOfPeople;
 
-    public ShopSaveRequestDto(String name, String zipcode, String street, String city, String telNumber, List<ShopTable> tableList, int maxNumberOfPeople) {
+    public ShopSaveRequestDto(String name, String zipcode, String street, String city, String telNumber, List<ShopTable> tableList) {
         this.name = name;
         this.address = new Address(zipcode, street, city);
         this.telNumber = telNumber;
         this.tableList = tableList;
-        this.maxNumberOfPeople = maxNumberOfPeople;
     }
 
     public Shop toEntity() {
