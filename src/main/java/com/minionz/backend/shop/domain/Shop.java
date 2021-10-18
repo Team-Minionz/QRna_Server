@@ -35,24 +35,42 @@ public class Shop extends BaseEntity {
     private List<ShopTable> tableList = new ArrayList<>();
 
     @Column(nullable = false)
-    private int maxNumberOfPeople;
+    private CongestionStatus congestionStatus;
 
-    private String degreeOfCongestion;
+    @Column(nullable = false)
+    private int numberOfTables;
 
     @Builder
-    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, int maxNumberOfPeople, String degreeOfCongestion, List<ShopTable> tableList) {
+    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, CongestionStatus congestionStatus, List<ShopTable> tableList, int numberOfTables) {
         super(id, createDate, lastModifiedDate);
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
         this.tableList = tableList;
-        this.maxNumberOfPeople = maxNumberOfPeople;
-        this.degreeOfCongestion = degreeOfCongestion;
+        this.congestionStatus = congestionStatus;
+        this.numberOfTables = numberOfTables;
     }
 
     public void mapShopWithTable() {
         for (ShopTable table : tableList) {
             table.setShop(this);
         }
+    }
+
+    public void updateDegreeOfCongestion() {
+        double ratioOfCongestion = getNumberOfUsingTables() / (double) numberOfTables;
+        if (ratioOfCongestion < 0.3) {
+            congestionStatus = CongestionStatus.SMOOTH;
+        } else if (ratioOfCongestion >= 0.3 && ratioOfCongestion < 0.7) {
+            congestionStatus = CongestionStatus.NORMAL;
+        } else {
+            congestionStatus = CongestionStatus.CONGESTED;
+        }
+    }
+
+    private int getNumberOfUsingTables() {
+        return (int) tableList.stream()
+                .filter(status -> status.getUseStatus() == UseStatus.USING)
+                .count();
     }
 }
