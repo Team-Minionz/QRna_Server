@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -30,15 +31,24 @@ public class ShopTable extends BaseEntity {
     private int countUser;
 
     @Builder
-    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, int countUser, UseStatus useStatus) {
+    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, UseStatus useStatus) {
         super(id, createdDate, modifiedDate);
         this.shop = shop;
         this.maxUser = maxUser;
-        this.countUser = countUser;
         this.useStatus = useStatus;
     }
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public Optional<Shop> getOptionalShop() {
+        return Optional.ofNullable(this.shop);
+    }
+
+    public void use() {
+        countUser++;
+        useStatus = UseStatus.USING;
+        shop.updateDegreeOfCongestion();
     }
 }
