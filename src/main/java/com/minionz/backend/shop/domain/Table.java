@@ -1,7 +1,6 @@
-package com.minionz.backend.table.domain;
+package com.minionz.backend.shop.domain;
 
 import com.minionz.backend.common.domain.BaseEntity;
-import com.minionz.backend.shop.domain.Shop;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,24 +9,25 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "table_id"))
-@Entity
+@javax.persistence.Table(name = "shop_table")
 public class Table extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UseStatus useStatus;
+
     @Column(nullable = false)
     private int maxUser;
 
     private int countUser;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UseStatus useStatus;
 
     @Builder
     public Table(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, int countUser, UseStatus useStatus) {

@@ -1,4 +1,4 @@
-package com.minionz.backend.table.domain;
+package com.minionz.backend.shop.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
