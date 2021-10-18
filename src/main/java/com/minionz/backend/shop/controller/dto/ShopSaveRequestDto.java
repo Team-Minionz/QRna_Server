@@ -1,6 +1,7 @@
 package com.minionz.backend.shop.controller.dto;
 
 import com.minionz.backend.common.domain.Address;
+import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopTable;
 import lombok.Getter;
@@ -30,7 +31,8 @@ public class ShopSaveRequestDto {
                 .address(address)
                 .telNumber(telNumber)
                 .tableList(tableList)
-                .maxNumberOfPeople(maxNumberOfPeople)
+                .numberOfTables(tableList.size())
+                .congestionStatus(CongestionStatus.SMOOTH)
                 .build();
     }
 }
