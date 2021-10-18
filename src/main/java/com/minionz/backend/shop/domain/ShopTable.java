@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "table_id"))
-@javax.persistence.Table(name = "shop_table")
-public class Table extends BaseEntity {
+@Table(name = "shop_table")
+public class ShopTable extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
@@ -30,7 +30,7 @@ public class Table extends BaseEntity {
     private int countUser;
 
     @Builder
-    public Table(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, int countUser, UseStatus useStatus) {
+    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, int countUser, UseStatus useStatus) {
         super(id, createdDate, modifiedDate);
         this.shop = shop;
         this.maxUser = maxUser;
