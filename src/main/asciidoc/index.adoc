@@ -120,3 +120,42 @@ include::{snippets}/visit-checkin-fail/http-request.adoc[]
 
 .response
 include::{snippets}/visit-checkin-fail/http-response.adoc[]
+=== Shop 등록
+==== 성공
+.request
+include::{snippets}/shop-save-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-save-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/shop-save-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-save-fail/http-response.adoc[]
+=== Shop 수정
+==== 성공
+.request
+include::{snippets}/shop-update-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-update-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/shop-update-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-update-fail/http-response.adoc[]
+=== Shop 삭제
+==== 성공
+.request
+include::{snippets}/shop-delete-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-delete-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/shop-delete-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-delete-fail/http-response.adoc[]

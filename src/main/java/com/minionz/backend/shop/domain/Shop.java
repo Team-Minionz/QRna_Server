@@ -2,6 +2,7 @@ package com.minionz.backend.shop.domain;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.visit.domain.Visit;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,5 +38,11 @@ public class Shop extends BaseEntity {
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
+    }
+
+    public void update(ShopRequestDto shopRequestDto) {
+        this.name = shopRequestDto.getName();
+        this.address = shopRequestDto.getAddress();
+        this.telNumber = shopRequestDto.getTelNumber();
     }
 }
