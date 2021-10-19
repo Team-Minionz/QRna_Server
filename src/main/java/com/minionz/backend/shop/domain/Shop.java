@@ -34,6 +34,7 @@ public class Shop extends BaseEntity {
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<ShopTable> tableList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CongestionStatus congestionStatus = CongestionStatus.SMOOTH;
 
