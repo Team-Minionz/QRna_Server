@@ -3,10 +3,7 @@ package com.minionz.backend.user.domain;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
 import com.minionz.backend.visit.domain.Visit;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
+@Setter
 public class User extends BaseEntity {
 
     @Column(name = "user_name", nullable = false)
