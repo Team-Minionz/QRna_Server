@@ -10,14 +10,17 @@ import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -29,6 +32,9 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
@@ -136,5 +142,22 @@ public class UserServiceTest {
         //then
         assertThatThrownBy(() -> userService.login(userLoginRequestDto)).isInstanceOf(NotEqualsException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("패스워드 암호화 테스트")
+    void passwordEncode() {
+        // given
+        Address address = new Address("a", "b", "C");
+        String rawPassword = "12345678";
+        UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "operation@naver.com", "라이언", "1111111", rawPassword, address);
+        userService.signUp(userJoinRequestDto);
+        User user = userRepository.findByEmail("operation@naver.com")
+                .orElseThrow(() -> new BadRequestException("실패"));
+        String encode = user.getPassword();
+        assertAll(
+                () -> assertNotEquals(rawPassword, encode),
+                () -> assertTrue(passwordEncoder.matches(rawPassword, encode))
+        );
     }
 }
