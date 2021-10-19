@@ -14,7 +14,6 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "table_id"))
-@Table(name = "shop_table")
 public class ShopTable extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
