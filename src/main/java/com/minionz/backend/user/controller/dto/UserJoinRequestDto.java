@@ -21,6 +21,7 @@ public class UserJoinRequestDto {
 
     @Builder
     public UserJoinRequestDto(String name, String email, String nickName, String telNumber, String password, Address address) {
+
         this.name = name;
         this.email = email;
         this.nickName = nickName;
