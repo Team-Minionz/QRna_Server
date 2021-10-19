@@ -35,19 +35,18 @@ public class Shop extends BaseEntity {
     private List<ShopTable> tableList = new ArrayList<>();
 
     @Column(nullable = false)
-    private CongestionStatus congestionStatus;
+    private CongestionStatus congestionStatus = CongestionStatus.SMOOTH;
 
     @Column(nullable = false)
     private int numberOfTables;
 
     @Builder
-    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, CongestionStatus congestionStatus, List<ShopTable> tableList, int numberOfTables) {
+    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, List<ShopTable> tableList, int numberOfTables) {
         super(id, createDate, lastModifiedDate);
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
         this.tableList = tableList;
-        this.congestionStatus = congestionStatus;
         this.numberOfTables = numberOfTables;
     }
 

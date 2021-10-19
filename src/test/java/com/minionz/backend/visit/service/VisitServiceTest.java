@@ -47,7 +47,6 @@ public class VisitServiceTest {
                 .telNumber("032-888-8888")
                 .tableList(list)
                 .numberOfTables(list.size())
-                .congestionStatus(CongestionStatus.SMOOTH)
                 .build();
         shop.mapShopWithTable();
         shopRepository.save(shop);

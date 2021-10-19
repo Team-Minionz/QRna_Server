@@ -30,7 +30,6 @@ public class ShopSaveRequestDto {
                 .telNumber(telNumber)
                 .tableList(tableList)
                 .numberOfTables(tableList.size())
-                .congestionStatus(CongestionStatus.SMOOTH)
                 .build();
     }
 }
