@@ -3,7 +3,9 @@ package com.minionz.backend.visit.service;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.domain.*;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
@@ -38,9 +40,9 @@ public class VisitServiceTest {
     void setUp() {
         Address address = new Address("123-456", "송도동", "인천시 연수구");
         List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).useStatus(UseStatus.valueOf("EMPTY")).build());
-        list.add(ShopTable.builder().maxUser(4).useStatus(UseStatus.valueOf("EMPTY")).build());
-        list.add(ShopTable.builder().maxUser(4).useStatus(UseStatus.valueOf("EMPTY")).build());
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
         Shop shop = Shop.builder()
                 .name("테스트")
                 .address(address)

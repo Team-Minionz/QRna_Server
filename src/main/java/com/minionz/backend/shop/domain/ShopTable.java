@@ -23,7 +23,7 @@ public class ShopTable extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UseStatus useStatus;
+    private UseStatus useStatus = UseStatus.EMPTY;
 
     @Column(nullable = false)
     private int maxUser;
@@ -31,11 +31,10 @@ public class ShopTable extends BaseEntity {
     private int countUser;
 
     @Builder
-    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser, UseStatus useStatus) {
+    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser) {
         super(id, createdDate, modifiedDate);
         this.shop = shop;
         this.maxUser = maxUser;
-        this.useStatus = useStatus;
     }
 
     public void setShop(Shop shop) {
