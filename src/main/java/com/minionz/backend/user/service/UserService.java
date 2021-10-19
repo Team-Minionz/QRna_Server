@@ -9,6 +9,8 @@ import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,9 @@ public class UserService {
     private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
 
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public Message login(UserLoginRequestDto userLoginRequestDto) {
@@ -47,6 +52,7 @@ public class UserService {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         User user = userJoinRequestDto.toEntity();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
