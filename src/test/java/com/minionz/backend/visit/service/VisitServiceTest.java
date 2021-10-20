@@ -48,7 +48,6 @@ public class VisitServiceTest {
                 .address(address)
                 .telNumber("032-888-8888")
                 .tableList(list)
-                .numberOfTables(list.size())
                 .build();
         shop.mapShopWithTable();
         shopRepository.save(shop);
