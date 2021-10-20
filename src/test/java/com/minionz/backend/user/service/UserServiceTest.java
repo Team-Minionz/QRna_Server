@@ -5,8 +5,11 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
-import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
+import com.minionz.backend.user.controller.dto.JoinRequestDto;
+import com.minionz.backend.user.controller.dto.LoginRequestDto;
+import com.minionz.backend.user.controller.dto.Role;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +33,9 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -38,10 +44,28 @@ public class UserServiceTest {
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @Test
-    void 회원가입_성공_테스트() {
+    void 회원가입_성공_테스트_유저() {
+        final Address address = new Address("안산시", "성포동", "우리집");
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .nickName("라이언")
+                .telNumber("11111111")
+                .password("1234")
+                .address(address)
+                .role(Role.USER)
+                .build();
+                
+        Message message = userService.signUp(joinRequestDto);
+        assertThat(message.getMessage()).isEqualTo("회원가입 성공");
+    }
+
+    @Test
+    void 회원가입_성공_테스트_오너() {
         final Address address = new Address("안산시", "성포동", "우리집");
         User user = User.builder()
                 .name("정재욱1")
@@ -51,13 +75,21 @@ public class UserServiceTest {
                 .telNumber("11111111")
                 .address(address)
                 .build();
-        UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "operation@naver.com", "라이언", "1111111", "1234", address);
-        Message message = userService.signUp(userJoinRequestDto);
+
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .telNumber("11111111")
+                .password("1234")
+                .role(Role.OWNER)
+                .build();
+
+        Message message = userService.signUp(joinRequestDto);
         assertThat(message.getMessage()).isEqualTo("회원가입 성공");
     }
 
     @Test
-    void 회원탈퇴_성공_테스트() {
+    void 회원탈퇴_성공_테스트_유저() {
         final Address address = new Address("안산시", "성포동", "우리집");
         User user = User.builder()
                 .email("wodnr8462@naver.com")
@@ -69,7 +101,22 @@ public class UserServiceTest {
                 .build();
         userRepository.save(user);
         final String email = "wodnr8462@naver.com";
-        Message message = userService.withdraw(email);
+        Message message = userService.withdraw(email, Role.USER);
+        assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
+    }
+
+    @Test
+    void 회원탈퇴_성공_테스트_오너() {
+        final Address address = new Address("안산시", "성포동", "우리집");
+        Owner owner = Owner.builder()
+                .email("wodnr8462@naver.com")
+                .name("정재욱")
+                .password("1234")
+                .telNumber("1111111")
+                .build();
+        ownerRepository.save(owner);
+        final String email = "wodnr8462@naver.com";
+        Message message = userService.withdraw(email, Role.OWNER);
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 
@@ -85,25 +132,75 @@ public class UserServiceTest {
                 .address(address)
                 .build();
         userRepository.save(user);
-        UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "wodnr8462@naver.com", "라이언", "11111", "adf", address);
-        assertThatThrownBy(() -> userService.signUp(userJoinRequestDto)).isInstanceOf(BadRequestException.class)
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("wodnr8462@naver.com")
+                .nickName("라이언")
+                .telNumber("11111111")
+                .password("1234")
+                .role(Role.USER)
+                .address(address)
+                .build();
+        assertThatThrownBy(() -> userService.signUp(joinRequestDto)).isInstanceOf(BadRequestException.class)
                 .hasMessage("해당 유저 이메일이 중복입니다.");
     }
 
     @Test
-    void 로그인_성공_테스트() {
+    void 로그인_성공_테스트_유저() {
         //given
-        User user = User.builder()
-                .email("jhnj741@naver.com")
-                .name("동현")
-                .password("123456")
-                .nickName("donglee99")
-                .telNumber("010111111111")
+        final Address address = new Address("안산시", "성포동", "우리집");
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .nickName("라이언")
+                .telNumber("11111111")
+                .password("1234")
+                .address(address)
+                .role(Role.USER)
                 .build();
-        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("jhnj741@naver.com", "123456");
-        userRepository.save(user);
+        userService.signUp(joinRequestDto);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
         //when
-        Message message = userService.login(userLoginRequestDto);
+        Message message = userService.login(LoginRequestDto);
+        //then
+        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+    }
+
+    @Test
+    void 로그인_성공_테스트_오너() {
+        //given
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .telNumber("11111111")
+                .password("1234")
+                .role(Role.OWNER)
+                .build();
+        userService.signUp(joinRequestDto);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
+        //when
+        Message message = userService.login(LoginRequestDto);
+        //then
+        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+    }
+
+    @Test
+    void 로그아웃_성공_테스트_유저() {
+        //given
+        final Address address = new Address("안산시", "성포동", "우리집");
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .nickName("라이언")
+                .telNumber("11111111")
+                .password("1234")
+                .address(address)
+                .role(Role.USER)
+                .build();
+        userService.signUp(joinRequestDto);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
+        //when
+        Message message = userService.login(LoginRequestDto);
         //then
         assertThat(message.getMessage()).isEqualTo("로그인 성공");
     }
@@ -118,11 +215,11 @@ public class UserServiceTest {
                 .nickName("donglee99")
                 .telNumber("010111111111")
                 .build();
-        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("jh3j741@naver.com", "123456");
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("jh3j741@naver.com", "123456", Role.USER);
         userRepository.save(user);
         //when
         //then
-        assertThatThrownBy(() -> userService.login(userLoginRequestDto)).isInstanceOf(NotFoundException.class)
+        assertThatThrownBy(() -> userService.login(LoginRequestDto)).isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
@@ -136,11 +233,11 @@ public class UserServiceTest {
                 .nickName("donglee99")
                 .telNumber("010111111111")
                 .build();
-        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto("jhnj741@naver.com", "12346");
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("jhnj741@naver.com", "12346", Role.USER);
         userRepository.save(user);
         //when
         //then
-        assertThatThrownBy(() -> userService.login(userLoginRequestDto)).isInstanceOf(NotEqualsException.class)
+        assertThatThrownBy(() -> userService.login(LoginRequestDto)).isInstanceOf(NotEqualsException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다.");
     }
 
@@ -150,8 +247,16 @@ public class UserServiceTest {
         // given
         Address address = new Address("a", "b", "C");
         String rawPassword = "12345678";
-        UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto("정재욱", "operation@naver.com", "라이언", "1111111", rawPassword, address);
-        userService.signUp(userJoinRequestDto);
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .name("정재욱")
+                .email("operation@naver.com")
+                .nickName("라이언")
+                .telNumber("11111111")
+                .password("12345678")
+                .address(address)
+                .role(Role.USER)
+                .build();
+        userService.signUp(joinRequestDto);
         User user = userRepository.findByEmail("operation@naver.com")
                 .orElseThrow(() -> new BadRequestException("실패"));
         String encode = user.getPassword();
