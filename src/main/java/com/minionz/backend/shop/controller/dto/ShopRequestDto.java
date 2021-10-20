@@ -31,7 +31,6 @@ public class ShopRequestDto {
                 .address(address)
                 .telNumber(telNumber)
                 .tableList(tableList)
-                .numberOfTables(tableList.size())
                 .build();
     }
 }
