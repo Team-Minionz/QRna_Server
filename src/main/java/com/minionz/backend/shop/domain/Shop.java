@@ -52,7 +52,7 @@ public class Shop extends BaseEntity {
         this.numberOfTables = numberOfTables;
     }
 
-    public void updateShopInfo(ShopRequestDto shopRequestDto) {
+    public void update(ShopRequestDto shopRequestDto) {
         this.name = shopRequestDto.getName();
         this.address = shopRequestDto.getAddress();
         this.telNumber = shopRequestDto.getTelNumber();
@@ -81,11 +81,5 @@ public class Shop extends BaseEntity {
         return (int) tableList.stream()
                 .filter(status -> status.getUseStatus() == UseStatus.USING)
                 .count();
-    }
-
-    public void update(ShopRequestDto shopRequestDto) {
-        this.name = shopRequestDto.getName();
-        this.address = shopRequestDto.getAddress();
-        this.telNumber = shopRequestDto.getTelNumber();
     }
 }

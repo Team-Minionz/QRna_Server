@@ -32,7 +32,7 @@ public class ShopService {
     public Message update(Long id, ShopRequestDto shopRequestDto) {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
-        shop.updateShopInfo(shopRequestDto);
+        shop.update(shopRequestDto);
         return new Message(SHOP_UPDATE_SUCCESS);
     }
 
