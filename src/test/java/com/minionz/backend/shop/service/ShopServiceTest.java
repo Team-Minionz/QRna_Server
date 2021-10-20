@@ -1,5 +1,6 @@
 package com.minionz.backend.shop.service;
 
+import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.ShopRepository;
@@ -40,7 +41,24 @@ public class ShopServiceTest {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        // when
+        Message message = shopService.save(shopRequestDto);
+        // then
+        assertThat(message.getMessage()).isEqualTo("SHOP 등록 성공");
+    }
+
+    @DisplayName("Shop 생성 테스트")
+    @Test
+    public void saveShopTest1() {
+        // given
+        List<ShopTable> list = new ArrayList<>();
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         // when
         Message message = shopService.save(shopRequestDto);
         // then

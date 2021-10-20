@@ -18,9 +18,9 @@ public class ShopRequestDto {
     private String telNumber;
     private List<ShopTable> tableList;
 
-    public ShopRequestDto(String name, String zipcode, String street, String city, String telNumber, List<ShopTable> tableList) {
+    public ShopRequestDto(String name, Address address, String telNumber, List<ShopTable> tableList) {
         this.name = name;
-        this.address = new Address(zipcode, street, city);
+        this.address = address;
         this.telNumber = telNumber;
         this.tableList = tableList;
     }

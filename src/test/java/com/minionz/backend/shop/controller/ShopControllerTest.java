@@ -2,6 +2,7 @@ package com.minionz.backend.shop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
+import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
@@ -49,7 +50,8 @@ class ShopControllerTest extends ApiDocument {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 등록 성공");
         willReturn(message).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
@@ -63,7 +65,8 @@ class ShopControllerTest extends ApiDocument {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 등록 실패");
         willThrow(new BadRequestException("Shop 등록 실패")).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
@@ -78,7 +81,8 @@ class ShopControllerTest extends ApiDocument {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 수정 성공");
         willReturn(message).given(shopService).update(any(Long.class) ,any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
@@ -93,7 +97,8 @@ class ShopControllerTest extends ApiDocument {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 수정 실패");
         willThrow(new NotFoundException("Shop 수정 실패")).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
