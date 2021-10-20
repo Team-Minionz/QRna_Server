@@ -34,7 +34,7 @@ public class ShopServiceTest {
 
     @DisplayName("Shop 생성 테스트")
     @Test
-    public void makeTableListTest() {
+    public void saveShopTest() {
         // given
         List<ShopTable> list = new ArrayList<>();
         list.add(ShopTable.builder().maxUser(2).build());
