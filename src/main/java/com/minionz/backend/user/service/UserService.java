@@ -4,12 +4,14 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
-import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
+import com.minionz.backend.user.controller.dto.JoinRequestDto;
+import com.minionz.backend.user.controller.dto.LoginRequestDto;
+import com.minionz.backend.user.controller.dto.Role;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,47 +29,102 @@ public class UserService {
     private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
 
     private final UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final OwnerRepository ownerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Message login(UserLoginRequestDto userLoginRequestDto) {
-        User findUser = userRepository.findByEmail(userLoginRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        validatePassword(userLoginRequestDto, findUser);
-        return new Message(LOGIN_SUCCESS_MESSAGE);
+    public Message login(LoginRequestDto loginRequestDto) {
+        if (loginRequestDto.getRole().equals(Role.USER)) {
+            return userLogin(loginRequestDto);
+        }
+        return ownerLogin(loginRequestDto);
     }
 
     @Transactional(readOnly = true)
-    public Message logout(String email) {
-        userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new Message(LOGOUT_SUCCESS_MESSAGE);
+    public Message logout(String email, Role role) {
+        if (role.equals(Role.USER)) {
+            return userLogout(email);
+        }
+        return ownerLogout(email);
     }
 
     @Transactional
-    public Message signUp(UserJoinRequestDto userJoinRequestDto) {
-        if (userRepository.existsByEmail(userJoinRequestDto.getEmail())) {
+    public Message signUp(JoinRequestDto joinRequestDto) {
+        if (joinRequestDto.getRole().equals(Role.USER)) {
+            return userSave(joinRequestDto);
+        }
+        return ownerSave(joinRequestDto);
+    }
+
+    @Transactional
+    public Message withdraw(String email, Role role) {
+        if (role.equals(Role.USER)) {
+            return userDelete(email);
+        }
+        return ownerDelete(email);
+    }
+
+    private void validatePassword(LoginRequestDto loginRequestDto, String password) {
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), password)) {
+            throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
+        }
+    }
+
+    private Message ownerSave(JoinRequestDto joinRequestDto) {
+        if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
-        User user = userJoinRequestDto.toEntity();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        Owner owner = joinRequestDto.toOwner(passwordEncoder);
+        ownerRepository.save(owner);
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
-    @Transactional
-    public Message withdraw(String email) {
+    private Message ownerDelete(String email) {
+        Owner owner = ownerRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        ownerRepository.delete(owner);
+        return new Message(WITHDRAW_SUCCESS_MESSAGE);
+    }
+
+    private Message userDelete(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         userRepository.delete(user);
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    private void validatePassword(UserLoginRequestDto userLoginRequestDto, User findUser) {
-        if (!findUser.validatePassword(userLoginRequestDto.getPassword())) {
-            throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
+    private Message userSave(JoinRequestDto joinRequestDto) {
+        if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
+            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
+        User user = joinRequestDto.toUser(passwordEncoder);
+        userRepository.save(user);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
+    }
+
+    private Message ownerLogin(LoginRequestDto loginRequestDto) {
+        Owner findOwner = ownerRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        validatePassword(loginRequestDto, findOwner.getPassword());
+        return new Message(LOGIN_SUCCESS_MESSAGE);
+    }
+
+    private Message userLogin(LoginRequestDto loginRequestDto) {
+        User findUser = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        validatePassword(loginRequestDto, findUser.getPassword());
+        return new Message(LOGIN_SUCCESS_MESSAGE);
+    }
+
+    private Message ownerLogout(String email) {
+        ownerRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new Message(LOGOUT_SUCCESS_MESSAGE);
+    }
+
+    private Message userLogout(String email) {
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 }
