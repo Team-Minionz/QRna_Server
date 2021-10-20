@@ -55,7 +55,7 @@ endif::[]
 
 
 == 기능
-=== 회원가입
+=== USER 회원가입
 ==== 성공
 .request
 include::{snippets}/user-signup-success/http-request.adoc[]
@@ -68,7 +68,7 @@ include::{snippets}/user-signup-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-signup-fail/http-response.adoc[]
-=== 회원 탈퇴
+=== USER 회원 탈퇴
 ==== 성공
 .request
 include::{snippets}/user-withdraw-success/http-request.adoc[]
@@ -81,7 +81,7 @@ include::{snippets}/user-withdraw-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-withdraw-fail/http-response.adoc[]
-=== 로그인
+=== USER 로그인
 ==== 성공
 .request
 include::{snippets}/user-login-success/http-request.adoc[]
@@ -94,7 +94,7 @@ include::{snippets}/user-login-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-login-fail/http-response.adoc[]
-=== 로그아웃
+=== USER 로그아웃
 ==== 성공
 .request
 include::{snippets}/user-logout-success/http-request.adoc[]
@@ -107,6 +107,59 @@ include::{snippets}/user-logout-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-logout-fail/http-response.adoc[]
+=== OWNER 회원가입
+==== 성공
+.request
+include::{snippets}/owner-signup-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-signup-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-signup-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-signup-fail/http-response.adoc[]
+=== OWNER 회원 탈퇴
+==== 성공
+.request
+include::{snippets}/owner-withdraw-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-withdraw-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-withdraw-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-withdraw-fail/http-response.adoc[]
+=== OWNER 로그인
+==== 성공
+.request
+include::{snippets}/owner-login-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-login-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-login-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-login-fail/http-response.adoc[]
+=== OWNER 로그아웃
+==== 성공
+.request
+include::{snippets}/owner-logout-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-logout-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-logout-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-logout-fail/http-response.adoc[]
+
 === QR 인증
 ==== 성공
 .request
