@@ -16,6 +16,8 @@ import java.util.Optional;
 @AttributeOverride(name = "id", column = @Column(name = "table_id"))
 public class ShopTable extends BaseEntity {
 
+    private int tableNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
@@ -30,8 +32,9 @@ public class ShopTable extends BaseEntity {
     private int countUser;
 
     @Builder
-    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, Shop shop, int maxUser) {
+    public ShopTable(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, int tableNumber, Shop shop, int maxUser) {
         super(id, createdDate, modifiedDate);
+        this.tableNumber = tableNumber;
         this.shop = shop;
         this.maxUser = maxUser;
     }
