@@ -13,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -43,13 +44,13 @@ public class Shop extends BaseEntity {
     private int numberOfTables;
 
     @Builder
-    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, List<ShopTable> tableList, int numberOfTables) {
+    public Shop(Long id, LocalDateTime createDate, LocalDateTime lastModifiedDate, String name, Address address, String telNumber, List<ShopTable> tableList) {
         super(id, createDate, lastModifiedDate);
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
         this.tableList = tableList;
-        this.numberOfTables = numberOfTables;
+        this.numberOfTables = tableList.size();
     }
 
     public void update(ShopRequestDto shopRequestDto) {
@@ -64,6 +65,11 @@ public class Shop extends BaseEntity {
         for (ShopTable table : tableList) {
             table.setShop(this);
         }
+    }
+
+    public void setTableNumber() {
+        AtomicInteger tableNumber = new AtomicInteger(1);
+        tableList.forEach(table -> table.setTableNumber(tableNumber.getAndIncrement()));
     }
 
     public void updateDegreeOfCongestion() {
