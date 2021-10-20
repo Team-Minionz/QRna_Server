@@ -35,7 +35,7 @@ public class ShopController {
         shopService.delete(id);
     }
 
-    @GetMapping("all")
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<ShopListResponseDto> viewAll() {
         return shopService.viewAll();

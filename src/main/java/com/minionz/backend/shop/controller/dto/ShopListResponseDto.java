@@ -1,7 +1,9 @@
 package com.minionz.backend.shop.controller.dto;
 
 import com.minionz.backend.shop.domain.CongestionStatus;
+import lombok.Getter;
 
+@Getter
 public class ShopListResponseDto {
 
     private String name;
