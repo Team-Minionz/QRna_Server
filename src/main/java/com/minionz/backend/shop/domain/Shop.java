@@ -52,6 +52,14 @@ public class Shop extends BaseEntity {
         this.numberOfTables = numberOfTables;
     }
 
+    public void updateShopInfo(ShopRequestDto shopRequestDto) {
+        this.name = shopRequestDto.getName();
+        this.address = shopRequestDto.getAddress();
+        this.telNumber = shopRequestDto.getTelNumber();
+        this.tableList = shopRequestDto.getTableList();
+        this.numberOfTables = tableList.size();
+    }
+
     public void mapShopWithTable() {
         for (ShopTable table : tableList) {
             table.setShop(this);

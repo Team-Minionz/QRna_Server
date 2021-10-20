@@ -2,11 +2,11 @@ package com.minionz.backend.shop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minionz.backend.ApiDocument;
-import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
@@ -42,8 +45,11 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 등록 성공")
     @Test
     void 상점등록_성공() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
-        ShopRequestDto shopRequestDto = new ShopRequestDto("맥도날드", address, "032-123-1234");
+        final List<ShopTable> list = new ArrayList<>();
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
         Message message = new Message("Shop 등록 성공");
         willReturn(message).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
@@ -53,8 +59,11 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 등록 실패")
     @Test
     void 상점등록_실패() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
-        ShopRequestDto shopRequestDto = new ShopRequestDto("맥도날드", address, "032-123-1234");
+        final List<ShopTable> list = new ArrayList<>();
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
         Message message = new Message("Shop 등록 실패");
         willThrow(new BadRequestException("Shop 등록 실패")).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
@@ -65,8 +74,11 @@ class ShopControllerTest extends ApiDocument {
     @Test
     void 상점수정_성공() throws Exception {
         Long id = 1L;
-        Address address = new Address("인천시", "부평구", "산곡동");
-        ShopRequestDto shopRequestDto = new ShopRequestDto("맥도날드", address, "032-123-1234");
+        final List<ShopTable> list = new ArrayList<>();
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
         Message message = new Message("Shop 수정 성공");
         willReturn(message).given(shopService).update(any(Long.class) ,any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
@@ -77,8 +89,11 @@ class ShopControllerTest extends ApiDocument {
     @Test
     void 상점수정_실패() throws Exception {
         Long id = 1L;
-        Address address = new Address("인천시", "부평구", "산곡동");
-        ShopRequestDto shopRequestDto = new ShopRequestDto("맥도날드", address, "032-123-1234");
+        final List<ShopTable> list = new ArrayList<>();
+        list.add(ShopTable.builder().maxUser(2).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        list.add(ShopTable.builder().maxUser(4).build());
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
         Message message = new Message("Shop 수정 실패");
         willThrow(new NotFoundException("Shop 수정 실패")).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);

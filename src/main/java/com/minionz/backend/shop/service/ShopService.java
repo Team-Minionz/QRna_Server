@@ -3,7 +3,6 @@ package com.minionz.backend.shop.service;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,8 @@ public class ShopService {
     private final ShopRepository shopRepository;
 
     @Transactional
-    public Message save(ShopSaveRequestDto shopSaveRequestDto) {
-        Shop shop = shopSaveRequestDto.toEntity();
+    public Message save(ShopRequestDto shopRequestDto) {
+        Shop shop = shopRequestDto.toEntity();
         shop.mapShopWithTable();
         shopRepository.save(shop);
         return new Message(SHOP_SAVE_SUCCESS);
@@ -33,7 +32,7 @@ public class ShopService {
     public Message update(Long id, ShopRequestDto shopRequestDto) {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
-        shop.update(shopRequestDto);
+        shop.updateShopInfo(shopRequestDto);
         return new Message(SHOP_UPDATE_SUCCESS);
     }
 

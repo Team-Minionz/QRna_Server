@@ -1,7 +1,7 @@
 package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.shop.controller.dto.ShopSaveRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTable;
 import org.junit.jupiter.api.AfterEach;
@@ -40,10 +40,10 @@ public class ShopServiceTest {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
-        ShopSaveRequestDto shopSaveRequestDto = new ShopSaveRequestDto("테스트", "442-152", "구월동", "인천시 남동구", "032-888-8888", list);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", "111-222", "구월동", "인천시 남동구", "032-888-8888", list);
         // when
-        Message message = shopService.save(shopSaveRequestDto);
+        Message message = shopService.save(shopRequestDto);
         // then
-        assertThat(message.getMessage()).isEqualTo("가게 등록 성공");
+        assertThat(message.getMessage()).isEqualTo("SHOP 등록 성공");
     }
 }
