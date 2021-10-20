@@ -6,7 +6,9 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
@@ -84,7 +86,7 @@ class ShopControllerTest extends ApiDocument {
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 수정 성공");
-        willReturn(message).given(shopService).update(any(Long.class) ,any(ShopRequestDto.class));
+        willReturn(message).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
         상점수정요청_성공(resultActions);
     }
@@ -125,6 +127,18 @@ class ShopControllerTest extends ApiDocument {
         상점삭제요청_실패(message, resultActions);
     }
 
+    @DisplayName("상점 목록 조회 성공")
+    @Test
+    void 상점목록조회_성공() throws Exception {
+        List<ShopListResponseDto> shopList = new ArrayList<>();
+        shopList.add(new ShopListResponseDto("매장1", CongestionStatus.SMOOTH));
+        shopList.add(new ShopListResponseDto("매장2", CongestionStatus.NORMAL));
+        shopList.add(new ShopListResponseDto("매장3", CongestionStatus.NORMAL));
+        willReturn(shopList).given(shopService).viewAll();
+        ResultActions resultActions = 상점목록조회_요청();
+        상점목록조회요청_성공(resultActions, shopList);
+    }
+
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(message)))
@@ -158,6 +172,7 @@ class ShopControllerTest extends ApiDocument {
                 .content(objectMapper.writeValueAsString(shopRequestDto))
                 .contentType(MediaType.APPLICATION_JSON));
     }
+
     private void 상점수정요청_성공(ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isNoContent())
                 .andDo(print())
@@ -179,5 +194,16 @@ class ShopControllerTest extends ApiDocument {
     private ResultActions 상점삭제_요청(Long id) throws Exception {
         return mockMvc.perform(delete("/api/v1/shops/" + id)
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private ResultActions 상점목록조회_요청() throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/all"));
+    }
+
+    private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopListResponseDto> shopList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopList)))
+                .andDo(print())
+                .andDo(toDocument("shop-all-view-success"));
     }
 }
