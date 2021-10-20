@@ -24,6 +24,7 @@ public class ShopService {
     public Message save(ShopRequestDto shopRequestDto) {
         Shop shop = shopRequestDto.toEntity();
         shop.mapShopWithTable();
+        shop.setTableNumber();
         shopRepository.save(shop);
         return new Message(SHOP_SAVE_SUCCESS);
     }
