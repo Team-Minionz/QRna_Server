@@ -197,7 +197,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 상점목록조회_요청() throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/all"));
+        return mockMvc.perform(get("/api/v1/shops"));
     }
 
     private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopListResponseDto> shopList) throws Exception {
