@@ -2,6 +2,7 @@ package com.minionz.backend.shop.domain;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.visit.domain.Visit;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -72,5 +73,11 @@ public class Shop extends BaseEntity {
         return (int) tableList.stream()
                 .filter(status -> status.getUseStatus() == UseStatus.USING)
                 .count();
+    }
+
+    public void update(ShopRequestDto shopRequestDto) {
+        this.name = shopRequestDto.getName();
+        this.address = shopRequestDto.getAddress();
+        this.telNumber = shopRequestDto.getTelNumber();
     }
 }
