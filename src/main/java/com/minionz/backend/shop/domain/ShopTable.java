@@ -43,6 +43,10 @@ public class ShopTable extends BaseEntity {
         this.shop = shop;
     }
 
+    public void setTableNumber(int tableNumber) {
+        this.tableNumber = tableNumber;
+    }
+
     public Optional<Shop> getOptionalShop() {
         return Optional.ofNullable(this.shop);
     }
