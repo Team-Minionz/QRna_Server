@@ -4,7 +4,6 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

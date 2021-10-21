@@ -13,7 +13,6 @@ import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,23 +59,12 @@ public class UserServiceTest {
                 .address(address)
                 .role(Role.USER)
                 .build();
-                
         Message message = userService.signUp(joinRequestDto);
         assertThat(message.getMessage()).isEqualTo("회원가입 성공");
     }
 
     @Test
     void 회원가입_성공_테스트_오너() {
-        final Address address = new Address("안산시", "성포동", "우리집");
-        User user = User.builder()
-                .name("정재욱1")
-                .email("wodnr8462@naver.com")
-                .password("12341")
-                .nickName("라이언1")
-                .telNumber("11111111")
-                .address(address)
-                .build();
-
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -86,7 +72,6 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
-
         Message message = userService.signUp(joinRequestDto);
         assertThat(message.getMessage()).isEqualTo("회원가입 성공");
     }
@@ -176,6 +161,7 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
+
         userService.signUp(joinRequestDto);
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
         //when
