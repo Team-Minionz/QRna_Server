@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserPageResponseDto {
 
-    private Long id;
     private String nickname;
     private String telNumber;
     private Address address;
@@ -18,6 +17,5 @@ public class UserPageResponseDto {
         this.nickname = user.getNickName();
         this.address = user.getAddress();
         this.telNumber = user.getTelNumber();
-        this.id = user.getId();
     }
 }
