@@ -1,12 +1,8 @@
 package com.minionz.backend.user.domain;
 
 import com.minionz.backend.common.domain.Address;
-import com.minionz.backend.common.domain.BaseEntity;
 import com.minionz.backend.visit.domain.Visit;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,41 +13,22 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class User extends BaseEntity {
-
-    @Column(name = "user_name", nullable = false)
-    private String name;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
-    private String nickName;
-
-    @Column(nullable = false, unique = true)
-    private String telNumber;
-
-    @Embedded
-    private Address address;
+@Setter
+public class User extends UserBaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Visit> visitList = new ArrayList<>();
 
+    @Embedded
+    private Address address;
+
+    @Column(nullable = false, unique = true)
+    private String nickName;
+
     @Builder
     public User(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String nickName, String telNumber, Address address) {
-        super(id, createdDate, modifiedDate);
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.nickName = nickName;
-        this.telNumber = telNumber;
+        super(id, createdDate, modifiedDate, name, email, password, telNumber);
         this.address = address;
-    }
-
-    public boolean validatePassword(String password) {
-        return this.password.equals(password);
+        this.nickName = nickName;
     }
 }
