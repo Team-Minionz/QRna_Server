@@ -143,7 +143,6 @@ public class UserServiceTest {
 
     @Test
     void 마이페이지_조회_성공() {
-        //given
         Address address = new Address("믿음", "소망", "씨티");
         User user = User.builder()
                 .email("jhnj741@naver.com")
@@ -169,7 +168,8 @@ public class UserServiceTest {
                 .telNumber("010111111111")
                 .build();
         userRepository.save(user);
-        assertThatThrownBy(() -> userService.viewMypage(2L)).isInstanceOf(NotFoundException.class)
+        assertThatThrownBy(() -> userService.viewMypage(2L))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 }
