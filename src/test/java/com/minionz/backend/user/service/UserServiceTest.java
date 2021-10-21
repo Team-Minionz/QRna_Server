@@ -13,6 +13,7 @@ import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -99,24 +102,21 @@ public class UserServiceTest {
                 .telNumber("1111111")
                 .address(address)
                 .build();
-        userRepository.save(user);
-        final String email = "wodnr8462@naver.com";
-        Message message = userService.withdraw(email, Role.USER);
+        User save = userRepository.save(user);
+        Message message = userService.withdraw(save.getId(), Role.USER);
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 
     @Test
     void 회원탈퇴_성공_테스트_오너() {
-        final Address address = new Address("안산시", "성포동", "우리집");
         Owner owner = Owner.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
                 .password("1234")
                 .telNumber("1111111")
                 .build();
-        ownerRepository.save(owner);
-        final String email = "wodnr8462@naver.com";
-        Message message = userService.withdraw(email, Role.OWNER);
+        Owner save = ownerRepository.save(owner);
+        Message message = userService.withdraw(save.getId(), Role.OWNER);
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 

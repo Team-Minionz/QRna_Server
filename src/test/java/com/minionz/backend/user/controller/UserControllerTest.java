@@ -84,40 +84,40 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 로그아웃 성공")
     @Test
     public void 유저로그아웃테스트_성공() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message message = new Message("로그아웃 성공");
-        willReturn(message).given(userService).logout(any(String.class), any(Role.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(email, Role.USER);
+        willReturn(message).given(userService).logout(any(Long.class), any(Role.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(id, Role.USER);
         유저_로그아웃_성공(resultActions);
     }
 
     @DisplayName("유저 로그아웃 실패")
     @Test
     public void 유저로그아웃테스트_실패() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message errorMessage = new Message("로그아웃 실패");
-        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(String.class), any(Role.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(email, Role.USER);
+        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(Long.class), any(Role.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(id, Role.USER);
         유저_로그아웃_실패(errorMessage, resultActions);
     }
 
     @DisplayName("오너 로그아웃 성공")
     @Test
     public void 오너로그아웃테스트_성공() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message message = new Message("로그아웃 성공");
-        willReturn(message).given(userService).logout(any(String.class), any(Role.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(email, Role.OWNER);
+        willReturn(message).given(userService).logout(any(Long.class), any(Role.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(id, Role.OWNER);
         오너_로그아웃_성공(resultActions);
     }
 
     @DisplayName("오너 로그아웃 실패")
     @Test
     public void 오너로그아웃테스트_실패() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message errorMessage = new Message("로그아웃 실패");
-        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(String.class), any(Role.class));
-        final ResultActions resultActions = 유저_로그아웃_요청(email, Role.OWNER);
+        willThrow(new NotFoundException("로그아웃 실패")).given(userService).logout(any(Long.class), any(Role.class));
+        final ResultActions resultActions = 유저_로그아웃_요청(id, Role.OWNER);
         오너_로그아웃_실패(errorMessage, resultActions);
     }
 
@@ -195,40 +195,40 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저회원탈퇴 성공")
     @Test
     void 유저회원탈퇴_성공() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message message = new Message("회원탈퇴 성공");
-        willReturn(message).given(userService).withdraw(any(String.class), any(Role.class));
-        final ResultActions response = 유저_회원탈퇴_요청(email, Role.USER);
+        willReturn(message).given(userService).withdraw(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_회원탈퇴_요청(id, Role.USER);
         유저_회원탈퇴_성공(response);
     }
 
     @DisplayName("유저회원탈퇴 실패")
     @Test
     void 유저회원탈퇴_실패() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message errorMessage = new Message("회원탈퇴 실패");
-        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(String.class), any(Role.class));
-        final ResultActions response = 유저_회원탈퇴_요청(email, Role.USER);
+        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_회원탈퇴_요청(id, Role.USER);
         유저_회원탈퇴_실패(errorMessage, response);
     }
 
     @DisplayName("오너회원탈퇴 성공")
     @Test
     void 오너회원탈퇴_성공() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message message = new Message("회원탈퇴 성공");
-        willReturn(message).given(userService).withdraw(any(String.class), any(Role.class));
-        final ResultActions response = 유저_회원탈퇴_요청(email, Role.OWNER);
+        willReturn(message).given(userService).withdraw(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_회원탈퇴_요청(id, Role.OWNER);
         오너_회원탈퇴_성공(response);
     }
 
     @DisplayName("오너회원탈퇴 실패")
     @Test
     void 오너회원탈퇴_실패() throws Exception {
-        final String email = "email";
+        final Long id = 1L;
         Message errorMessage = new Message("회원탈퇴 실패");
-        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(String.class), any(Role.class));
-        final ResultActions response = 유저_회원탈퇴_요청(email, Role.OWNER);
+        willThrow(new NotFoundException("회원탈퇴 실패")).given(userService).withdraw(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_회원탈퇴_요청(id, Role.OWNER);
         오너_회원탈퇴_실패(errorMessage, response);
     }
 
@@ -238,10 +238,10 @@ class UserControllerTest extends ApiDocument {
                 .content(toJson(signUpRequest)));
     }
 
-    private ResultActions 유저_회원탈퇴_요청(String email, Role role) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + email+"/"+role)
+    private ResultActions 유저_회원탈퇴_요청(Long id, Role role) throws Exception {
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id +"/"+role)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(email)
+                .content(String.valueOf(id))
                 .content(role.name()));
     }
 
@@ -325,10 +325,10 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-logout-success"));
     }
 
-    private ResultActions 유저_로그아웃_요청(String email, Role role) throws Exception {
-        return mockMvc.perform(get("/api/v1/users/logout/" + email+ "/" + role)
+    private ResultActions 유저_로그아웃_요청(Long id, Role role) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/logout/" + id + "/" + role)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(email).content(String.valueOf(role)));
+                .content(String.valueOf(id)).content(String.valueOf(role)));
     }
 
     private void 유저_로그인_실패(Message errorMessage, ResultActions resultActions) throws Exception {
