@@ -3,6 +3,7 @@ package com.minionz.backend.user.controller;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,5 +46,11 @@ public class UserController {
     public void withdraw(@PathVariable("email") String email) {
         Message withdrawSuccess = userService.withdraw(email);
         log.info(withdrawSuccess.getMessage());
+    }
+
+    @GetMapping("/page/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserPageResponseDto viewMypage(@PathVariable("id") Long id) {
+        return userService.viewMypage(id);
     }
 }

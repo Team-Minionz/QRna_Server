@@ -6,6 +6,7 @@ import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.user.controller.dto.UserJoinRequestDto;
 import com.minionz.backend.user.controller.dto.UserLoginRequestDto;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +64,13 @@ public class UserService {
         if (!findUser.validatePassword(userLoginRequestDto.getPassword())) {
             throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
         }
+    }
+
+    @Transactional
+    public UserPageResponseDto viewMypage(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
+        return userPageResponseDto;
     }
 }
