@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class UserBaseEntity extends BaseEntity {
 
-    @Column(name = "user_name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, unique = true)
