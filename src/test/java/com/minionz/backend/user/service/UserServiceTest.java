@@ -145,7 +145,6 @@ public class UserServiceTest {
     void 마이페이지_조회_성공() {
         //given
         Address address = new Address("믿음", "소망", "씨티");
-        System.out.println(address);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
@@ -162,8 +161,15 @@ public class UserServiceTest {
 
     @Test
     void 마이페이지_조회_실패() {
-        Long id = 1L;
-        assertThatThrownBy(() -> userService.viewMypage(id)).isInstanceOf(NotFoundException.class)
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .name("동현")
+                .password("123456")
+                .nickName("donglee99")
+                .telNumber("010111111111")
+                .build();
+        userRepository.save(user);
+        assertThatThrownBy(() -> userService.viewMypage(2L)).isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 }
