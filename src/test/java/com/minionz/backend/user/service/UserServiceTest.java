@@ -205,7 +205,8 @@ public class UserServiceTest {
         userRepository.save(user);
         //when
         //then
-        assertThatThrownBy(() -> userService.login(LoginRequestDto)).isInstanceOf(NotFoundException.class)
+        assertThatThrownBy(() -> userService.login(LoginRequestDto))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
@@ -223,7 +224,8 @@ public class UserServiceTest {
         userRepository.save(user);
         //when
         //then
-        assertThatThrownBy(() -> userService.login(LoginRequestDto)).isInstanceOf(NotEqualsException.class)
+        assertThatThrownBy(() -> userService.login(LoginRequestDto))
+                .isInstanceOf(NotEqualsException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다.");
     }
 
