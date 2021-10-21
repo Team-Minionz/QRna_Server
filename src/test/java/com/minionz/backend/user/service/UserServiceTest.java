@@ -265,6 +265,7 @@ public class UserServiceTest {
     }
 
     @DisplayName("패스워드 암호화 테스트")
+    @Test
     void passwordEncode() {
         // given
         Address address = new Address("a", "b", "C");
