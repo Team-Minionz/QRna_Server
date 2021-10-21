@@ -27,10 +27,10 @@ public class UserController {
         return loginSuccess;
     }
 
-    @GetMapping("/logout/{email}/{role}")
+    @GetMapping("/logout/{id}/{role}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@PathVariable(value = "email") String email, @PathVariable(value = "role") Role role) {
-        Message logoutSuccess = userService.logout(email, role);
+    public void logout(@PathVariable(value = "id") Long id, @PathVariable(value = "role") Role role) {
+        Message logoutSuccess = userService.logout(id, role);
         log.info(logoutSuccess.getMessage());
     }
 
@@ -42,10 +42,10 @@ public class UserController {
         return signUpSuccess;
     }
 
-    @DeleteMapping("/withdraw/{email}/{role}")
+    @DeleteMapping("/withdraw/{id}/{role}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void withdraw(@PathVariable(value = "email") String email, @PathVariable(value = "role") Role role) {
-        Message withdrawSuccess = userService.withdraw(email, role);
+    public void withdraw(@PathVariable(value = "id") Long id, @PathVariable(value = "role") Role role) {
+        Message withdrawSuccess = userService.withdraw(id, role);
         log.info(withdrawSuccess.getMessage());
     }
 }

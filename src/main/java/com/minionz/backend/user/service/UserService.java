@@ -41,11 +41,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Message logout(String email, Role role) {
+    public Message logout(Long id, Role role) {
         if (role.equals(Role.USER)) {
-            return userLogout(email);
+            return userLogout(id);
         }
-        return ownerLogout(email);
+        return ownerLogout(id);
     }
 
     @Transactional
@@ -57,11 +57,11 @@ public class UserService {
     }
 
     @Transactional
-    public Message withdraw(String email, Role role) {
+    public Message withdraw(Long id, Role role) {
         if (role.equals(Role.USER)) {
-            return userDelete(email);
+            return userDelete(id);
         }
-        return ownerDelete(email);
+        return ownerDelete(id);
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {
@@ -79,15 +79,15 @@ public class UserService {
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
-    private Message ownerDelete(String email) {
-        Owner owner = ownerRepository.findByEmail(email)
+    private Message ownerDelete(Long id) {
+        Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         ownerRepository.delete(owner);
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    private Message userDelete(String email) {
-        User user = userRepository.findByEmail(email)
+    private Message userDelete(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         userRepository.delete(user);
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
@@ -116,14 +116,14 @@ public class UserService {
         return new Message(LOGIN_SUCCESS_MESSAGE);
     }
 
-    private Message ownerLogout(String email) {
-        ownerRepository.findByEmail(email)
+    private Message ownerLogout(Long id) {
+        ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
-    private Message userLogout(String email) {
-        userRepository.findByEmail(email)
+    private Message userLogout(Long id) {
+        userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
