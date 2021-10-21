@@ -44,10 +44,6 @@ class UserControllerTest extends ApiDocument {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    @Autowired
-    private UserRepository userRepository;
-
     @DisplayName("로그인 성공")
     @Test
     public void 유저로그인테스트_성공() throws Exception {
@@ -231,7 +227,6 @@ class UserControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(userPageResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("user_view_page_success"));
-
     }
 
     private void 유저_마이페이지_실패(ResultActions response, Message errorMessage) throws Exception {
