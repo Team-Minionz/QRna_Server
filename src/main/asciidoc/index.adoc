@@ -159,3 +159,10 @@ include::{snippets}/shop-delete-fail/http-request.adoc[]
 
 .response
 include::{snippets}/shop-delete-fail/http-response.adoc[]
+=== Shop 목록 조회
+==== 성공
+.request
+include::{snippets}/shop-all-view-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-all-view-success/http-response.adoc[]

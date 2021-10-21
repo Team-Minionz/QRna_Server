@@ -2,12 +2,16 @@ package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -43,5 +47,13 @@ public class ShopService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         shopRepository.delete(shop);
         return new Message(SHOP_DELETE_SUCCESS);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopListResponseDto> viewAll() {
+        return shopRepository.findAll()
+                .stream()
+                .map(s -> new ShopListResponseDto(s.getName(), s.getCongestionStatus()))
+                .collect(Collectors.toList());
     }
 }
