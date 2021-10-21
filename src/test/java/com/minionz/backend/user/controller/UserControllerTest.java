@@ -6,6 +6,8 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
+import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
@@ -24,7 +26,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -212,6 +215,36 @@ class UserControllerTest extends ApiDocument {
         유저_회원탈퇴_실패(errorMessage, response);
     }
 
+    @DisplayName("마이페이지 조회 성공")
+    @Test
+    void user_view_page_success() throws Exception {
+        Address address = new Address("a", "b", "C");
+        User user = User.builder()
+                .nickName("asd")
+                .telNumber("111")
+                .address(address)
+                .build();
+        Long id = 1L;
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
+        willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class));
+        final ResultActions response = 유저_마이페이지_요청(id);
+        유저_마이페이지_성공(response, userPageResponseDto);
+    }
+
+    @DisplayName("마이페이지 조회 실패")
+    @Test
+    void user_view_page_fail() throws Exception {
+        Long id = 2L;
+        Message errorMessage = new Message("마이페이지 조회 실패");
+        willThrow(new NotFoundException("마이페이지 조회 실패")).given(userService).viewMypage(any(Long.class));
+        final ResultActions response = 유저_마이페이지_요청(id);
+        유저_마이페이지_실패(response, errorMessage);
+    }
+
+    private ResultActions 유저_마이페이지_요청(Long id) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id));
+    }
+
     @DisplayName("오너회원탈퇴 성공")
     @Test
     void 오너회원탈퇴_성공() throws Exception {
@@ -345,6 +378,20 @@ class UserControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-login-success"));
+    }
+
+    private void 유저_마이페이지_성공(ResultActions response, UserPageResponseDto userPageResponseDto) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(userPageResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user_view_page_success"));
+    }
+
+    private void 유저_마이페이지_실패(ResultActions response, Message errorMessage) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("user_view_page_fail"));
     }
 
     private void 오너_로그인_성공(Message message, ResultActions resultActions) throws Exception {

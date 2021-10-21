@@ -32,7 +32,7 @@ class VisitControllerTest extends ApiDocument {
         // given
         final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
                 .userEmail("minion")
-                .shopTelNumber("032-888-1111")
+                .tableId(1L)
                 .build();
         Message message = new Message("방문 기록 성공");
         // when
@@ -48,7 +48,7 @@ class VisitControllerTest extends ApiDocument {
         // given
         final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
                 .userEmail("minion")
-                .shopTelNumber("032-888-1111")
+                .tableId(1L)
                 .build();
         final Message errorMessage = new Message("방문 기록 실패");
         // when

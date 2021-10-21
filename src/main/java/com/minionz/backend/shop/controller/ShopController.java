@@ -1,11 +1,14 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,5 +33,11 @@ public class ShopController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         shopService.delete(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ShopListResponseDto> viewAll() {
+        return shopService.viewAll();
     }
 }

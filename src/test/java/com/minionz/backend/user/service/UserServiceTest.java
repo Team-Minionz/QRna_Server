@@ -5,6 +5,7 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
@@ -20,11 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+@WebAppConfiguration
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class UserServiceTest {
@@ -230,6 +233,37 @@ public class UserServiceTest {
     }
 
     @Test
+    void 마이페이지_조회_성공() {
+        Address address = new Address("믿음", "소망", "씨티");
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .name("동현")
+                .password("123456")
+                .nickName("donglee99")
+                .telNumber("010111111111")
+                .address(address)
+                .build();
+        userRepository.save(user);
+        UserPageResponseDto userPageResponseDto = userService.viewMypage(user.getId());
+        assertThat(userPageResponseDto.getNickname()).isEqualTo("donglee99");
+        assertThat(userPageResponseDto.getTelNumber()).isEqualTo("010111111111");
+    }
+
+    @Test
+    void 마이페이지_조회_실패() {
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .name("동현")
+                .password("123456")
+                .nickName("donglee99")
+                .telNumber("010111111111")
+                .build();
+        userRepository.save(user);
+        assertThatThrownBy(() -> userService.viewMypage(2L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+    }
+
     @DisplayName("패스워드 암호화 테스트")
     void passwordEncode() {
         // given

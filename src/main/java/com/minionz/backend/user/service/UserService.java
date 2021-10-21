@@ -4,6 +4,7 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
@@ -126,5 +127,13 @@ public class UserService {
         userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
+    }
+
+    @Transactional
+    public UserPageResponseDto viewMypage(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
+        return userPageResponseDto;
     }
 }

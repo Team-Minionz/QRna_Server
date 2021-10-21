@@ -1,6 +1,7 @@
 package com.minionz.backend.user.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
@@ -46,5 +47,11 @@ public class UserController {
     public void withdraw(@PathVariable(value = "id") Long id, @PathVariable(value = "role") Role role) {
         Message withdrawSuccess = userService.withdraw(id, role);
         log.info(withdrawSuccess.getMessage());
+    }
+
+    @GetMapping("/page/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserPageResponseDto viewMypage(@PathVariable("id") Long id) {
+        return userService.viewMypage(id);
     }
 }
