@@ -239,8 +239,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_회원탈퇴_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id +"/"+role)
-                .contentType(MediaType.APPLICATION_JSON));
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id +"/"+role));
     }
 
     private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
@@ -324,8 +323,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_로그아웃_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(get("/api/v1/users/logout/" + id + "/" + role)
-                .contentType(MediaType.APPLICATION_JSON));
+        return mockMvc.perform(get("/api/v1/users/logout/" + id + "/" + role));
     }
 
     private void 유저_로그인_실패(Message errorMessage, ResultActions resultActions) throws Exception {
