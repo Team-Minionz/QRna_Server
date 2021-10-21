@@ -156,23 +156,14 @@ public class UserServiceTest {
                 .build();
         userRepository.save(user);
         UserPageResponseDto userPageResponseDto = userService.viewMypage(user.getId());
-        assertThat(userPageResponseDto.getId()).isEqualTo(user.getId());
         assertThat(userPageResponseDto.getNickname()).isEqualTo("donglee99");
         assertThat(userPageResponseDto.getTelNumber()).isEqualTo("010111111111");
     }
 
     @Test
     void 마이페이지_조회_실패() {
-        User user = User.builder()
-                .id(200L)
-                .email("jhnj741@naver.com")
-                .name("동현")
-                .password("123456")
-                .nickName("donglee99")
-                .telNumber("010111111111")
-                .build();
-        assertThatThrownBy(() -> userService.viewMypage(user.getId()))
-                .isInstanceOf(NotFoundException.class)
+        Long id = 1L;
+        assertThatThrownBy(() -> userService.viewMypage(id)).isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 }
