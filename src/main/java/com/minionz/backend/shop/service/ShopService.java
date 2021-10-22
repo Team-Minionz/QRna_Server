@@ -27,6 +27,7 @@ public class ShopService {
     @Transactional
     public Message save(ShopRequestDto shopRequestDto) {
         Shop shop = shopRequestDto.toEntity();
+        shop.makeShopTable(shopRequestDto.getTableList());
         shop.mapShopWithTable();
         shop.setTableNumber();
         shopRepository.save(shop);
