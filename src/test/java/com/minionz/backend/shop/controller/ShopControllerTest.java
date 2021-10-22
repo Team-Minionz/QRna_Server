@@ -8,8 +8,8 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
-import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,10 +48,10 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 등록 성공")
     @Test
     void 상점등록_성공() throws Exception {
-        final List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 등록 성공");
@@ -63,10 +63,10 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 등록 실패")
     @Test
     void 상점등록_실패() throws Exception {
-        final List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 등록 실패");
@@ -79,10 +79,10 @@ class ShopControllerTest extends ApiDocument {
     @Test
     void 상점수정_성공() throws Exception {
         Long id = 1L;
-        final List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 수정 성공");
@@ -95,10 +95,10 @@ class ShopControllerTest extends ApiDocument {
     @Test
     void 상점수정_실패() throws Exception {
         Long id = 1L;
-        final List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
         Message message = new Message("Shop 수정 실패");
