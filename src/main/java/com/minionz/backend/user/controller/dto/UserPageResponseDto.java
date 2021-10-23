@@ -1,6 +1,7 @@
 package com.minionz.backend.user.controller.dto;
 
 import com.minionz.backend.common.domain.Address;
+import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,10 @@ public class UserPageResponseDto {
         this.nickname = user.getNickName();
         this.address = user.getAddress();
         this.telNumber = user.getTelNumber();
+    }
+
+    public UserPageResponseDto(Owner owner) {
+        this.nickname = owner.getName();
+        this.telNumber = owner.getTelNumber();
     }
 }

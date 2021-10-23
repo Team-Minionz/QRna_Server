@@ -1,15 +1,14 @@
 package com.minionz.backend.user.controller;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.user.controller.dto.UserPageResponseDto;
-import com.minionz.backend.user.controller.dto.JoinRequestDto;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
-import com.minionz.backend.user.controller.dto.Role;
+import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -49,9 +48,15 @@ public class UserController {
         log.info(withdrawSuccess.getMessage());
     }
 
-    @GetMapping("/page/{id}")
+    @GetMapping("/page/{id}/{role}")
     @ResponseStatus(HttpStatus.OK)
-    public UserPageResponseDto viewMypage(@PathVariable("id") Long id) {
-        return userService.viewMypage(id);
+    public UserPageResponseDto viewMypage(@PathVariable("id") Long id, @PathVariable(value = "role") Role role) {
+        return userService.viewMypage(id, role);
+    }
+
+    @GetMapping("/shop/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<OwnerShopResponseDto> viewMyShop(@PathVariable("id") Long id) {
+        return userService.viewMyShop(id);
     }
 }
