@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ShopService {
 
     private static final String NOT_FOUND_SHOP_MESSAGE = "존재 하지 않는 Shop 입니다.";
-    private static final String SHOP_SAVE_SUCCESS = "SHOP 등록 성공";
+    private static final String NOT_FOUND_SHOP_LIST_MESSAGE = "등록된 매장이 존재하지 않습니다.";
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
@@ -56,9 +56,13 @@ public class ShopService {
 
     @Transactional(readOnly = true)
     public List<ShopListResponseDto> viewAll() {
-        return shopRepository.findAll()
+        List<ShopListResponseDto> responseDtos = shopRepository.findAll()
                 .stream()
                 .map(s -> new ShopListResponseDto(s.getName(), s.getCongestionStatus()))
                 .collect(Collectors.toList());
+        if (responseDtos == null) {
+            throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);
+        }
+        return responseDtos;
     }
 }
