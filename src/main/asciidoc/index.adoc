@@ -219,6 +219,12 @@ include::{snippets}/shop-all-view-success/http-request.adoc[]
 
 .response
 include::{snippets}/shop-all-view-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/shop-all-view-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-all-view-fail/http-response.adoc[]
 === Mypage 조회
 ==== 성공
 .request
