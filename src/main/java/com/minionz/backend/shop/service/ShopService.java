@@ -3,10 +3,12 @@ package com.minionz.backend.shop.service;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +27,13 @@ public class ShopService {
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
 
     private final ShopRepository shopRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
     public Long save(ShopRequestDto shopRequestDto) {
-        Shop shop = shopRequestDto.toEntity();
+        Owner owner = ownerRepository.findById(shopRequestDto.getOwnerId())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        Shop shop = shopRequestDto.toEntity(owner);
         shop.makeShopTable(shopRequestDto.getTableList());
         shop.mapShopWithTable();
         shop.setTableNumber();
@@ -55,10 +60,10 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public List<ShopListResponseDto> viewAll() {
-        List<ShopListResponseDto> responseDtos = shopRepository.findAll()
+    public List<ShopResponseDto> viewAll() {
+        List<ShopResponseDto> responseDtos = shopRepository.findAll()
                 .stream()
-                .map(s -> new ShopListResponseDto(s.getName(), s.getCongestionStatus()))
+                .map(s -> new ShopResponseDto(s.getName(), s.getCongestionStatus()))
                 .collect(Collectors.toList());
         if (responseDtos == null) {
             throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);

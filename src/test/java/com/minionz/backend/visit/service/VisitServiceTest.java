@@ -3,9 +3,13 @@ package com.minionz.backend.visit.service;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
-import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.shop.service.ShopService;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
@@ -31,7 +35,13 @@ public class VisitServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
     private ShopRepository shopRepository;
+
+    @Autowired
+    private ShopService shopService;
 
     @Autowired
     private VisitService visitService;
@@ -39,18 +49,20 @@ public class VisitServiceTest {
     @BeforeEach
     void setUp() {
         Address address = new Address("123-456", "송도동", "인천시 연수구");
-        List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        Shop shop = Shop.builder()
-                .name("테스트")
-                .address(address)
-                .telNumber("032-888-8888")
-                .tableList(list)
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
                 .build();
-        shop.mapShopWithTable();
-        shopRepository.save(shop);
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        shopService.save(shopRequestDto);
+
         Address userAddress = new Address("456-789", "송도동", "인천시 연수구");
         User user = User.builder()
                 .name("미니언")
@@ -61,6 +73,7 @@ public class VisitServiceTest {
                 .address(userAddress)
                 .build();
         userRepository.save(user);
+
         User user2 = User.builder()
                 .name("미니언1")
                 .email("minionz1@naver.com")
@@ -76,6 +89,7 @@ public class VisitServiceTest {
     void cleanUp() {
         shopRepository.deleteAll();
         userRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @DisplayName("방문 기록 테스트")

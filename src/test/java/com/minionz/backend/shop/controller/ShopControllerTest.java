@@ -6,7 +6,7 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
@@ -54,7 +54,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         willReturn(id).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
         상점등록요청_성공(id, resultActions);
@@ -68,7 +68,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         Message message = new Message("Shop 등록 실패");
         willThrow(new BadRequestException("Shop 등록 실패")).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
@@ -84,7 +84,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
         상점수정요청_성공(resultActions);
     }
@@ -98,7 +98,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         Message message = new Message("Shop 수정 실패");
         willThrow(new NotFoundException("Shop 수정 실패")).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
@@ -128,10 +128,10 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 목록 조회 성공")
     @Test
     void 상점목록조회_성공() throws Exception {
-        List<ShopListResponseDto> shopList = new ArrayList<>();
-        shopList.add(new ShopListResponseDto("매장1", CongestionStatus.SMOOTH));
-        shopList.add(new ShopListResponseDto("매장2", CongestionStatus.NORMAL));
-        shopList.add(new ShopListResponseDto("매장3", CongestionStatus.NORMAL));
+        List<ShopResponseDto> shopList = new ArrayList<>();
+        shopList.add(new ShopResponseDto("매장1", CongestionStatus.SMOOTH));
+        shopList.add(new ShopResponseDto("매장2", CongestionStatus.NORMAL));
+        shopList.add(new ShopResponseDto("매장3", CongestionStatus.NORMAL));
         willReturn(shopList).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_성공(resultActions, shopList);
@@ -140,10 +140,10 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 목록 조회 실패")
     @Test
     void 상점목록조회_실패() throws Exception {
-        List<ShopListResponseDto> shopList = new ArrayList<>();
-        shopList.add(new ShopListResponseDto("매장1", CongestionStatus.SMOOTH));
-        shopList.add(new ShopListResponseDto("매장2", CongestionStatus.NORMAL));
-        shopList.add(new ShopListResponseDto("매장3", CongestionStatus.NORMAL));
+        List<ShopResponseDto> shopList = new ArrayList<>();
+        shopList.add(new ShopResponseDto("매장1", CongestionStatus.SMOOTH));
+        shopList.add(new ShopResponseDto("매장2", CongestionStatus.NORMAL));
+        shopList.add(new ShopResponseDto("매장3", CongestionStatus.NORMAL));
         Message message = new Message("등록된 매장이 존재하지 않습니다.");
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
@@ -211,7 +211,7 @@ class ShopControllerTest extends ApiDocument {
         return mockMvc.perform(get("/api/v1/shops"));
     }
 
-    private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopListResponseDto> shopList) throws Exception {
+    private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopResponseDto> shopList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(shopList)))
                 .andDo(print())

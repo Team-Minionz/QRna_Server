@@ -40,7 +40,7 @@ public class Shop extends BaseEntity {
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<Visit> visitList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ShopTable> tableList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -56,9 +56,8 @@ public class Shop extends BaseEntity {
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
-        this.owner = owner;
         this.tableList = tableList;
-        this.numberOfTables = tableList.size();
+        setOwner(owner);
     }
 
     public void update(ShopRequestDto shopRequestDto) {
@@ -70,6 +69,11 @@ public class Shop extends BaseEntity {
                 .map(ShopTableRequestDto::toEntity)
                 .collect(Collectors.toList());
         this.numberOfTables = tableList.size();
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+        owner.getShops().add(this);
     }
 
     public void mapShopWithTable() {
@@ -87,6 +91,7 @@ public class Shop extends BaseEntity {
         tableList = shopTableRequestDtos.stream()
                 .map(ShopTableRequestDto::toEntity)
                 .collect(Collectors.toList());
+        numberOfTables = tableList.size();
     }
 
     public void updateDegreeOfCongestion() {

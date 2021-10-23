@@ -226,6 +226,34 @@ include::{snippets}/shop-all-view-fail/http-request.adoc[]
 .response
 include::{snippets}/shop-all-view-fail/http-response.adoc[]
 === Mypage 조회
+=== User Mypage 조회
+==== 성공
+.request
+include::{snippets}/user-view-page-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-page-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-view-page-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-page-fail/http-response.adoc[]
+
+=== Owner Mypage 조회
+==== 성공
+.request
+include::{snippets}/owner-view-page-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-view-page-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-view-page-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-view-page-fail/http-response.adoc[]
+=== Owner MyShop 조회
 ==== 성공
 .request
 include::{snippets}/user_view_page_success/http-request.adoc[]

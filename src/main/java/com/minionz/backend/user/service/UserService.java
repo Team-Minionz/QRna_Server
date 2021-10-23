@@ -8,6 +8,8 @@ import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
 import com.minionz.backend.user.controller.dto.UserPageResponseDto;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
@@ -16,6 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -62,6 +68,28 @@ public class UserService {
             return userDelete(id);
         }
         return ownerDelete(id);
+    }
+
+    @Transactional
+    public UserPageResponseDto viewMypage(Long id, Role role) {
+        if (role.equals(Role.USER)) {
+            return userMyPageView(id);
+        }
+        return ownerMyPageView(id);
+    }
+
+    @Transactional
+    public List<OwnerShopResponseDto> viewMyShop(Long id) {
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
+        owner.getShops().stream()
+                .map(shop -> new OwnerShopResponseDto(shop))
+                .collect(Collectors.toList());
+        for (Shop shop : owner.getShops()) {
+            ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
+        }
+        return ownerShopResponseDtoList;
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {
@@ -128,8 +156,14 @@ public class UserService {
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
-    @Transactional
-    public UserPageResponseDto viewMypage(Long id) {
+    private UserPageResponseDto ownerMyPageView(Long id) {
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(owner);
+        return userPageResponseDto;
+    }
+
+    private UserPageResponseDto userMyPageView(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
