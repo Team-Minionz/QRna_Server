@@ -48,16 +48,16 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 등록 성공")
     @Test
     void 상점등록_성공() throws Exception {
+        Long id = 1L;
         List<ShopTableRequestDto> list = new ArrayList<>();
         list.add(new ShopTableRequestDto(2));
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
-        Message message = new Message("Shop 등록 성공");
-        willReturn(message).given(shopService).save(any(ShopRequestDto.class));
+        willReturn(id).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
-        상점등록요청_성공(message, resultActions);
+        상점등록요청_성공(id, resultActions);
     }
 
     @DisplayName("상점 등록 실패")
@@ -85,8 +85,6 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
-        Message message = new Message("Shop 수정 성공");
-        willReturn(message).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
         상점수정요청_성공(resultActions);
     }
@@ -160,9 +158,9 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("shop-save-fail"));
     }
 
-    private void 상점등록요청_성공(Message message, ResultActions resultActions) throws Exception {
+    private void 상점등록요청_성공(Long id, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isCreated())
-                .andExpect(content().json(toJson(message)))
+                .andExpect(content().json(toJson(id)))
                 .andDo(print())
                 .andDo(toDocument("shop-save-success"));
     }
