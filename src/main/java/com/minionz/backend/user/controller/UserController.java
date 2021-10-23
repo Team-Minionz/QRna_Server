@@ -17,17 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
 
     private final UserService userService;
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public Message login(@RequestBody LoginRequestDto loginRequestDto) {
-        Message loginSuccess = userService.login(loginRequestDto);
-        log.info(loginSuccess.getMessage());
-        return loginSuccess;
+    public Long login(@RequestBody LoginRequestDto loginRequestDto) {
+        Long id = userService.login(loginRequestDto);
+        log.info(LOGIN_SUCCESS_MESSAGE);
+        return id;
     }
 
     @GetMapping("/logout/{id}/{role}")
