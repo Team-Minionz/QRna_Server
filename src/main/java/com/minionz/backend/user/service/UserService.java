@@ -23,7 +23,6 @@ public class UserService {
 
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
-    private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
     private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
     private static final String USER_NOT_FOUND_MESSAGE = "해당 유저 이메일이 존재하지 않습니다.";
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
@@ -50,7 +49,7 @@ public class UserService {
     }
 
     @Transactional
-    public Message signUp(JoinRequestDto joinRequestDto) {
+    public Long signUp(JoinRequestDto joinRequestDto) {
         if (joinRequestDto.getRole().equals(Role.USER)) {
             return userSave(joinRequestDto);
         }
@@ -71,13 +70,13 @@ public class UserService {
         }
     }
 
-    private Message ownerSave(JoinRequestDto joinRequestDto) {
+    private Long ownerSave(JoinRequestDto joinRequestDto) {
         if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         Owner owner = joinRequestDto.toOwner(passwordEncoder);
-        ownerRepository.save(owner);
-        return new Message(SIGN_UP_SUCCESS_MESSAGE);
+        Owner savedOwner = ownerRepository.save(owner);
+        return savedOwner.getId();
     }
 
     private Message ownerDelete(Long id) {
@@ -94,13 +93,13 @@ public class UserService {
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    private Message userSave(JoinRequestDto joinRequestDto) {
+    private Long userSave(JoinRequestDto joinRequestDto) {
         if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         User user = joinRequestDto.toUser(passwordEncoder);
-        userRepository.save(user);
-        return new Message(SIGN_UP_SUCCESS_MESSAGE);
+        User savedUser = userRepository.save(user);
+        return savedUser.getId();
     }
 
     private Message ownerLogin(LoginRequestDto loginRequestDto) {
