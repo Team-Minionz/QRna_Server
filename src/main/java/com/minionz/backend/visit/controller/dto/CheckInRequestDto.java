@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckInRequestDto {
 
-    private String userEmail;
+    private Long userId;
     public Long tableId;
 
     @Builder
-    public CheckInRequestDto(String userEmail, Long tableId) {
-        this.userEmail = userEmail;
+    public CheckInRequestDto(Long userId, Long tableId) {
+        this.userId = userId;
         this.tableId = tableId;
     }
 
