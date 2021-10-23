@@ -1,6 +1,5 @@
 package com.minionz.backend.shop.controller;
 
-import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.service.ShopService;
@@ -19,7 +18,7 @@ public class ShopController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Message save(@RequestBody ShopRequestDto shopRequestDto) {
+    public Long save(@RequestBody ShopRequestDto shopRequestDto) {
         return shopService.save(shopRequestDto);
     }
 

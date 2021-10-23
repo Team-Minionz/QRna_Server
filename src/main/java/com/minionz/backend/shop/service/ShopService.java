@@ -1,6 +1,7 @@
 package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
@@ -21,17 +22,20 @@ public class ShopService {
     private static final String SHOP_SAVE_SUCCESS = "SHOP 등록 성공";
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
+    private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
 
     private final ShopRepository shopRepository;
 
     @Transactional
-    public Message save(ShopRequestDto shopRequestDto) {
+    public Long save(ShopRequestDto shopRequestDto) {
         Shop shop = shopRequestDto.toEntity();
         shop.makeShopTable(shopRequestDto.getTableList());
         shop.mapShopWithTable();
         shop.setTableNumber();
         shopRepository.save(shop);
-        return new Message(SHOP_SAVE_SUCCESS);
+        Shop savedShop = shopRepository.findByTelNumber(shopRequestDto.getTelNumber())
+                .orElseThrow(() -> new BadRequestException(SHOP_SAVE_FAILURE));
+        return savedShop.getId();
     }
 
     @Transactional
