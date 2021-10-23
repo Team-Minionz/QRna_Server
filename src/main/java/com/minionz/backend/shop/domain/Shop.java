@@ -3,6 +3,7 @@ package com.minionz.backend.shop.domain;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.visit.domain.Visit;
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -63,7 +65,10 @@ public class Shop extends BaseEntity {
         this.name = shopRequestDto.getName();
         this.address = shopRequestDto.getAddress();
         this.telNumber = shopRequestDto.getTelNumber();
-        this.tableList = shopRequestDto.getTableList();
+        this.tableList = shopRequestDto.getTableList()
+                .stream()
+                .map(ShopTableRequestDto::toEntity)
+                .collect(Collectors.toList());
         this.numberOfTables = tableList.size();
     }
 
@@ -76,6 +81,12 @@ public class Shop extends BaseEntity {
     public void setTableNumber() {
         AtomicInteger tableNumber = new AtomicInteger(1);
         tableList.forEach(table -> table.setTableNumber(tableNumber.getAndIncrement()));
+    }
+
+    public void makeShopTable(List<ShopTableRequestDto> shopTableRequestDtos) {
+        tableList = shopTableRequestDtos.stream()
+                .map(ShopTableRequestDto::toEntity)
+                .collect(Collectors.toList());
     }
 
     public void updateDegreeOfCongestion() {

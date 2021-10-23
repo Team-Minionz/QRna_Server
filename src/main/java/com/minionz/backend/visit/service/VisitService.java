@@ -28,7 +28,7 @@ public class VisitService {
 
     @Transactional
     public Message checkIn(CheckInRequestDto checkInRequestDto) {
-        User user = userRepository.findByEmail(checkInRequestDto.getUserEmail())
+        User user = userRepository.findById(checkInRequestDto.getUserId())
                 .orElseThrow(() -> new NotFoundException(NO_USER_ERROR_MESSAGE));
         ShopTable table = shopTableRepository.findById(checkInRequestDto.getTableId())
                 .orElseThrow(() -> new NotFoundException(NO_TABLE_ERROR_MESSAGE));

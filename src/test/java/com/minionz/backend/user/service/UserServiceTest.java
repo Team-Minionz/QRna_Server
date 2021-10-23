@@ -149,9 +149,9 @@ public class UserServiceTest {
         userService.signUp(joinRequestDto);
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
         //when
-        Message message = userService.login(LoginRequestDto);
+        Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+        assertThat(id).isEqualTo(1L);
     }
 
     @Test
@@ -168,30 +168,9 @@ public class UserServiceTest {
         userService.signUp(joinRequestDto);
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
         //when
-        Message message = userService.login(LoginRequestDto);
+        Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
-    }
-
-    @Test
-    void 로그아웃_성공_테스트_유저() {
-        //given
-        final Address address = new Address("안산시", "성포동", "우리집");
-        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
-                .name("정재욱")
-                .email("operation@naver.com")
-                .nickName("라이언")
-                .telNumber("11111111")
-                .password("1234")
-                .address(address)
-                .role(Role.USER)
-                .build();
-        userService.signUp(joinRequestDto);
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
-        //when
-        Message message = userService.login(LoginRequestDto);
-        //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+        assertThat(id).isEqualTo(1L);
     }
 
     @Test
@@ -265,6 +244,7 @@ public class UserServiceTest {
     }
 
     @DisplayName("패스워드 암호화 테스트")
+    @Test
     void passwordEncode() {
         // given
         Address address = new Address("a", "b", "C");

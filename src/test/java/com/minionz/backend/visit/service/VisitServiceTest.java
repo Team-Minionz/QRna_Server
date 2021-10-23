@@ -82,7 +82,7 @@ public class VisitServiceTest {
     @Test
     public void checkInTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto("minionz@naver.com", 4L);
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(4L, 4L);
         // when
         Message message = visitService.checkIn(checkInRequestDto);
         // then
@@ -93,8 +93,8 @@ public class VisitServiceTest {
     @Test
     public void changeCongestionStatusTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto("minionz@naver.com", 1L);
-        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto("minionz1@naver.com", 2L);
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(1L, 1L);
+        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(2L, 2L);
         // when
         visitService.checkIn(checkInRequestDto);
         visitService.checkIn(checkInRequestDto1);

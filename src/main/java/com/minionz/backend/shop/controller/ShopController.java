@@ -1,6 +1,5 @@
 package com.minionz.backend.shop.controller;
 
-import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.service.ShopService;
@@ -17,13 +16,13 @@ public class ShopController {
 
     private final ShopService shopService;
 
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Message save(@RequestBody ShopRequestDto shopRequestDto) {
+    public Long save(@RequestBody ShopRequestDto shopRequestDto) {
         return shopService.save(shopRequestDto);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") Long id, ShopRequestDto shopRequestDto) {
         shopService.update(id, shopRequestDto);
