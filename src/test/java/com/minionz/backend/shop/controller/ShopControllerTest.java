@@ -6,7 +6,7 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.ShopTable;
@@ -130,10 +130,10 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 목록 조회 성공")
     @Test
     void 상점목록조회_성공() throws Exception {
-        List<ShopListResponseDto> shopList = new ArrayList<>();
-        shopList.add(new ShopListResponseDto("매장1", CongestionStatus.SMOOTH));
-        shopList.add(new ShopListResponseDto("매장2", CongestionStatus.NORMAL));
-        shopList.add(new ShopListResponseDto("매장3", CongestionStatus.NORMAL));
+        List<ShopResponseDto> shopList = new ArrayList<>();
+        shopList.add(new ShopResponseDto("매장1", CongestionStatus.SMOOTH));
+        shopList.add(new ShopResponseDto("매장2", CongestionStatus.NORMAL));
+        shopList.add(new ShopResponseDto("매장3", CongestionStatus.NORMAL));
         willReturn(shopList).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_성공(resultActions, shopList);
@@ -200,7 +200,7 @@ class ShopControllerTest extends ApiDocument {
         return mockMvc.perform(get("/api/v1/shops"));
     }
 
-    private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopListResponseDto> shopList) throws Exception {
+    private void 상점목록조회요청_성공(ResultActions resultActions, List<ShopResponseDto> shopList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(shopList)))
                 .andDo(print())

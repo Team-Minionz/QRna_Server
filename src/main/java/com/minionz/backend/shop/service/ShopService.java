@@ -2,7 +2,7 @@ package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
@@ -50,10 +50,10 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public List<ShopListResponseDto> viewAll() {
+    public List<ShopResponseDto> viewAll() {
         return shopRepository.findAll()
                 .stream()
-                .map(s -> new ShopListResponseDto(s.getName(), s.getCongestionStatus()))
+                .map(s -> new ShopResponseDto(s.getName(), s.getCongestionStatus()))
                 .collect(Collectors.toList());
     }
 }

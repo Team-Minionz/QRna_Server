@@ -4,12 +4,12 @@ import com.minionz.backend.shop.domain.CongestionStatus;
 import lombok.Getter;
 
 @Getter
-public class ShopListResponseDto {
+public class ShopResponseDto {
 
     private String name;
     private CongestionStatus congestionStatus;
 
-    public ShopListResponseDto(String name, CongestionStatus congestionStatus) {
+    public ShopResponseDto(String name, CongestionStatus congestionStatus) {
         this.name = name;
         this.congestionStatus = congestionStatus;
     }

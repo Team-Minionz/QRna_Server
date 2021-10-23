@@ -1,7 +1,7 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.shop.controller.dto.ShopListResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class ShopController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ShopListResponseDto> viewAll() {
+    public List<ShopResponseDto> viewAll() {
         return shopService.viewAll();
     }
 }
