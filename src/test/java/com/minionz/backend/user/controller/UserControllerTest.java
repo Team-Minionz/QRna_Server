@@ -47,11 +47,11 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 로그인 성공")
     @Test
     public void 유저로그인테스트_성공() throws Exception {
+        Long id = 1L;
         final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.USER);
-        Message message = new Message("로그인 성공");
-        willReturn(message).given(userService).login(any(LoginRequestDto.class));
+        willReturn(id).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
-        유저_로그인_성공(message, resultActions);
+        유저_로그인_성공(id, resultActions);
     }
 
     @DisplayName("유저 로그인 실패")
@@ -67,11 +67,11 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("오너 로그인 성공")
     @Test
     public void 오너로그인테스트_성공() throws Exception {
+        Long id = 1L;
         final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.OWNER);
-        Message message = new Message("로그인 성공");
-        willReturn(message).given(userService).login(any(LoginRequestDto.class));
+        willReturn(id).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
-        오너_로그인_성공(message, resultActions);
+        오너_로그인_성공(id, resultActions);
     }
 
     @DisplayName("오너 로그인 실패")
@@ -373,9 +373,9 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("owner-login-fail"));
     }
 
-    private void 유저_로그인_성공(Message message, ResultActions resultActions) throws Exception {
+    private void 유저_로그인_성공(Long id, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(message)))
+                .andExpect(content().json(toJson(id)))
                 .andDo(print())
                 .andDo(toDocument("user-login-success"));
     }
@@ -394,9 +394,9 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user_view_page_fail"));
     }
 
-    private void 오너_로그인_성공(Message message, ResultActions resultActions) throws Exception {
+    private void 오너_로그인_성공(Long id, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(message)))
+                .andExpect(content().json(toJson(id)))
                 .andDo(print())
                 .andDo(toDocument("owner-login-success"));
     }
