@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "owner_id")),
-        @AttributeOverride(name = "name", column = @Column(name = "owner_name", nullable = false))
+        @AttributeOverride(name = "name", column = @Column(name = "owner_name"))
 })
 public class Owner extends UserBaseEntity {
 
