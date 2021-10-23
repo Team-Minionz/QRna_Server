@@ -52,9 +52,10 @@ class UserControllerTest extends ApiDocument {
     public void 유저로그인테스트_성공() throws Exception {
         Long id = 1L;
         final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.USER);
-        willReturn(id).given(userService).login(any(LoginRequestDto.class));
+        final LoginResponseDto loginResponseDto = new LoginResponseDto(id, new Message("로그인 성공"));
+        willReturn(loginResponseDto).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
-        유저_로그인_성공(id, resultActions);
+        유저_로그인_성공(loginResponseDto, resultActions);
     }
 
     @DisplayName("유저 로그인 실패")
@@ -72,9 +73,10 @@ class UserControllerTest extends ApiDocument {
     public void 오너로그인테스트_성공() throws Exception {
         Long id = 1L;
         final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.OWNER);
-        willReturn(id).given(userService).login(any(LoginRequestDto.class));
+        final LoginResponseDto loginResponseDto = new LoginResponseDto(id, new Message("로그인 성공"));
+        willReturn(loginResponseDto).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
-        오너_로그인_성공(id, resultActions);
+        오너_로그인_성공(loginResponseDto, resultActions);
     }
 
     @DisplayName("오너 로그인 실패")
@@ -458,9 +460,9 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("owner-login-fail"));
     }
 
-    private void 유저_로그인_성공(Long id, ResultActions resultActions) throws Exception {
+    private void 유저_로그인_성공(LoginResponseDto loginResponseDto, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(id)))
+                .andExpect(content().json(toJson(loginResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("user-login-success"));
     }
@@ -493,9 +495,9 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("owner-view-page-fail"));
     }
 
-    private void 오너_로그인_성공(Long id, ResultActions resultActions) throws Exception {
+    private void 오너_로그인_성공(LoginResponseDto loginResponseDto, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(id)))
+                .andExpect(content().json(toJson(loginResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("owner-login-success"));
     }

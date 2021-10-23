@@ -22,10 +22,9 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public Long login(@RequestBody LoginRequestDto loginRequestDto) {
-        Long id = userService.login(loginRequestDto);
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         log.info(LOGIN_SUCCESS_MESSAGE);
-        return id;
+        return userService.login(loginRequestDto);
     }
 
     @GetMapping("/logout/{id}/{role}")
