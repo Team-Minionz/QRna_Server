@@ -62,8 +62,8 @@ public class UserServiceTest {
                 .address(address)
                 .role(Role.USER)
                 .build();
-        Message message = userService.signUp(joinRequestDto);
-        assertThat(message.getMessage()).isEqualTo("회원가입 성공");
+        Long savedUserId = userService.signUp(joinRequestDto);
+        assertThat(savedUserId).isEqualTo("회원가입 성공");
     }
 
     @Test
@@ -75,8 +75,8 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
-        Message message = userService.signUp(joinRequestDto);
-        assertThat(message.getMessage()).isEqualTo("회원가입 성공");
+        Long saveOwnerId = userService.signUp(joinRequestDto);
+        assertThat(saveOwnerId).isEqualTo(1L);
     }
 
     @Test
