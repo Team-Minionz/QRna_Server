@@ -6,6 +6,8 @@ import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
@@ -31,6 +33,9 @@ public class VisitServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
     private ShopRepository shopRepository;
 
     @Autowired
@@ -43,11 +48,19 @@ public class VisitServiceTest {
         list.add(ShopTable.builder().maxUser(2).build());
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        ownerRepository.save(owner);
         Shop shop = Shop.builder()
                 .name("테스트")
                 .address(address)
                 .telNumber("032-888-8888")
                 .tableList(list)
+                .owner(owner)
                 .build();
         shop.mapShopWithTable();
         shopRepository.save(shop);
@@ -76,6 +89,7 @@ public class VisitServiceTest {
     void cleanUp() {
         shopRepository.deleteAll();
         userRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @DisplayName("방문 기록 테스트")
