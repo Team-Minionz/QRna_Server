@@ -137,6 +137,19 @@ class ShopControllerTest extends ApiDocument {
         상점목록조회요청_성공(resultActions, shopList);
     }
 
+    @DisplayName("상점 목록 조회 실패")
+    @Test
+    void 상점목록조회_실패() throws Exception {
+        List<ShopListResponseDto> shopList = new ArrayList<>();
+        shopList.add(new ShopListResponseDto("매장1", CongestionStatus.SMOOTH));
+        shopList.add(new ShopListResponseDto("매장2", CongestionStatus.NORMAL));
+        shopList.add(new ShopListResponseDto("매장3", CongestionStatus.NORMAL));
+        Message message = new Message("등록된 매장이 존재하지 않습니다.");
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
+        ResultActions resultActions = 상점목록조회_요청();
+        상점목록조회요청_실패(resultActions, message);
+    }
+
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(message)))
@@ -178,7 +191,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 상점수정_요청(Long id, ShopRequestDto shopRequestDto) throws Exception {
-        return mockMvc.perform(put("/api/v1/shops/" + id)
+        return mockMvc.perform(patch("/api/v1/shops/" + id)
                 .content(objectMapper.writeValueAsString(shopRequestDto))
                 .contentType(MediaType.APPLICATION_JSON));
     }
@@ -203,5 +216,12 @@ class ShopControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(shopList)))
                 .andDo(print())
                 .andDo(toDocument("shop-all-view-success"));
+    }
+
+    private void 상점목록조회요청_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-all-view-fail"));
     }
 }
