@@ -31,7 +31,7 @@ class VisitControllerTest extends ApiDocument {
     void checkIn() throws Exception {
         // given
         final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
-                .userEmail("minion")
+                .userId(1L)
                 .tableId(1L)
                 .build();
         Message message = new Message("방문 기록 성공");
@@ -47,7 +47,7 @@ class VisitControllerTest extends ApiDocument {
     void checkIn_fail() throws Exception {
         // given
         final CheckInRequestDto checkInRequestDto = CheckInRequestDto.builder()
-                .userEmail("minion")
+                .userId(1L)
                 .tableId(1L)
                 .build();
         final Message errorMessage = new Message("방문 기록 실패");
