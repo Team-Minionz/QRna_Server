@@ -3,6 +3,7 @@ package com.minionz.backend.shop.controller;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,10 @@ public class ShopController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long save(@RequestBody ShopRequestDto shopRequestDto) {
-        Long savedId = shopService.save(shopRequestDto);
+    public ShopSaveResponseDto save(@RequestBody ShopRequestDto shopRequestDto) {
+        ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
         log.info(SHOP_SAVE_SUCCESS_MESSAGE);
-        return savedId;
+        return shopSaveResponseDto;
     }
 
     @PatchMapping("/{id}")

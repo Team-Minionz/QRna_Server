@@ -8,6 +8,7 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.service.ShopService;
@@ -55,9 +56,10 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
-        willReturn(id).given(shopService).save(any(ShopRequestDto.class));
+        ShopSaveResponseDto shopSaveResponseDto = new ShopSaveResponseDto(id, new Message("상점 등록 성공"));
+        willReturn(shopSaveResponseDto).given(shopService).save(any(ShopRequestDto.class));
         ResultActions resultActions = 상점등록_요청(shopRequestDto);
-        상점등록요청_성공(id, resultActions);
+        상점등록요청_성공(shopSaveResponseDto, resultActions);
     }
 
     @DisplayName("상점 등록 실패")
@@ -84,6 +86,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        willReturn(new Message("UPDATE 성공")).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
         상점수정요청_성공(resultActions);
@@ -171,9 +174,9 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("shop-save-fail"));
     }
 
-    private void 상점등록요청_성공(Long id, ResultActions resultActions) throws Exception {
+    private void 상점등록요청_성공(ShopSaveResponseDto shopSaveResponseDto, ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isCreated())
-                .andExpect(content().json(toJson(id)))
+                .andExpect(content().json(toJson(shopSaveResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("shop-save-success"));
     }

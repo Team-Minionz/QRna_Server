@@ -29,6 +29,7 @@ public class UserService {
 
     private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
     private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
+    private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
     private static final String USER_NOT_FOUND_MESSAGE = "해당 유저 이메일이 존재하지 않습니다.";
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
@@ -39,11 +40,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Long login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         if (loginRequestDto.getRole().equals(Role.USER)) {
-            return userLogin(loginRequestDto);
+            return new LoginResponseDto(userLogin(loginRequestDto), new Message(LOGIN_SUCCESS_MESSAGE));
         }
-        return ownerLogin(loginRequestDto);
+        return new LoginResponseDto(ownerLogin(loginRequestDto),new Message(LOGIN_SUCCESS_MESSAGE));
     }
 
     @Transactional(readOnly = true)
@@ -83,9 +84,6 @@ public class UserService {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
-        owner.getShops().stream()
-                .map(shop -> new OwnerShopResponseDto(shop))
-                .collect(Collectors.toList());
         for (Shop shop : owner.getShops()) {
             ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
         }
@@ -159,14 +157,12 @@ public class UserService {
     private UserPageResponseDto ownerMyPageView(Long id) {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(owner);
-        return userPageResponseDto;
+        return new UserPageResponseDto(owner);
     }
 
     private UserPageResponseDto userMyPageView(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
-        return userPageResponseDto;
+        return new UserPageResponseDto(user);
     }
 }

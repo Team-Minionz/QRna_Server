@@ -172,9 +172,9 @@ public class UserServiceTest {
                 .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
         //when
-        Long id = userService.login(LoginRequestDto);
+        LoginResponseDto login = userService.login(LoginRequestDto);
         //then
-        assertThat(id).isEqualTo(findUser.getId());
+        assertThat(login.getId()).isEqualTo(findUser.getId());
     }
 
     @Test
@@ -192,9 +192,9 @@ public class UserServiceTest {
                 .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
         //when
-        Long id = userService.login(LoginRequestDto);
+        LoginResponseDto login = userService.login(LoginRequestDto);
         //then
-        assertThat(id).isEqualTo(findOwner.getId());
+        assertThat(login.getId()).isEqualTo(findOwner.getId());
     }
 
     @Test
