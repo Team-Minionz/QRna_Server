@@ -219,16 +219,43 @@ include::{snippets}/shop-all-view-success/http-request.adoc[]
 
 .response
 include::{snippets}/shop-all-view-success/http-response.adoc[]
-=== Mypage 조회
+=== User Mypage 조회
 ==== 성공
 .request
-include::{snippets}/user_view_page_success/http-request.adoc[]
+include::{snippets}/user-view-page-success/http-request.adoc[]
 
 .response
-include::{snippets}/user_view_page_success/http-response.adoc[]
+include::{snippets}/user-view-page-success/http-response.adoc[]
 ==== 실패
 .request
-include::{snippets}/user_view_page_fail/http-request.adoc[]
+include::{snippets}/user-view-page-fail/http-request.adoc[]
 
 .response
-include::{snippets}/user_view_page_fail/http-response.adoc[]
+include::{snippets}/user-view-page-fail/http-response.adoc[]
+
+=== Owner Mypage 조회
+==== 성공
+.request
+include::{snippets}/owner-view-page-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-view-page-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-view-page-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-view-page-fail/http-response.adoc[]
+=== Owner MyShop 조회
+==== 성공
+.request
+include::{snippets}/owner-shop-view-success/http-request.adoc[]
+
+.response
+include::{snippets}/owner-shop-view-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/owner-shop-view-fail/http-request.adoc[]
+
+.response
+include::{snippets}/owner-shop-view-fail/http-response.adoc[]
