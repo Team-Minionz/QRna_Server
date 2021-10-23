@@ -5,6 +5,8 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,9 +30,13 @@ public class ShopServiceTest {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private OwnerRepository ownerRepository;
+
     @AfterEach
     void cleanUp() {
         shopRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @DisplayName("Shop 생성 테스트")
@@ -42,23 +48,15 @@ public class ShopServiceTest {
         list.add(ShopTable.builder().maxUser(4).build());
         list.add(ShopTable.builder().maxUser(4).build());
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
-        // when
-        Message message = shopService.save(shopRequestDto);
-        // then
-        assertThat(message.getMessage()).isEqualTo("SHOP 등록 성공");
-    }
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("jhnj841@naba.com")
+                .password("123")
+                .telNumber("123123")
+                .build();
 
-    @DisplayName("Shop 생성 테스트")
-    @Test
-    public void saveShopTest1() {
-        // given
-        List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list);
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         // when
         Message message = shopService.save(shopRequestDto);
         // then
