@@ -6,7 +6,7 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.Owner;
@@ -26,7 +26,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
@@ -167,11 +168,13 @@ public class UserServiceTest {
                 .role(Role.USER)
                 .build();
         userService.signUp(joinRequestDto);
+        User findUser = userRepository.findByEmail("operation@naver.com")
+                .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
         //when
-        Message message = userService.login(LoginRequestDto);
+        Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+        assertThat(id).isEqualTo(findUser.getId());
     }
 
     @Test
@@ -184,34 +187,14 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
-
         userService.signUp(joinRequestDto);
+        Owner findOwner = ownerRepository.findByEmail("operation@naver.com")
+                .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
         //when
-        Message message = userService.login(LoginRequestDto);
+        Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
-    }
-
-    @Test
-    void 로그아웃_성공_테스트_유저() {
-        //given
-        final Address address = new Address("안산시", "성포동", "우리집");
-        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
-                .name("정재욱")
-                .email("operation@naver.com")
-                .nickName("라이언")
-                .telNumber("11111111")
-                .password("1234")
-                .address(address)
-                .role(Role.USER)
-                .build();
-        userService.signUp(joinRequestDto);
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
-        //when
-        Message message = userService.login(LoginRequestDto);
-        //then
-        assertThat(message.getMessage()).isEqualTo("로그인 성공");
+        assertThat(id).isEqualTo(findOwner.getId());
     }
 
     @Test
@@ -321,24 +304,14 @@ public class UserServiceTest {
     void 오너샵조회_성공() {
         //given
         Address address = new Address("믿음", "소망", "씨티");
-        List<ShopTable> shopTables1 = new ArrayList<>();
-        List<ShopTable> shopTables2 = new ArrayList<>();
-        shopTables1.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables1.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables2.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables2.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
+        List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
+        shopTables1.add(new ShopTableRequestDto(2));
+        shopTables1.add(new ShopTableRequestDto(4));
+        shopTables1.add(new ShopTableRequestDto(4));
+        List<ShopTableRequestDto> shopTables2 = new ArrayList<>();
+        shopTables2.add(new ShopTableRequestDto(4));
+        shopTables2.add(new ShopTableRequestDto(4));
+        shopTables2.add(new ShopTableRequestDto(4));
         Owner owner = Owner.builder()
                 .name("주인")
                 .email("jhnj841@naba.com")
@@ -360,24 +333,14 @@ public class UserServiceTest {
     void 오너샵조회_실패() {
         //given
         Address address = new Address("믿음", "소망", "씨티");
-        List<ShopTable> shopTables1 = new ArrayList<>();
-        List<ShopTable> shopTables2 = new ArrayList<>();
-        shopTables1.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables1.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables2.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
-        shopTables2.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
-                .build());
+        List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
+        shopTables1.add(new ShopTableRequestDto(2));
+        shopTables1.add(new ShopTableRequestDto(4));
+        shopTables1.add(new ShopTableRequestDto(4));
+        List<ShopTableRequestDto> shopTables2 = new ArrayList<>();
+        shopTables2.add(new ShopTableRequestDto(4));
+        shopTables2.add(new ShopTableRequestDto(4));
+        shopTables2.add(new ShopTableRequestDto(4));
         Owner owner = Owner.builder()
                 .name("주인")
                 .email("jhnj841@naba.com")

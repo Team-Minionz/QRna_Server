@@ -3,6 +3,7 @@ package com.minionz.backend.shop.service;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.user.domain.Owner;
@@ -43,10 +44,10 @@ public class ShopServiceTest {
     @Test
     public void saveShopTest() {
         // given
-        List<ShopTable> list = new ArrayList<>();
-        list.add(ShopTable.builder().maxUser(2).build());
-        list.add(ShopTable.builder().maxUser(4).build());
-        list.add(ShopTable.builder().maxUser(4).build());
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         Owner owner = Owner.builder()
                 .name("주인")
@@ -54,12 +55,11 @@ public class ShopServiceTest {
                 .password("123")
                 .telNumber("123123")
                 .build();
-
         Owner savedOwner = ownerRepository.save(owner);
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         // when
-        Message message = shopService.save(shopRequestDto);
+        Long id = shopService.save(shopRequestDto);
         // then
-        assertThat(message.getMessage()).isEqualTo("SHOP 등록 성공");
+        assertThat(id).isEqualTo(1L);
     }
 }

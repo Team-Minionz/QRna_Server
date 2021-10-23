@@ -4,6 +4,10 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.user.controller.dto.JoinRequestDto;
+import com.minionz.backend.user.controller.dto.LoginRequestDto;
+import com.minionz.backend.user.controller.dto.Role;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.Owner;
@@ -23,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
     private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
     private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
@@ -36,7 +39,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Message login(LoginRequestDto loginRequestDto) {
+    public Long login(LoginRequestDto loginRequestDto) {
         if (loginRequestDto.getRole().equals(Role.USER)) {
             return userLogin(loginRequestDto);
         }
@@ -127,18 +130,18 @@ public class UserService {
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
-    private Message ownerLogin(LoginRequestDto loginRequestDto) {
+    private Long ownerLogin(LoginRequestDto loginRequestDto) {
         Owner findOwner = ownerRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         validatePassword(loginRequestDto, findOwner.getPassword());
-        return new Message(LOGIN_SUCCESS_MESSAGE);
+        return findOwner.getId();
     }
 
-    private Message userLogin(LoginRequestDto loginRequestDto) {
+    private Long userLogin(LoginRequestDto loginRequestDto) {
         User findUser = userRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         validatePassword(loginRequestDto, findUser.getPassword());
-        return new Message(LOGIN_SUCCESS_MESSAGE);
+        return findUser.getId();
     }
 
     private Message ownerLogout(Long id) {
