@@ -6,11 +6,11 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.controller.dto.UserPageResponseDto;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.user.controller.dto.*;
+import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.User;
-import com.minionz.backend.user.controller.dto.JoinRequestDto;
-import com.minionz.backend.user.controller.dto.Role;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,9 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
@@ -215,9 +218,9 @@ class UserControllerTest extends ApiDocument {
         유저_회원탈퇴_실패(errorMessage, response);
     }
 
-    @DisplayName("마이페이지 조회 성공")
+    @DisplayName("유저 마이페이지 조회 성공")
     @Test
-    void user_view_page_success() throws Exception {
+    void 유저마이페이지_조회_성공() throws Exception {
         Address address = new Address("a", "b", "C");
         User user = User.builder()
                 .nickName("asd")
@@ -226,23 +229,43 @@ class UserControllerTest extends ApiDocument {
                 .build();
         Long id = 1L;
         UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
-        willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class));
-        final ResultActions response = 유저_마이페이지_요청(id);
+        willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_마이페이지_요청(id, Role.USER);
         유저_마이페이지_성공(response, userPageResponseDto);
     }
 
-    @DisplayName("마이페이지 조회 실패")
+    @DisplayName("유저 마이페이지 조회 실패")
     @Test
-    void user_view_page_fail() throws Exception {
+    void 유저마이페이지_조회_실패() throws Exception {
         Long id = 2L;
         Message errorMessage = new Message("마이페이지 조회 실패");
-        willThrow(new NotFoundException("마이페이지 조회 실패")).given(userService).viewMypage(any(Long.class));
-        final ResultActions response = 유저_마이페이지_요청(id);
+        willThrow(new NotFoundException("마이페이지 조회 실패")).given(userService).viewMypage(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_마이페이지_요청(id, Role.USER);
         유저_마이페이지_실패(response, errorMessage);
     }
 
-    private ResultActions 유저_마이페이지_요청(Long id) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id));
+    @DisplayName("오너 마이페이지 조회 성공")
+    @Test
+    void 오너마이페이지_조회_성공() throws Exception {
+        Owner owner = Owner.builder()
+                .telNumber("111")
+                .name("주인")
+                .build();
+        Long id = 1L;
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(owner);
+        willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_마이페이지_요청(id, Role.OWNER);
+        오너_마이페이지_성공(response, userPageResponseDto);
+    }
+
+    @DisplayName("오너 마이페이지 조회 실패")
+    @Test
+    void 오너마이페이지_조회_실패() throws Exception {
+        Long id = 2L;
+        Message errorMessage = new Message("마이페이지 조회 실패");
+        willThrow(new NotFoundException("마이페이지 조회 실패")).given(userService).viewMypage(any(Long.class), any(Role.class));
+        final ResultActions response = 유저_마이페이지_요청(id, Role.OWNER);
+        오너_마이페이지_실패(response, errorMessage);
     }
 
     @DisplayName("오너회원탈퇴 성공")
@@ -265,6 +288,68 @@ class UserControllerTest extends ApiDocument {
         오너_회원탈퇴_실패(errorMessage, response);
     }
 
+    @DisplayName("오너 샵 조회 성공")
+    @Test
+    void 오너샵조회_성공() throws Exception {
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
+        List<ShopTable> shopTables = new ArrayList<>();
+        Address address = new Address("인천시", "부평구", "산곡동");
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        Shop shop = Shop.builder()
+                .name("가게")
+                .address(address)
+                .owner(owner)
+                .telNumber("010-2222-1111")
+                .tableList(shopTables)
+                .build();
+        ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
+        Long id = 1L;
+        willReturn(ownerShopResponseDtoList).given(userService).viewMyShop(any(Long.class));
+        ResultActions resultActions = 오너_샵조회_요청(id);
+        오너_샵조회_성공(resultActions, ownerShopResponseDtoList);
+    }
+
+    @DisplayName("오너 샵 조회 실패")
+    @Test
+    void 오너샵조회_실패() throws Exception {
+        Long id = 2L;
+        Message errorMessage = new Message("해당 유저 이메일이 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저 이메일이 존재하지 않습니다.")).given(userService).viewMyShop(any(Long.class));
+        final ResultActions response = 오너_샵조회_요청(id);
+        오너_샵조회_실패(response, errorMessage);
+    }
+
+    private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(ownerShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("owner-shop-view-success"));
+    }
+
+    private void 오너_샵조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("owner-shop-view-fail"));
+    }
+
+    private ResultActions 오너_샵조회_요청(Long id) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/shop/" + id));
+    }
+
     private ResultActions 유저_회원가입_요청(JoinRequestDto signUpRequest) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -272,7 +357,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_회원탈퇴_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id +"/"+role));
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id + "/" +role));
     }
 
     private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
@@ -384,14 +469,28 @@ class UserControllerTest extends ApiDocument {
         response.andExpect(status().isOk())
                 .andExpect(content().json(toJson(userPageResponseDto)))
                 .andDo(print())
-                .andDo(toDocument("user_view_page_success"));
+                .andDo(toDocument("user-view-page-success"));
     }
 
     private void 유저_마이페이지_실패(ResultActions response, Message errorMessage) throws Exception {
         response.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(errorMessage)))
                 .andDo(print())
-                .andDo(toDocument("user_view_page_fail"));
+                .andDo(toDocument("user-view-page-fail"));
+    }
+
+    private void 오너_마이페이지_성공(ResultActions response, UserPageResponseDto userPageResponseDto) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(userPageResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("owner-view-page-success"));
+    }
+
+    private void 오너_마이페이지_실패(ResultActions response, Message errorMessage) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("owner-view-page-fail"));
     }
 
     private void 오너_로그인_성공(Message message, ResultActions resultActions) throws Exception {
@@ -406,5 +505,9 @@ class UserControllerTest extends ApiDocument {
         return mockMvc.perform(post("/api/v1/users/login")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private ResultActions 유저_마이페이지_요청(Long id, Role role) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id + "/" + role));
     }
 }

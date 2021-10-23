@@ -5,10 +5,10 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.controller.dto.UserPageResponseDto;
-import com.minionz.backend.user.controller.dto.JoinRequestDto;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
-import com.minionz.backend.user.controller.dto.Role;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.shop.service.ShopService;
+import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
@@ -23,8 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
@@ -44,6 +46,9 @@ public class UserServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ShopService shopService;
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
@@ -52,6 +57,7 @@ public class UserServiceTest {
 
     @Test
     void 회원가입_성공_테스트_유저() {
+        //given
         final Address address = new Address("안산시", "성포동", "우리집");
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
@@ -62,12 +68,15 @@ public class UserServiceTest {
                 .address(address)
                 .role(Role.USER)
                 .build();
+        //when
         Message message = userService.signUp(joinRequestDto);
+        //then
         assertThat(message.getMessage()).isEqualTo("회원가입 성공");
     }
 
     @Test
     void 회원가입_성공_테스트_오너() {
+        //given
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -75,12 +84,15 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
+        //when
         Message message = userService.signUp(joinRequestDto);
+        //then
         assertThat(message.getMessage()).isEqualTo("회원가입 성공");
     }
 
     @Test
     void 회원탈퇴_성공_테스트_유저() {
+        //given
         final Address address = new Address("안산시", "성포동", "우리집");
         User user = User.builder()
                 .email("wodnr8462@naver.com")
@@ -91,12 +103,15 @@ public class UserServiceTest {
                 .address(address)
                 .build();
         User save = userRepository.save(user);
+        //when
         Message message = userService.withdraw(save.getId(), Role.USER);
+        //then
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 
     @Test
     void 회원탈퇴_성공_테스트_오너() {
+        //given
         Owner owner = Owner.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
@@ -104,12 +119,15 @@ public class UserServiceTest {
                 .telNumber("1111111")
                 .build();
         Owner save = ownerRepository.save(owner);
+        //when
         Message message = userService.withdraw(save.getId(), Role.OWNER);
+        //then
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
 
     @Test
     void 회원중복_성공_테스트() {
+        //given
         final Address address = new Address("안산시", "성포동", "우리집");
         User user = User.builder()
                 .email("wodnr8462@naver.com")
@@ -129,6 +147,8 @@ public class UserServiceTest {
                 .role(Role.USER)
                 .address(address)
                 .build();
+        //when
+        //then
         assertThatThrownBy(() -> userService.signUp(joinRequestDto)).isInstanceOf(BadRequestException.class)
                 .hasMessage("해당 유저 이메일이 중복입니다.");
     }
@@ -234,6 +254,7 @@ public class UserServiceTest {
 
     @Test
     void 마이페이지_조회_성공() {
+        //given
         Address address = new Address("믿음", "소망", "씨티");
         User user = User.builder()
                 .email("jhnj741@naver.com")
@@ -244,13 +265,16 @@ public class UserServiceTest {
                 .address(address)
                 .build();
         userRepository.save(user);
-        UserPageResponseDto userPageResponseDto = userService.viewMypage(user.getId());
+        //when
+        UserPageResponseDto userPageResponseDto = userService.viewMypage(user.getId(), Role.USER);
+        //then
         assertThat(userPageResponseDto.getNickname()).isEqualTo("donglee99");
         assertThat(userPageResponseDto.getTelNumber()).isEqualTo("010111111111");
     }
 
     @Test
     void 마이페이지_조회_실패() {
+        //given
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
@@ -259,12 +283,15 @@ public class UserServiceTest {
                 .telNumber("010111111111")
                 .build();
         userRepository.save(user);
-        assertThatThrownBy(() -> userService.viewMypage(2L))
+        //when
+        //then
+        assertThatThrownBy(() -> userService.viewMypage(2L, Role.USER))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
     @DisplayName("패스워드 암호화 테스트")
+    @Test
     void passwordEncode() {
         // given
         Address address = new Address("a", "b", "C");
@@ -282,9 +309,89 @@ public class UserServiceTest {
         User user = userRepository.findByEmail("operation@naver.com")
                 .orElseThrow(() -> new BadRequestException("실패"));
         String encode = user.getPassword();
+        //when
+        //then
         assertAll(
                 () -> assertNotEquals(rawPassword, encode),
                 () -> assertTrue(passwordEncoder.matches(rawPassword, encode))
         );
+    }
+
+    @Test
+    void 오너샵조회_성공() {
+        //given
+        Address address = new Address("믿음", "소망", "씨티");
+        List<ShopTable> shopTables1 = new ArrayList<>();
+        List<ShopTable> shopTables2 = new ArrayList<>();
+        shopTables1.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables1.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables2.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables2.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("jhnj841@naba.com")
+                .password("123")
+                .telNumber("123123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치1", address, "010-111-33332", shopTables1, savedOwner.getId());
+        ShopRequestDto shopRequestDto2 = new ShopRequestDto("맘스터치2", address, "010-111-33333", shopTables2, savedOwner.getId());
+        shopService.save(shopRequestDto1);
+        shopService.save(shopRequestDto2);
+        //when
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = userService.viewMyShop(savedOwner.getId());
+        //then
+        assertThat(ownerShopResponseDtoList.size()).isEqualTo(2);
+    }
+
+    @Test
+    void 오너샵조회_실패() {
+        //given
+        Address address = new Address("믿음", "소망", "씨티");
+        List<ShopTable> shopTables1 = new ArrayList<>();
+        List<ShopTable> shopTables2 = new ArrayList<>();
+        shopTables1.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables1.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables2.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables2.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("jhnj841@naba.com")
+                .password("123")
+                .telNumber("123123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치1", address, "010-111-33332", shopTables1, savedOwner.getId());
+        ShopRequestDto shopRequestDto2 = new ShopRequestDto("맘스터치2", address, "010-111-33333", shopTables2, savedOwner.getId());
+        shopService.save(shopRequestDto1);
+        shopService.save(shopRequestDto2);
+        //when
+        //then
+        assertThatThrownBy(() -> userService.viewMyShop(2L))
+                .isInstanceOf(NotFoundException.class);
     }
 }
