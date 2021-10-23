@@ -17,6 +17,8 @@ import java.util.List;
 public class UserController {
 
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
+    private static final String VIEW_MY_PAGE_SUCCESS_MESSAGE = "마이페이지 조회 성공";
+    private static final String VIEW_MY_SHOP_SUCCESS_MESSAGE = "마이샵 조회성공";
 
     private final UserService userService;
 
@@ -51,13 +53,17 @@ public class UserController {
 
     @GetMapping("/page/{id}/{role}")
     @ResponseStatus(HttpStatus.OK)
-    public UserPageResponseDto viewMypage(@PathVariable("id") Long id, @PathVariable(value = "role") Role role) {
-        return userService.viewMypage(id, role);
+    public UserPageResponseDto viewMyPage(@PathVariable("id") Long id, @PathVariable(value = "role") Role role) {
+        UserPageResponseDto userPageResponseDto = userService.viewMypage(id, role);
+        log.info(VIEW_MY_PAGE_SUCCESS_MESSAGE);
+        return userPageResponseDto;
     }
 
     @GetMapping("/shop/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<OwnerShopResponseDto> viewMyShop(@PathVariable("id") Long id) {
-        return userService.viewMyShop(id);
+        List<OwnerShopResponseDto> ownerShopResponseDtos = userService.viewMyShop(id);
+        log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
+        return ownerShopResponseDtos;
     }
 }

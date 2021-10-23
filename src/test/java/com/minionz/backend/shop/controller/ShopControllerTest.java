@@ -86,6 +86,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableRequestDto(4));
         list.add(new ShopTableRequestDto(4));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        willReturn(new Message("UPDATE 성공")).given(shopService).update(any(Long.class), any(ShopRequestDto.class));
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, 1L);
         ResultActions resultActions = 상점수정_요청(id, shopRequestDto);
         상점수정요청_성공(resultActions);

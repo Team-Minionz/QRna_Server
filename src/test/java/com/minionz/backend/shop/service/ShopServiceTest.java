@@ -57,8 +57,8 @@ public class ShopServiceTest {
         Owner savedOwner = ownerRepository.save(owner);
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         // when
-        ShopSaveResponseDto id = shopService.save(shopRequestDto);
+        ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
         // then
-        assertThat(id.getId()).isEqualTo(1L);
+        assertThat(shopSaveResponseDto.getId()).isEqualTo(1L);
     }
 }
