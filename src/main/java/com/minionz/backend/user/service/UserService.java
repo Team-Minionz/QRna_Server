@@ -23,6 +23,7 @@ public class UserService {
 
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
+    private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
     private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
     private static final String USER_NOT_FOUND_MESSAGE = "해당 유저 이메일이 존재하지 않습니다.";
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
@@ -49,7 +50,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long signUp(JoinRequestDto joinRequestDto) {
+    public Message signUp(JoinRequestDto joinRequestDto) {
         if (joinRequestDto.getRole().equals(Role.USER)) {
             return userSave(joinRequestDto);
         }
@@ -70,13 +71,13 @@ public class UserService {
         }
     }
 
-    private Long ownerSave(JoinRequestDto joinRequestDto) {
+    private Message ownerSave(JoinRequestDto joinRequestDto) {
         if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         Owner owner = joinRequestDto.toOwner(passwordEncoder);
-        Owner savedOwner = ownerRepository.save(owner);
-        return savedOwner.getId();
+        ownerRepository.save(owner);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
     private Message ownerDelete(Long id) {
@@ -93,13 +94,13 @@ public class UserService {
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    private Long userSave(JoinRequestDto joinRequestDto) {
+    private Message userSave(JoinRequestDto joinRequestDto) {
         if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
         User user = joinRequestDto.toUser(passwordEncoder);
-        User savedUser = userRepository.save(user);
-        return savedUser.getId();
+        userRepository.save(user);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
     private Message ownerLogin(LoginRequestDto loginRequestDto) {

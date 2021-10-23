@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
+    private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
 
     private final UserService userService;
 
@@ -38,10 +39,10 @@ public class UserController {
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long signUp(@RequestBody JoinRequestDto joinRequestDto) {
-        Long savedId = userService.signUp(joinRequestDto);
-        log.info(SIGN_UP_SUCCESS_MESSAGE);
-        return savedId;
+    public Message signUp(@RequestBody JoinRequestDto joinRequestDto) {
+        Message message = userService.signUp(joinRequestDto);
+        log.info(message.getMessage());
+        return message;
     }
 
     @DeleteMapping("/withdraw/{id}/{role}")
