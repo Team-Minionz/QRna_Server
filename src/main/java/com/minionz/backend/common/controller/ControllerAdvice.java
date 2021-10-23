@@ -18,7 +18,7 @@ public class ControllerAdvice {
     @ExceptionHandler({BadRequestException.class})
     public Message BadRequestException(RuntimeException runtimeException) {
         Message message = new Message(runtimeException.getMessage());
-        log.warn(message.getMessage());
+        log.info(message.getMessage());
         return message;
     }
 
@@ -26,7 +26,7 @@ public class ControllerAdvice {
     @ExceptionHandler({NotFoundException.class})
     public Message NotFoundException(RuntimeException runtimeException) {
         Message message = new Message(runtimeException.getMessage());
-        log.warn(message.getMessage());
+        log.info(message.getMessage());
         return message;
     }
 
@@ -34,7 +34,7 @@ public class ControllerAdvice {
     @ExceptionHandler({NotEqualsException.class})
     public Message NotEqualsException(RuntimeException runtimeException) {
         Message message = new Message(runtimeException.getMessage());
-        log.warn(message.getMessage());
+        log.info(message.getMessage());
         return message;
     }
 }
