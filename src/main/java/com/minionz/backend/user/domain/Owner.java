@@ -18,12 +18,7 @@ public class Owner extends UserBaseEntity {
     private List<Shop> shops = new ArrayList<>();
 
     @Builder
-    public Owner(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String telNumber, Shop shop) {
+    public Owner(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String telNumber) {
         super(id, createdDate, modifiedDate, name, email, password, telNumber);
-        setShops(shop);
-    }
-
-    private void setShops(Shop shop) {
-        shops.add(shop);
     }
 }
