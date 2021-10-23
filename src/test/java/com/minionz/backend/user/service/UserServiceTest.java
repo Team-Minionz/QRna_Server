@@ -147,11 +147,13 @@ public class UserServiceTest {
                 .role(Role.USER)
                 .build();
         userService.signUp(joinRequestDto);
+        User findUser = userRepository.findByEmail("operation@naver.com")
+                .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
         //when
         Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(id).isEqualTo(1L);
+        assertThat(id).isEqualTo(findUser.getId());
     }
 
     @Test
@@ -164,13 +166,14 @@ public class UserServiceTest {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
-
         userService.signUp(joinRequestDto);
+        Owner findOwner = ownerRepository.findByEmail("operation@naver.com")
+                .orElseThrow(() -> new NotFoundException("회원가입 실패"));
         LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
         //when
         Long id = userService.login(LoginRequestDto);
         //then
-        assertThat(id).isEqualTo(1L);
+        assertThat(id).isEqualTo(findOwner.getId());
     }
 
     @Test
