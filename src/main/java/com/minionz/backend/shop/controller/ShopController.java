@@ -22,7 +22,7 @@ public class ShopController {
         return shopService.save(shopRequestDto);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") Long id, ShopRequestDto shopRequestDto) {
         shopService.update(id, shopRequestDto);
