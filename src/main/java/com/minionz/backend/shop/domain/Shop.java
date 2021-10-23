@@ -38,7 +38,7 @@ public class Shop extends BaseEntity {
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<Visit> visitList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ShopTable> tableList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -54,7 +54,7 @@ public class Shop extends BaseEntity {
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
-        this.owner = owner;
+        setOwner(owner);
         this.tableList = tableList;
         this.numberOfTables = tableList.size();
     }
@@ -65,6 +65,11 @@ public class Shop extends BaseEntity {
         this.telNumber = shopRequestDto.getTelNumber();
         this.tableList = shopRequestDto.getTableList();
         this.numberOfTables = tableList.size();
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+        owner.getShops().add(this);
     }
 
     public void mapShopWithTable() {

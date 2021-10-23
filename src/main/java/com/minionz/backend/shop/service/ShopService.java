@@ -6,6 +6,8 @@ import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +25,13 @@ public class ShopService {
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
 
     private final ShopRepository shopRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
     public Message save(ShopRequestDto shopRequestDto) {
-        Shop shop = shopRequestDto.toEntity();
+        Owner owner = ownerRepository.findById(shopRequestDto.getOwnerId())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        Shop shop = shopRequestDto.toEntity(owner);
         shop.mapShopWithTable();
         shop.setTableNumber();
         shopRepository.save(shop);
