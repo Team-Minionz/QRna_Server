@@ -127,7 +127,6 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 회원가입 성공")
     @Test
     void 유저회원가입_성공() throws Exception {
-        Long id = 1L;
         Address address = new Address("안산시", "상록구", "성포동");
         JoinRequestDto signUpRequest = JoinRequestDto.builder()
                 .name("정재욱")
@@ -138,9 +137,10 @@ class UserControllerTest extends ApiDocument {
                 .address(address)
                 .role(Role.USER)
                 .build();
-        willReturn(id).given(userService).signUp(any(JoinRequestDto.class));
+        Message message = new Message("회원가입 성공");
+        willReturn(message).given(userService).signUp(any(JoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        유저_회원가입_성공(id, response);
+        유저_회원가입_성공(message, response);
     }
 
     @DisplayName("유저 회원가입 실패")
@@ -164,7 +164,6 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("오너 회원가입 성공")
     @Test
     void 오너회원가입_성공() throws Exception {
-        Long id = 1L;
         Address address = new Address("안산시", "상록구", "성포동");
         JoinRequestDto signUpRequest = JoinRequestDto.builder()
                 .name("정재욱")
@@ -173,9 +172,10 @@ class UserControllerTest extends ApiDocument {
                 .password("1234")
                 .role(Role.OWNER)
                 .build();
-        willReturn(id).given(userService).signUp(any(JoinRequestDto.class));
+        Message message = new Message("회원가입 성공");
+        willReturn(message).given(userService).signUp(any(JoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
-        오너_회원가입_성공(id, response);
+        오너_회원가입_성공(message, response);
     }
 
     @DisplayName("오너 회원가입 실패")
@@ -275,9 +275,9 @@ class UserControllerTest extends ApiDocument {
         return mockMvc.perform(delete("/api/v1/users/withdraw/" + id +"/"+role));
     }
 
-    private void 유저_회원가입_성공(Long id, ResultActions response) throws Exception {
+    private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
         response.andExpect(status().isCreated())
-                .andExpect(content().json(toJson(id)))
+                .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-signup-success"));
     }
@@ -289,9 +289,9 @@ class UserControllerTest extends ApiDocument {
                 .andDo(toDocument("user-signup-fail"));
     }
 
-    private void 오너_회원가입_성공(Long id, ResultActions response) throws Exception {
+    private void 오너_회원가입_성공(Message message, ResultActions response) throws Exception {
         response.andExpect(status().isCreated())
-                .andExpect(content().json(toJson(id)))
+                .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("owner-signup-success"));
     }
