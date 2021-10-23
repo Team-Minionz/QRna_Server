@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "user_id")),
-        @AttributeOverride(name = "name", column = @Column(name = "user_name"))
+        @AttributeOverride(name = "name", column = @Column(name = "user_name", nullable = false))
 })
 @Setter
 public class User extends UserBaseEntity {
