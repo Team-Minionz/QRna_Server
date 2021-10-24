@@ -754,7 +754,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/1/USER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -863,7 +863,7 @@ Content-Length: 36
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/1/USER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -885,7 +885,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/1/USER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -916,7 +916,7 @@ Content-Length: 39
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/1/USER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -950,7 +950,7 @@ Content-Length: 126
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/2/USER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1067,7 +1067,7 @@ Content-Length: 39
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1089,7 +1089,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/users/withdraw/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1198,7 +1198,7 @@ Content-Length: 36
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1220,7 +1220,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/logout/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1251,7 +1251,7 @@ Content-Length: 39
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1281,7 +1281,7 @@ Content-Length: 70
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/2/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1312,7 +1312,7 @@ Content-Length: 49
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/1/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1342,7 +1342,7 @@ Content-Length: 70
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/2/OWNER HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/page/{id}/{role} HTTP/1.1
 Host: localhost</code></pre>
                             </div>
                         </div>
@@ -1478,7 +1478,7 @@ Content-Length: 38
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/shops/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/shops/{id} HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 276
 Host: localhost
@@ -1520,7 +1520,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/shops/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/shops/{id} HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 276
 Host: localhost
@@ -1571,7 +1571,7 @@ Content-Length: 38
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/shops/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/shops/{id} HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost</code></pre>
                             </div>
@@ -1594,7 +1594,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
                         <div class="listingblock">
                             <div class="title">request</div>
                             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/shops/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/shops/{id} HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost</code></pre>
                             </div>
