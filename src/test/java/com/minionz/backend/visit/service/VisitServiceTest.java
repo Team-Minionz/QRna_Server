@@ -7,6 +7,7 @@ import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
@@ -96,7 +97,9 @@ public class VisitServiceTest {
     @Test
     public void checkInTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(2L, 3L);
+        User user = userRepository.findAll().get(0);
+        ShopTable shopTable = shopRepository.findAll().get(0).getTableList().get(0);
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopTable.getId());
         // when
         Message message = visitService.checkIn(checkInRequestDto);
         // then

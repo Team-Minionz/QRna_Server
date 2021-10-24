@@ -1,9 +1,11 @@
 package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Address;
+import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
@@ -58,7 +60,9 @@ public class ShopServiceTest {
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         // when
         ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
+        Shop shop = shopRepository.findByTelNumber(shopRequestDto.getTelNumber())
+                .orElseThrow(() -> new NotFoundException("매장 등록 실패"));
         // then
-        assertThat(shopSaveResponseDto.getId()).isEqualTo(1L);
+        assertThat(shopSaveResponseDto.getId()).isEqualTo(shop.getId());
     }
 }
