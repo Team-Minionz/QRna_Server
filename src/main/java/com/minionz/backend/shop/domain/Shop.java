@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
+@Entity
 public class Shop extends BaseEntity {
 
     @Column(name = "shop_name", nullable = false)
@@ -71,11 +71,6 @@ public class Shop extends BaseEntity {
         this.numberOfTables = tableList.size();
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-        owner.getShops().add(this);
-    }
-
     public void mapShopWithTable() {
         for (ShopTable table : tableList) {
             table.setShop(this);
@@ -103,6 +98,11 @@ public class Shop extends BaseEntity {
         } else {
             congestionStatus = CongestionStatus.CONGESTED;
         }
+    }
+
+    private void setOwner(Owner owner) {
+        this.owner = owner;
+        owner.getShops().add(this);
     }
 
     private int getNumberOfUsingTables() {

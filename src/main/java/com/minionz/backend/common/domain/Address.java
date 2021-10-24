@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
-@Embeddable
 @Getter
 @NoArgsConstructor
+@Embeddable
 public class Address {
 
     private String zipcode;

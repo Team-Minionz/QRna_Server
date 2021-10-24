@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "visit_id"))
+@Entity
 public class Visit extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

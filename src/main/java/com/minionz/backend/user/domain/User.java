@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "user_id")),
         @AttributeOverride(name = "name", column = @Column(name = "user_name"))
 })
-@Setter
+@Entity
 public class User extends UserBaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

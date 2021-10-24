@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "owner_id")),
         @AttributeOverride(name = "name", column = @Column(name = "owner_name"))
 })
+@Entity
 public class Owner extends UserBaseEntity {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)

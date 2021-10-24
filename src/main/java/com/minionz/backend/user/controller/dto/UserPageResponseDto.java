@@ -6,8 +6,8 @@ import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class UserPageResponseDto {
 
     private String nickname;
