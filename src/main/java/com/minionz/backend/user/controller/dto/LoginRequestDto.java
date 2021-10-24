@@ -12,6 +12,7 @@ public class LoginRequestDto {
 
     private String email;
     private String password;
+
     @NotNull
     private Role role;
 

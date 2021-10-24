@@ -96,7 +96,7 @@ public class VisitServiceTest {
     @Test
     public void checkInTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(4L, 4L);
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(2L, 3L);
         // when
         Message message = visitService.checkIn(checkInRequestDto);
         // then
