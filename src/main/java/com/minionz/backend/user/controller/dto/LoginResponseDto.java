@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 public class LoginResponseDto {
 
     private Long id;
-    private Message message;
+    private String message;
 
     public LoginResponseDto(Long id, Message message) {
         this.id = id;
-        this.message = message;
+        this.message = message.getMessage();
     }
 }
