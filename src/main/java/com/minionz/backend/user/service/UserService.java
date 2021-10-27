@@ -4,7 +4,6 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
@@ -88,11 +87,6 @@ public class UserService {
             ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
         }
         return ownerShopResponseDtoList;
-    }
-
-    @Transactional
-    public List<CommonShopResponseDto> nearShop(Long id, double x, double y) {
-        return null;
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {

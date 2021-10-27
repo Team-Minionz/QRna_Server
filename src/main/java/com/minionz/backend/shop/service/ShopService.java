@@ -83,4 +83,9 @@ public class ShopService {
     public List<CommonShopResponseDto> searchRegionShop(String keyword, String region) {
         return null;
     }
+
+    @Transactional
+    public List<CommonShopResponseDto> nearShop(double x, double y) {
+        return null;
+    }
 }

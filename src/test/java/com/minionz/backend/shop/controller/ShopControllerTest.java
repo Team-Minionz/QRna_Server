@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,6 +198,50 @@ class ShopControllerTest extends ApiDocument {
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShop(any(String.class));
         ResultActions resultActions = 상점검색_요청(query);
         상점지역검색요청_실패(message, resultActions);
+    }
+
+    @DisplayName("유저 주변가게 조회 성공")
+    @Test
+    void 유저_주변가게_조회_성공() throws Exception {
+        double x = 0.1;
+        double y = 0.1;
+        Address address = new Address("인천시", "부평구", "산곡동");
+        List<CommonShopResponseDto> nearShopResponseDtoList = new ArrayList<>();
+        nearShopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
+        nearShopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
+        nearShopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        willReturn(nearShopResponseDtoList).given(shopService).nearShop(any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(x, y);
+        유저_주변가게_조회_성공(resultActions, nearShopResponseDtoList);
+    }
+
+    @DisplayName("유저 주변가게 조회 성공")
+    @Test
+    void 유저_주변가게_조회_실패() throws Exception {
+        double x = 0.1;
+        double y = 0.1;
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(x, y);
+        유저_주변가게_조회_실패(response, errorMessage);
+    }
+
+    private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/near/" + "/" + x + "/" + y));
+    }
+
+    private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(nearShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-success"));
+    }
+
+    private void 유저_주변가게_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-fail"));
     }
 
     private ResultActions 상점지역검색_요청(String query, String region) throws Exception {
