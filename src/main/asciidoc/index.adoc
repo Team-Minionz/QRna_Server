@@ -121,6 +121,19 @@ include::{snippets}/user-view-page-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-view-page-fail/http-response.adoc[]
+==== 주변가게 조회
+===== 성공
+.request
+include::{snippets}/user-near-shop-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-near-shop-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/user-near-shop-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-near-shop-fail/http-response.adoc[]
 
 === 점주
 ==== 회원가입
@@ -255,6 +268,32 @@ include::{snippets}/shop-all-view-fail/http-request.adoc[]
 
 .response
 include::{snippets}/shop-all-view-fail/http-response.adoc[]
+==== 매장 검색
+===== 성공
+.request
+include::{snippets}/shop-search-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-search-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/shop-search-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-search-fail/http-response.adoc[]
+==== 지역 매장 검색
+===== 성공
+.request
+include::{snippets}/shop-search-region-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-search-region-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/shop-search-region-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-search-region-fail/http-response.adoc[]
 
 === 방문기록
 ==== 성공

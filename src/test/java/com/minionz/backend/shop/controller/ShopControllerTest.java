@@ -6,10 +6,7 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
@@ -151,6 +148,92 @@ class ShopControllerTest extends ApiDocument {
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_실패(resultActions, message);
+    }
+
+    @DisplayName("상점 검색 성공")
+    @Test
+    void 상점검색_성공() throws Exception {
+        Address address = new Address("인천시", "부평구", "산곡동");
+        String query = "맘스터치";
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
+        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
+        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        willReturn(shopResponseDtoList).given(shopService).searchShop(any(String.class));
+        ResultActions resultActions = 상점검색_요청(query);
+        상점검색요청_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("상점 검색 실패")
+    @Test
+    void 상점검색_실패() throws Exception {
+        String query = "맘스터치";
+        Message message = new Message("등록된 매장이 존재하지 않습니다.");
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShop(any(String.class));
+        ResultActions resultActions = 상점검색_요청(query);
+        상점검색요청_실패(message, resultActions);
+    }
+
+    @DisplayName("상점 지역검색 성공")
+    @Test
+    void 상점지역검색_성공() throws Exception {
+        Address address = new Address("인천시", "부평구", "산곡동");
+        String query = "맘스터치";
+        String region = "경기도";
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
+        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
+        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        willReturn(shopResponseDtoList).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        ResultActions resultActions = 상점지역검색_요청(query, region);
+        상점지역검색요청_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("상점 지역검색 실패")
+    @Test
+    void 상점지역검색_실패() throws Exception {
+        String query = "맘스터치";
+        Message message = new Message("등록된 매장이 존재하지 않습니다.");
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShop(any(String.class));
+        ResultActions resultActions = 상점검색_요청(query);
+        상점지역검색요청_실패(message, resultActions);
+    }
+
+    private ResultActions 상점지역검색_요청(String query, String region) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/" + query + "/" + region)
+                                .characterEncoding("UTF-8"));
+    }
+
+    private void 상점지역검색요청_성공(ResultActions resultActions, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-region-success"));
+    }
+
+    private void 상점지역검색요청_실패(Message message, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-region-fail"));
+    }
+
+    private void 상점검색요청_성공(ResultActions resultActions, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-success"));
+    }
+
+    private void 상점검색요청_실패(Message message, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-fail"));
+    }
+
+    private ResultActions 상점검색_요청(String query) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/" + query));
     }
 
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {
