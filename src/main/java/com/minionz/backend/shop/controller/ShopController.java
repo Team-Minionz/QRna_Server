@@ -1,6 +1,7 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
@@ -19,7 +20,7 @@ import java.util.List;
 public class ShopController {
 
     private static final String SHOP_SAVE_SUCCESS_MESSAGE = "매장 등록 성공";
-    private static final String VIEW_SHOP_LIST_SUCCESS_MESSAGE = "매장 등록 성공";
+    private static final String VIEW_SHOP_LIST_SUCCESS_MESSAGE = "매장 리스트 조회 성공";
 
     private final ShopService shopService;
 
@@ -51,5 +52,22 @@ public class ShopController {
         List<ShopResponseDto> shopResponseDtos = shopService.viewAll();
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtos;
+    }
+
+    @GetMapping("/{keyword}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommonShopResponseDto> searchShop(@PathVariable("keyword") String keyword) {
+        List<CommonShopResponseDto> shopResponseDtoList = shopService.searchShop(keyword);
+        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
+        return shopResponseDtoList;
+    }
+
+    @GetMapping("/{keyword}/{region}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommonShopResponseDto> searchRegionShop(@PathVariable("keyword") String keyword,
+                                                        @PathVariable String region) {
+        List<CommonShopResponseDto> shopResponseDtoList = shopService.searchRegionShop(keyword, region);
+        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
+        return shopResponseDtoList;
     }
 }
