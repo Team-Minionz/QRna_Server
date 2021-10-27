@@ -4,6 +4,7 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.user.controller.dto.JoinRequestDto;
 import com.minionz.backend.user.controller.dto.LoginRequestDto;
 import com.minionz.backend.user.controller.dto.Role;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -88,6 +88,11 @@ public class UserService {
             ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
         }
         return ownerShopResponseDtoList;
+    }
+
+    @Transactional
+    public List<CommonShopResponseDto> nearShop(Long id, double x, double y) {
+        return null;
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {

@@ -1,6 +1,7 @@
 package com.minionz.backend.user.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class UserController {
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String VIEW_MY_PAGE_SUCCESS_MESSAGE = "마이페이지 조회 성공";
     private static final String VIEW_MY_SHOP_SUCCESS_MESSAGE = "마이샵 조회성공";
+    private static final String VIEW_MY_NEAR_SHOP_SUCCESS_MESSAGE = "주변 가게 조회 성공";
 
     private final UserService userService;
 
@@ -62,8 +64,16 @@ public class UserController {
     @GetMapping("/shop/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<OwnerShopResponseDto> viewMyShop(@PathVariable("id") Long id) {
-        List<OwnerShopResponseDto> ownerShopResponseDtos = userService.viewMyShop(id);
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = userService.viewMyShop(id);
         log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
-        return ownerShopResponseDtos;
+        return ownerShopResponseDtoList;
+    }
+
+    @GetMapping("/nearshop/{id}/{x}/{y}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommonShopResponseDto> viewNearShop(@PathVariable("id") Long id, @PathVariable("x") double x, @PathVariable("y") double y) {
+        List<CommonShopResponseDto> shopResponseDtoList = userService.nearShop(id, x, y);
+        log.info(VIEW_MY_NEAR_SHOP_SUCCESS_MESSAGE);
+        return shopResponseDtoList;
     }
 }
