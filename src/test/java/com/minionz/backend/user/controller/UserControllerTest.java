@@ -6,6 +6,8 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
+import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.user.controller.dto.*;
@@ -332,6 +334,52 @@ class UserControllerTest extends ApiDocument {
         willThrow(new NotFoundException("해당 유저 이메일이 존재하지 않습니다.")).given(userService).viewMyShop(any(Long.class));
         final ResultActions response = 오너_샵조회_요청(id);
         오너_샵조회_실패(response, errorMessage);
+    }
+
+    @DisplayName("유저 주변가게 조회 성공")
+    @Test
+    void 유저_주변가게_조회_성공() throws Exception {
+        Long id = 1L;
+        double x = 0.1;
+        double y = 0.1;
+        Address address = new Address("인천시", "부평구", "산곡동");
+        List<CommonShopResponseDto> nearShopResponseDtoList = new ArrayList<>();
+        nearShopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
+        nearShopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
+        nearShopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        willReturn(nearShopResponseDtoList).given(userService).nearShop(any(Long.class), any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(id, x, y);
+        유저_주변가게_조회_성공(resultActions, nearShopResponseDtoList);
+    }
+
+    @DisplayName("유저 주변가게 조회 성공")
+    @Test
+    void 유저_주변가게_조회_실패() throws Exception {
+        Long id = 2L;
+        double x = 0.1;
+        double y = 0.1;
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(userService).nearShop(any(Long.class), any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(id, x, y);
+        유저_주변가게_조회_실패(response, errorMessage);
+    }
+
+    private ResultActions 유저_주변가게_조회_요청(Long id, double x, double y) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/nearshop/" + id + "/" + x + "/" + y));
+    }
+
+    private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(nearShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-success"));
+    }
+
+    private void 유저_주변가게_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-fail"));
     }
 
     private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {
