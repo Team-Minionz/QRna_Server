@@ -25,7 +25,15 @@ public class Bookmark extends BaseEntity {
     @Builder
     public Bookmark(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, User user, Shop shop) {
         super(id, createdDate, modifiedDate);
-        this.user = user;
+        setUser(user);
         this.shop = shop;
+    }
+
+    /**
+     *  연관관계 편의 메소드
+     */
+    private void setUser(User user) {
+        this.user = user;
+        user.getBookmarks().add(this);
     }
 }
