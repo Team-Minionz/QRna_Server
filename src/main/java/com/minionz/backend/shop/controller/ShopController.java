@@ -57,7 +57,7 @@ public class ShopController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ShopDetailsResponseDto> detailShop(@PathVariable Long id) {
+    public List<ShopDetailsResponseDto> detailShop(@PathVariable("id") Long id) {
         List<ShopDetailsResponseDto> shopDetailsResponseDtoList = shopService.viewDetails(id);
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopDetailsResponseDtoList;
