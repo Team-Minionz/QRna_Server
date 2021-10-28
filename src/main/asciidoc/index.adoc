@@ -204,16 +204,16 @@ include::{snippets}/owner-view-page-fail/http-response.adoc[]
 ==== 내 매장 조회
 ===== 성공
 .request
-include::{snippets}/owner-view-page-success/http-request.adoc[]
+include::{snippets}/owner-shop-view-success/http-request.adoc[]
 
 .response
-include::{snippets}/owner-view-page-success/http-response.adoc[]
+include::{snippets}/owner-shop-view-success/http-response.adoc[]
 ===== 실패
 .request
-include::{snippets}/owner-view-page-fail/http-request.adoc[]
+include::{snippets}/owner-shop-view-fail/http-request.adoc[]
 
 .response
-include::{snippets}/owner-view-page-fail/http-response.adoc[]
+include::{snippets}/owner-shop-view-fail/http-response.adoc[]
 
 === 매장
 ==== 등록
