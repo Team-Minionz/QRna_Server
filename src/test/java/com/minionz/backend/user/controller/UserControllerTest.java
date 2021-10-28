@@ -25,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     public void 유저로그인테스트_성공() throws Exception {
         Long id = 1L;
-        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.USER);
+        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password", Role.USER);
         final LoginResponseDto loginResponseDto = new LoginResponseDto(id, new Message("로그인 성공"));
         willReturn(loginResponseDto).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
@@ -61,7 +62,7 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 로그인 실패")
     @Test
     public void 유저로그인테스트_실패() throws Exception {
-        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email1", "password",Role.USER);
+        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email1", "password", Role.USER);
         Message errorMessage = new Message("로그인 실패");
         willThrow(new NotFoundException("로그인 실패")).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
@@ -72,7 +73,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     public void 오너로그인테스트_성공() throws Exception {
         Long id = 1L;
-        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password",Role.OWNER);
+        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email", "password", Role.OWNER);
         final LoginResponseDto loginResponseDto = new LoginResponseDto(id, new Message("로그인 성공"));
         willReturn(loginResponseDto).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
@@ -82,7 +83,7 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("오너 로그인 실패")
     @Test
     public void 오너로그인테스트_실패() throws Exception {
-        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email1", "password",Role.OWNER);
+        final LoginRequestDto LoginRequestDto = new LoginRequestDto("email1", "password", Role.OWNER);
         Message errorMessage = new Message("로그인 실패");
         willThrow(new NotFoundException("로그인 실패")).given(userService).login(any(LoginRequestDto.class));
         final ResultActions resultActions = 유저_로그인_요청(LoginRequestDto);
@@ -160,7 +161,8 @@ class UserControllerTest extends ApiDocument {
                 .password("1234")
                 .address(address)
                 .role(Role.USER)
-                .build();Message errorMessage = new Message("회원가입 실패");
+                .build();
+        Message errorMessage = new Message("회원가입 실패");
         willThrow(new BadRequestException("회원가입 실패")).given(userService).signUp(any(JoinRequestDto.class));
         final ResultActions response = 유저_회원가입_요청(signUpRequest);
         유저_회원가입_실패(errorMessage, response);
@@ -334,6 +336,55 @@ class UserControllerTest extends ApiDocument {
         오너_샵조회_실패(response, errorMessage);
     }
 
+    @DisplayName("유저 방문매장 조회 성공")
+    @Test
+    void 방문매장_조회_성공() throws Exception {
+        Long id = 1L;
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTable> shopTables = new ArrayList<>();
+        LocalDateTime createdTime = LocalDateTime.now();
+        LocalDateTime modifiedTime = LocalDateTime.of(2022, 11, 12, 12, 32, 22, 3333);
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        Shop shop = Shop.builder()
+                .name("가게")
+                .address(address)
+                .owner(owner)
+                .telNumber("010-2222-1111")
+                .tableList(shopTables)
+                .createDate(createdTime)
+                .lastModifiedDate(modifiedTime)
+                .build();
+        List<UserVisitResponse> userVisitResponseList = new ArrayList<>();
+        userVisitResponseList.add(new UserVisitResponse(shop));
+        willReturn(userVisitResponseList).given(userService).visitMyshop(any(Long.class));
+        ResultActions resultActions = 유저_방문매장_조회_요청(id);
+        유저_방문매장_조회_성공(resultActions, userVisitResponseList);
+
+    }
+
+    @DisplayName("유저 방문매장 조회 실패")
+    @Test
+    void 방문매장_조회_실패() throws Exception {
+        Long id = 1L;
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(userService).visitMyshop(any(Long.class));
+        ResultActions resultActions = 유저_방문매장_조회_요청(id);
+        유저_방문매장_조회_실패(resultActions, errorMessage);
+    }
+
     private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(ownerShopResponseDtoList)))
@@ -359,7 +410,7 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_회원탈퇴_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id + "/" +role));
+        return mockMvc.perform(delete("/api/v1/users/withdraw/" + id + "/" + role));
     }
 
     private void 유저_회원가입_성공(Message message, ResultActions response) throws Exception {
@@ -511,5 +562,23 @@ class UserControllerTest extends ApiDocument {
 
     private ResultActions 유저_마이페이지_요청(Long id, Role role) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id + "/" + role));
+    }
+
+    private void 유저_방문매장_조회_성공(ResultActions resultActions, List<UserVisitResponse> userVisitResponseList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(userVisitResponseList)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-success"));
+    }
+
+    private ResultActions 유저_방문매장_조회_요청(Long id) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/visit/" + id));
+    }
+
+    private void 유저_방문매장_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-fail"));
     }
 }
