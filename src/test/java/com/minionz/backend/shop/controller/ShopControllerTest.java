@@ -6,11 +6,9 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
+import com.minionz.backend.shop.domain.UseStatus;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,6 +149,53 @@ class ShopControllerTest extends ApiDocument {
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_실패(resultActions, message);
+    }
+
+    @DisplayName("테이블 목록 조회 성공")
+    @Test
+    void 테이블목록조회_성공() throws Exception {
+        // given
+        Long id = 1L;
+        List<ShopTableResponseDto> list = new ArrayList<>();
+        list.add(new ShopTableResponseDto(1L, 1, 2, 0, UseStatus.EMPTY));
+        list.add(new ShopTableResponseDto(2L, 2, 2, 2, UseStatus.USING));
+        list.add(new ShopTableResponseDto(3L, 3, 3, 0, UseStatus.EMPTY));
+        // when
+        willReturn(list).given(shopService).viewTables(any(Long.class));
+        ResultActions resultActions = 테이블목록_조회_요청(id);
+        // then
+        테이블목록_조회_요청_성공(resultActions, list);
+    }
+
+    @DisplayName("테이블 목록 조회 실패")
+    @Test
+    void 테이블목록조회_실패() throws Exception {
+        // given
+        Long id = 1L;
+        Message message = new Message("테이블 목록 조회 실패");
+        // when
+        willThrow(new NotFoundException("테이블 목록 조회 실패")).given(shopService).viewTables(any(Long.class));
+        ResultActions resultActions = 테이블목록_조회_요청(id);
+        // then
+        테이블목록_조회_요청_실패(resultActions, message);
+    }
+
+    private ResultActions 테이블목록_조회_요청(Long id) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/" + id));
+    }
+
+    private void 테이블목록_조회_요청_성공(ResultActions resultActions, List<ShopTableResponseDto> list) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(list)))
+                .andDo(print())
+                .andDo(toDocument("table-list-view-success"));
+    }
+
+    private void 테이블목록_조회_요청_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("table-list-view-fail"));
     }
 
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {
