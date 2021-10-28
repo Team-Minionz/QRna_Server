@@ -6,7 +6,10 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.*;
+import com.minionz.backend.shop.controller.dto.ShopResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,54 +151,6 @@ class ShopControllerTest extends ApiDocument {
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_실패(resultActions, message);
-    }
-
-    @DisplayName("매장 상세보기 조회 성공")
-    @Test
-    void 매장_상세보기_조회_성공() throws Exception {
-        Long id = 1L;
-        String name = "BBQ";
-        String telNumber = "010-6634-3435";
-        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        List<ShopTableCountResponseDto> list = new ArrayList<>();
-        list.add(new ShopTableCountResponseDto(2, 2));
-        list.add(new ShopTableCountResponseDto(3, 5));
-        list.add(new ShopTableCountResponseDto(4, 7));
-        int maxUserA = 47;
-        int liveUser = 5;
-        ShopMaxUserResponseDto maxUser = new ShopMaxUserResponseDto(maxUserA, liveUser, (int) (liveUser / (double) maxUserA) * 100);
-        ShopDetailsResponseDto shopDetailsResponseDto = new ShopDetailsResponseDto(name, address, telNumber, list, maxUser);
-        willReturn(shopDetailsResponseDto).given(shopService).viewDetails(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
-        유저_매장_상세보기_조회_성공(resultActions, shopDetailsResponseDto);
-    }
-
-    @DisplayName("매장 상세보기 조회 실패")
-    @Test
-    void 매장_상세보기_조회_실패() throws Exception {
-        Long id = 1L;
-        Message message = new Message("매장 상세보기 조회 실패");
-        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetails(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
-        유저_매장_상세보기_조회_실패(resultActions, message);
-    }
-
-    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/" + id));
-    }
-
-    private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
-        resultActions.andExpect(status().isNotFound())
-                .andExpect(content().json(toJson(message)))
-                .andDo(print())
-                .andDo(toDocument("user-visit-shop-fail"));
-    }
-
-    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailsResponseDto shopDetailsResponseDto) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(shopDetailsResponseDto)))
-                .andDo(print())
-                .andDo(toDocument("user-visit-shop-success"));
     }
 
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {

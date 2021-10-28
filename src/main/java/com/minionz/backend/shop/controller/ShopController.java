@@ -1,7 +1,6 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.shop.controller.dto.ShopDetailsResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
@@ -52,13 +51,5 @@ public class ShopController {
         List<ShopResponseDto> shopResponseDtos = shopService.viewAll();
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtos;
-    }
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ShopDetailsResponseDto detailShop(@PathVariable("id") Long id) {
-        ShopDetailsResponseDto shopDetailsResponseDtoList = shopService.viewDetails(id);
-        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
-        return shopDetailsResponseDtoList;
     }
 }
