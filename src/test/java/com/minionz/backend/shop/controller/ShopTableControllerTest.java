@@ -1,9 +1,9 @@
-package com.minionz.backend.user.controller;
+package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.ApiDocument;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.service.OwnerService;
+import com.minionz.backend.shop.service.ShopTableService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,11 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OwnerController.class)
-public class OwnerControllerTest extends ApiDocument {
+@WebMvcTest(ShopTableController.class)
+public class ShopTableControllerTest extends ApiDocument {
 
     @MockBean
-    private OwnerService ownerService;
+    private ShopTableService shopTableService;
 
     @DisplayName("테이블 퇴장 성공")
     @Test
@@ -31,7 +31,7 @@ public class OwnerControllerTest extends ApiDocument {
         Long id = 1L;
         Message message = new Message("테이블 퇴장 성공");
         // when
-        willReturn(message).given(ownerService).exitTable(any(Long.class));
+        willReturn(message).given(shopTableService).exitTable(any(Long.class));
         ResultActions resultActions = 테이블_퇴장_요청(id);
         // then
         테이블_퇴장_성공(resultActions, message);
@@ -44,7 +44,7 @@ public class OwnerControllerTest extends ApiDocument {
         Long id = 1L;
         Message message = new Message("테이블 퇴장 실패");
         // when
-        willThrow(new NotFoundException("테이블 퇴장 실패")).given(ownerService).exitTable(any(Long.class));
+        willThrow(new NotFoundException("테이블 퇴장 실패")).given(shopTableService).exitTable(any(Long.class));
         ResultActions resultActions = 테이블_퇴장_요청(id);
         // then
         테이블_퇴장_실패(resultActions, message);
