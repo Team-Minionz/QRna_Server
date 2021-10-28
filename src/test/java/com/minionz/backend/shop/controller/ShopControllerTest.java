@@ -158,20 +158,47 @@ class ShopControllerTest extends ApiDocument {
         String name = "BBQ";
         String telNumber = "010-6634-3435";
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
-        List<ShopTableRequestDto> list = new ArrayList<>();
-        List<ShopTableCountResponseDto> count = new ArrayList<>();
-        list.add(new ShopTableRequestDto(2));
-        list.add(new ShopTableRequestDto(3));
-        list.add(new ShopTableRequestDto(4));
-        count.add(new ShopTableCountResponseDto(list));
-        ShopMaxUserResponseDto maxUser = new ShopMaxUserResponseDto(list);
-        double User = 5;
-        double Populate = Math.round((User / maxUser.getMaxUser()) * 100);
+        List<ShopTableCountResponseDto> list = new ArrayList<>();
+        list.add(new ShopTableCountResponseDto(2, 2));
+        list.add(new ShopTableCountResponseDto(3, 5));
+        list.add(new ShopTableCountResponseDto(4, 7));
+        double maxUserA = 47;
+        double liveUser = 5;
+        ShopMaxUserResponseDto maxUser = new ShopMaxUserResponseDto(maxUserA, liveUser, (liveUser / maxUserA) * 100);
         List<ShopDetailsResponseDto> shopDetailsResponseDto = new ArrayList<>();
-        shopDetailsResponseDto.add(new ShopDetailsResponseDto(name, address, telNumber, list, count, id, User, maxUser, Populate));
+        shopDetailsResponseDto.add(new ShopDetailsResponseDto(name, address, telNumber, list, id, maxUser));
         willReturn(shopDetailsResponseDto).given(shopService).viewDetails(any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailsResponseDto);
+    }
+
+    @DisplayName("매장 상세보기 조회 실패")
+    @Test
+    void 매장_상세보기_조회_실패() throws Exception {
+        Long id = 1L;
+        ;
+        Message message = new Message("매장 상세보기 조회 실패");
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetails(any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        유저_매장_상세보기_조회_실패(resultActions, message);
+    }
+
+    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/" + id));
+    }
+
+    private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-fail"));
+    }
+
+    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, List<ShopDetailsResponseDto> shopDetailsResponseDto) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopDetailsResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-success"));
     }
 
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {
@@ -247,16 +274,5 @@ class ShopControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("shop-all-view-fail"));
-    }
-
-    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/" + id));
-    }
-
-    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, List<ShopDetailsResponseDto> shopDetailsResponseDto) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(shopDetailsResponseDto)))
-                .andDo(print())
-                .andDo(toDocument("user-visit-shop-success"));
     }
 }

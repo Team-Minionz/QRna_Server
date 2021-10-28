@@ -14,21 +14,15 @@ public class ShopDetailsResponseDto {
     private String name;
     private Address address;
     private String telNumber;
-    private List<ShopTableRequestDto> tableList;
     private List<ShopTableCountResponseDto> tableCount;
     private ShopMaxUserResponseDto MaxUser;
-    private double Populate;
-    private double User;
 
-    public ShopDetailsResponseDto(String name, Address address, String telNumber, List<ShopTableRequestDto> tableList, List<ShopTableCountResponseDto> tableCount, Long shopId, double User, ShopMaxUserResponseDto MaxUser, double Populate) {
+    public ShopDetailsResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableCount, Long shopId, ShopMaxUserResponseDto MaxUser) {
         this.shopId = shopId;
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
-        this.tableList = tableList;
         this.tableCount = tableCount;
-        this.User = User;
         this.MaxUser = MaxUser;
-        this.Populate = Populate;
     }
 }
