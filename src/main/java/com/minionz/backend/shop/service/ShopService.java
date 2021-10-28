@@ -3,7 +3,6 @@ package com.minionz.backend.shop.service;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopDetailsResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
@@ -72,9 +71,5 @@ public class ShopService {
             throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);
         }
         return responseDtos;
-    }
-
-    public List<ShopDetailsResponseDto> viewDetails(Long id) {
-        return null;
     }
 }
