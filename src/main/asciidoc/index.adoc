@@ -201,6 +201,19 @@ include::{snippets}/owner-view-page-fail/http-request.adoc[]
 
 .response
 include::{snippets}/owner-view-page-fail/http-response.adoc[]
+==== 테이블 퇴장
+===== 성공
+.request
+include::{snippets}/table-exit-success/http-request.adoc[]
+
+.response
+include::{snippets}/table-exit-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/table-exit-fail/http-request.adoc[]
+
+.response
+include::{snippets}/table-exit-fail/http-response.adoc[]
 
 === 매장
 ==== 등록
