@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ShopMaxUserResponseDto {
 
-    private double maxUser;
-    private double liveUser;
+    private int maxUser;
+    private int liveUser;
     private double populateUser;
 
-    public ShopMaxUserResponseDto(double maxUser, double liveUser, double populateUser) {
+    public ShopMaxUserResponseDto(int maxUser, int liveUser, double populateUser) {
         this.maxUser = maxUser;
         this.liveUser = liveUser;
         this.populateUser = populateUser;
