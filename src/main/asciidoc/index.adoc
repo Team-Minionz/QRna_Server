@@ -121,6 +121,45 @@ include::{snippets}/user-view-page-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-view-page-fail/http-response.adoc[]
+==== 즐겨찾기 등록
+===== 성공
+.request
+include::{snippets}/user-add-bookmark-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-add-bookmark-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/user-add-bookmark-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-add-bookmark-fail/http-response.adoc[]
+==== 즐겨찾기 삭제
+===== 성공
+.request
+include::{snippets}/user-delete-bookmark-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-delete-bookmark-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/user-delete-bookmark-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-delete-bookmark-fail/http-response.adoc[]
+==== 즐겨찾기 조회
+===== 성공
+.request
+include::{snippets}/user-view-bookmark-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-bookmark-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/user-view-bookmark-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-bookmark-fail/http-response.adoc[]
 
 === 점주
 ==== 회원가입
