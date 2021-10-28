@@ -1,4 +1,4 @@
-package com.minionz.backend.user.service;
+package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Message;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @NoArgsConstructor
 @Service
-public class OwnerService {
+public class ShopTableService {
 
     @Transactional
     public Message exitTable(Long tableId) {
