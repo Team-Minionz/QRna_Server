@@ -340,10 +340,10 @@ class UserControllerTest extends ApiDocument {
     @Test
     void 방문매장_조회_성공() throws Exception {
         Long id = 1L;
+        Address userAddress = new Address("안산시", "상록구", "월피동");
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         List<ShopTable> shopTables = new ArrayList<>();
-        LocalDateTime createdTime = LocalDateTime.now();
-        LocalDateTime modifiedTime = LocalDateTime.of(2022, 11, 12, 12, 32, 22, 3333);
+        LocalDateTime visitedDate = LocalDateTime.now();
         Owner owner = Owner.builder()
                 .email("hjhj@naver.com")
                 .password("123")
@@ -364,15 +364,17 @@ class UserControllerTest extends ApiDocument {
                 .owner(owner)
                 .telNumber("010-2222-1111")
                 .tableList(shopTables)
-                .createDate(createdTime)
-                .lastModifiedDate(modifiedTime)
+                .build();
+        User user = User.builder()
+                .name("정재욱")
+                .address(userAddress)
+                .telNumber("010-2242-5567")
                 .build();
         List<UserVisitResponse> userVisitResponseList = new ArrayList<>();
-        userVisitResponseList.add(new UserVisitResponse(shop));
+        userVisitResponseList.add(new UserVisitResponse(user, shop, visitedDate));
         willReturn(userVisitResponseList).given(userService).visitMyshop(any(Long.class));
         ResultActions resultActions = 유저_방문매장_조회_요청(id);
         유저_방문매장_조회_성공(resultActions, userVisitResponseList);
-
     }
 
     @DisplayName("유저 방문매장 조회 실패")

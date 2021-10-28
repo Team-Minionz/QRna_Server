@@ -2,6 +2,7 @@ package com.minionz.backend.user.controller.dto;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserBaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,17 +13,21 @@ import java.time.LocalDateTime;
 @Getter
 public class UserVisitResponse extends UserBaseEntity {
 
-    private String name;
-    private Address address;
-    private String telNumber;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private String userName;
+    private Address userAddress;
+    private String userTelNumber;
+    private String shopName;
+    private Address shopAddress;
+    private String shopTelNumber;
+    private LocalDateTime visitedDate;
 
-    public UserVisitResponse(Shop shop) {
-        this.name = shop.getName();
-        this.address = shop.getAddress();
-        this.telNumber = shop.getTelNumber();
-        this.createdDate = shop.getCreatedDate();
-        this.modifiedDate = shop.getModifiedDate();
+    public UserVisitResponse(User user, Shop shop, LocalDateTime visitedDate) {
+        this.userName = user.getName();
+        this.userAddress = user.getAddress();
+        this.userTelNumber =user. getTelNumber();
+        this.shopName = shop.getName();
+        this.shopAddress = shop.getAddress();
+        this.shopTelNumber = shop.getTelNumber();
+        this.visitedDate = visitedDate;
     }
 }
