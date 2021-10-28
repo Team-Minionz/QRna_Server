@@ -1,6 +1,7 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.shop.controller.dto.ShopDetailsResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
@@ -20,6 +21,7 @@ public class ShopController {
 
     private static final String SHOP_SAVE_SUCCESS_MESSAGE = "매장 등록 성공";
     private static final String VIEW_SHOP_LIST_SUCCESS_MESSAGE = "매장 등록 성공";
+    private static final String VIEW_LIKE_SHOP_SUCCESS_MESSAGE = "방문매장 조회성공";
 
     private final ShopService shopService;
 
@@ -51,5 +53,13 @@ public class ShopController {
         List<ShopResponseDto> shopResponseDtos = shopService.viewAll();
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtos;
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ShopDetailsResponseDto> detailShop(@PathVariable Long id) {
+        List<ShopDetailsResponseDto> shopDetailsResponseDtoList = shopService.viewDetails(id);
+        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
+        return shopDetailsResponseDtoList;
     }
 }
