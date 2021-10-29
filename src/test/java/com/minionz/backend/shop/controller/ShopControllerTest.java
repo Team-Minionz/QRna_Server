@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +214,7 @@ class ShopControllerTest extends ApiDocument {
         유저_주변가게_조회_성공(resultActions, nearShopResponseDtoList);
     }
 
-    @DisplayName("유저 주변가게 조회 성공")
+    @DisplayName("유저 주변가게 조회 실패")
     @Test
     void 유저_주변가게_조회_실패() throws Exception {
         double x = 0.1;
@@ -227,7 +226,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/near/" + "/" + x + "/" + y));
+        return mockMvc.perform(get("/api/v1/shops/near/" + x + "/" + y));
     }
 
     private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
