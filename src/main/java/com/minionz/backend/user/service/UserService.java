@@ -71,14 +71,6 @@ public class UserService {
     }
 
     @Transactional
-    public UserPageResponseDto viewMypage(Long id, Role role) {
-        if (role.equals(Role.USER)) {
-            return userMyPageView(id);
-        }
-        return ownerMyPageView(id);
-    }
-
-    @Transactional
     public List<OwnerShopResponseDto> viewMyShop(Long id) {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
@@ -159,13 +151,7 @@ public class UserService {
         return new UserPageResponseDto(owner);
     }
 
-    private UserPageResponseDto userMyPageView(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new UserPageResponseDto(user);
-    }
-
-    public List<UserVisitResponse> visitMyshop(Long id) {
+    public UserPageResponseDto viewMypage(Long id, Role role) {
         return null;
     }
 }
