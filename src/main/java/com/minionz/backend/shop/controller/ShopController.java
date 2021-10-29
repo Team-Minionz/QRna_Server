@@ -57,7 +57,7 @@ public class ShopController {
 
     @GetMapping("/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommonShopResponseDto> searchShop(@PathVariable("keyword") String keyword) {
+    public List<CommonShopResponseDto> searchShop(@RequestParam("keyword") String keyword) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.searchShop(keyword);
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
@@ -65,8 +65,8 @@ public class ShopController {
 
     @GetMapping("/{keyword}/{region}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommonShopResponseDto> searchRegionShop(@PathVariable("keyword") String keyword,
-                                                        @PathVariable String region) {
+    public List<CommonShopResponseDto> searchRegionShop(@RequestParam("keyword") String keyword,
+                                                        @RequestParam("region") String region) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.searchRegionShop(keyword, region);
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
@@ -74,7 +74,7 @@ public class ShopController {
 
     @GetMapping("/near/{x}/{y}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommonShopResponseDto> viewNearShop(@PathVariable("x") double x, @PathVariable("y") double y) {
+    public List<CommonShopResponseDto> viewNearShop(@RequestParam("x") double x, @RequestParam("y") double y) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(x, y);
         log.info(VIEW_MY_NEAR_SHOP_SUCCESS_MESSAGE);
         return shopResponseDtoList;
