@@ -162,13 +162,13 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableCountResponseDto(2, 2));
         list.add(new ShopTableCountResponseDto(3, 5));
         list.add(new ShopTableCountResponseDto(4, 7));
-        int maxUserA = 47;
-        int liveUser = 5;
-        ShopMaxUserResponseDto maxUser = new ShopMaxUserResponseDto(maxUserA, liveUser, (int)((liveUser / (double) maxUserA) * 100));
-        ShopDetailsResponseDto shopDetailsResponseDto = new ShopDetailsResponseDto(name, address, telNumber, list, maxUser);
-        willReturn(shopDetailsResponseDto).given(shopService).viewDetails(any(Long.class));
+        int MaxUser = 30;
+        int useUser = 15;
+        int userCongestion = (int) ((useUser / (double) MaxUser) * 100);
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, userCongestion);
+        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
-        유저_매장_상세보기_조회_성공(resultActions, shopDetailsResponseDto);
+        유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
     }
 
     @DisplayName("매장 상세보기 조회 실패")
@@ -176,7 +176,7 @@ class ShopControllerTest extends ApiDocument {
     void 매장_상세보기_조회_실패() throws Exception {
         Long id = 1L;
         Message message = new Message("매장 상세보기 조회 실패");
-        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetails(any(Long.class));
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
         유저_매장_상세보기_조회_실패(resultActions, message);
     }
@@ -192,9 +192,9 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("user-visit-shop-fail"));
     }
 
-    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailsResponseDto shopDetailsResponseDto) throws Exception {
+    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailResponseDto shopDetailResponseDto) throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(shopDetailsResponseDto)))
+                .andExpect(content().json(toJson(shopDetailResponseDto)))
                 .andDo(print())
                 .andDo(toDocument("user-visit-shop-success"));
     }
