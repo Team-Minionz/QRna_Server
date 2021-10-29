@@ -14,13 +14,19 @@ public class ShopDetailResponseDto {
     private Address address;
     private String telNumber;
     private List<ShopTableCountResponseDto> tableInfoList;
-    private int userCongestion;
+    private int population;
+    private int useUser;
+    private int maxUser;
+    private boolean bookMark;
 
-    public ShopDetailResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableInfoList, int userCongestion) {
+    public ShopDetailResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableInfoList, int useUser, int maxUser, int population, boolean bookMark) {
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
         this.tableInfoList = tableInfoList;
-        this.userCongestion = userCongestion;
+        this.useUser = useUser;
+        this.maxUser = maxUser;
+        this.population = population;
+        this.bookMark = bookMark;
     }
 }

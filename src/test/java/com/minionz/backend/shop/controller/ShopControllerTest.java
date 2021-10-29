@@ -8,6 +8,7 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
+import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,14 +158,14 @@ class ShopControllerTest extends ApiDocument {
         String name = "BBQ";
         String telNumber = "010-6634-3435";
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTable> shopTables = new ArrayList<>();
         List<ShopTableCountResponseDto> list = new ArrayList<>();
         list.add(new ShopTableCountResponseDto(2, 2));
         list.add(new ShopTableCountResponseDto(3, 5));
         list.add(new ShopTableCountResponseDto(4, 7));
-        int MaxUser = 30;
-        int useUser = 15;
-        int userCongestion = (int) ((useUser / (double) MaxUser) * 100);
-        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, userCongestion);
+        int maxUser = 47;
+        int useUser = 20;
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, useUser, maxUser, useUser / maxUser, true);
         willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
@@ -182,7 +182,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shops/" + id));
+        return mockMvc.perform(get("/api/v1/shops/" + id));
     }
 
     private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
