@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -91,17 +90,14 @@ public class UserService {
         return ownerShopResponseDtoList;
     }
 
-    @Transactional
     public List<CommonShopResponseDto> viewMyBookmark(Long id) {
         return null;
     }
 
-    @Transactional
     public Message addBookmark(BookmarkRequestDto bookmarkRequestDto) {
         return null;
     }
 
-    @Transactional
     public Message deleteBookmark(Long userId, Long shopId) {
         return null;
     }

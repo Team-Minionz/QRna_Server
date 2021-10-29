@@ -72,7 +72,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Message addBookmark(@RequestBody BookmarkRequestDto bookmarkRequestDto) {
         Message message = userService.addBookmark(bookmarkRequestDto);
-        log.info(message.getMessage());
         return message;
     }
 
@@ -80,7 +79,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Message deleteBookmark(@PathVariable("userId") Long userId, @PathVariable Long shopId) {
         Message message = userService.deleteBookmark(userId, shopId);
-        log.info(message.getMessage());
         return message;
     }
 
@@ -88,7 +86,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> viewMyBookmark(@PathVariable("id") Long id) {
         List<CommonShopResponseDto> commonShopResponseDtoList = userService.viewMyBookmark(id);
-        log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
         return commonShopResponseDtoList;
     }
 }
