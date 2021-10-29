@@ -4,10 +4,8 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.shop.domain.CongestionStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class CommonShopResponseDto {
 
