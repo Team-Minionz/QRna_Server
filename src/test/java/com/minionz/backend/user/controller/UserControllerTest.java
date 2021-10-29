@@ -325,8 +325,8 @@ class UserControllerTest extends ApiDocument {
                 .name("사장")
                 .build();
         shopTables.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
+                .maxUser(2)
+                .tableNumber(2)
                 .build());
         shopTables.add(ShopTable.builder()
                 .maxUser(3)
@@ -377,8 +377,8 @@ class UserControllerTest extends ApiDocument {
                 .name("사장")
                 .build();
         shopTables.add(ShopTable.builder()
-                .maxUser(3)
-                .tableNumber(1)
+                .maxUser(2)
+                .tableNumber(2)
                 .build());
         shopTables.add(ShopTable.builder()
                 .maxUser(3)
@@ -419,11 +419,11 @@ class UserControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_마이페이지_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id + "/" + role));
+        return mockMvc.perform(get("/api/v1/users/page/" + id + "/" + role));
     }
 
     private ResultActions 오너_마이페이지_요청(Long id, Role role) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id + "/" + role));
+        return mockMvc.perform(get("/api/v1/users/page/" + id + "/" + role));
     }
 
     private void 오너_마이페이지_성공(ResultActions response, UserPageResponseDto userPageResponseDto) throws Exception {
