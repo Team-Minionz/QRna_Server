@@ -8,19 +8,19 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class ShopDetailsResponseDto {
+public class ShopDetailResponseDto {
 
     private String name;
     private Address address;
     private String telNumber;
-    private ShopMaxUserResponseDto MaxUser;
-    private List<ShopTableCountResponseDto> tableTotal;
+    private List<ShopTableCountResponseDto> tableInfoList;
+    private int userCongestion;
 
-    public ShopDetailsResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableTotal, ShopMaxUserResponseDto MaxUser) {
+    public ShopDetailResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableInfoList, int userCongestion) {
         this.name = name;
         this.address = address;
         this.telNumber = telNumber;
-        this.tableTotal = tableTotal;
-        this.MaxUser = MaxUser;
+        this.tableInfoList = tableInfoList;
+        this.userCongestion = userCongestion;
     }
 }

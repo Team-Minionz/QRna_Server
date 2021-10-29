@@ -3,7 +3,7 @@ package com.minionz.backend.shop.service;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopDetailsResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopDetailResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
@@ -74,7 +74,7 @@ public class ShopService {
         return responseDtos;
     }
 
-    public ShopDetailsResponseDto viewDetails(Long id) {
+    public ShopDetailResponseDto viewDetail(Long id) {
         return null;
     }
 }
