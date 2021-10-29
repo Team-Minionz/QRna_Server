@@ -19,7 +19,6 @@ public class UserController {
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String VIEW_MY_PAGE_SUCCESS_MESSAGE = "마이페이지 조회 성공";
     private static final String VIEW_MY_SHOP_SUCCESS_MESSAGE = "마이샵 조회성공";
-    private static final String VIEW_LIKE_SHOP_SUCCESS_MESSAGE = "방문매장 조회성공";
 
     private final UserService userService;
 
