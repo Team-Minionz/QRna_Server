@@ -163,9 +163,7 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableCountResponseDto(2, 2));
         list.add(new ShopTableCountResponseDto(3, 5));
         list.add(new ShopTableCountResponseDto(4, 7));
-        int maxUser = 47;
-        int useUser = 20;
-        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, useUser, maxUser, useUser / maxUser, true);
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, 20, 47, CongestionStatus.SMOOTH, true);
         willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
