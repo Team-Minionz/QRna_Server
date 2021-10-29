@@ -67,12 +67,4 @@ public class UserController {
         log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
         return ownerShopResponseDtos;
     }
-
-    @GetMapping("/page/visit/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserVisitResponse> visitShop(@PathVariable("id") Long id) {
-        List<UserVisitResponse> userVisitResponseList = userService.visitMyshop(id);
-        log.info(VIEW_LIKE_SHOP_SUCCESS_MESSAGE);
-        return userVisitResponseList;
-    }
 }
