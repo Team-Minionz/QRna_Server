@@ -59,7 +59,6 @@ public class ShopController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> searchShop(@RequestParam("keyword") String keyword) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.searchShop(keyword);
-        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
 
@@ -68,7 +67,6 @@ public class ShopController {
     public List<CommonShopResponseDto> searchRegionShop(@RequestParam("keyword") String keyword,
                                                         @RequestParam("region") String region) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.searchRegionShop(keyword, region);
-        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
 
@@ -76,7 +74,6 @@ public class ShopController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> viewNearShop(@RequestParam("x") double x, @RequestParam("y") double y) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(x, y);
-        log.info(VIEW_MY_NEAR_SHOP_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
 }
