@@ -361,3 +361,17 @@ include::{snippets}/visit-checkin-fail/http-request.adoc[]
 
 .response
 include::{snippets}/visit-checkin-fail/http-response.adoc[]
+
+=== 상세정보조회
+==== 성공
+.request
+include::{snippets}/user-visit-shop-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-visit-shop-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-visit-shop-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-visit-shop-fail/http-response.adoc[]

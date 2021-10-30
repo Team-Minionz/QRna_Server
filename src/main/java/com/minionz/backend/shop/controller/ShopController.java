@@ -1,11 +1,7 @@
 package com.minionz.backend.shop.controller;
 
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopTableResponseDto;
+import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +78,11 @@ public class ShopController {
     @ResponseStatus(HttpStatus.OK)
     public List<ShopTableResponseDto> viewTables(@PathVariable("id") Long id) {
         return shopService.viewTables(id);
+    }
+
+    @GetMapping("/detail/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ShopDetailResponseDto detailShop(@PathVariable("id") Long id) {
+        return shopService.viewDetail(id);
     }
 }
