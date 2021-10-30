@@ -8,6 +8,7 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
+import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.domain.UseStatus;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
@@ -226,6 +227,51 @@ class ShopControllerTest extends ApiDocument {
         유저_주변가게_조회_실패(response, errorMessage);
     }
 
+    @DisplayName("매장 상세보기 조회 성공")
+    @Test
+    void 매장_상세보기_조회_성공() throws Exception {
+        Long id = 1L;
+        String name = "BBQ";
+        String telNumber = "010-6634-3435";
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTableCountResponseDto> list = new ArrayList<>();
+        list.add(new ShopTableCountResponseDto(2, 2));
+        list.add(new ShopTableCountResponseDto(3, 5));
+        list.add(new ShopTableCountResponseDto(4, 7));
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, 20, 47, CongestionStatus.SMOOTH, true);
+        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
+    }
+
+    @DisplayName("매장 상세보기 조회 실패")
+    @Test
+    void 매장_상세보기_조회_실패() throws Exception {
+        Long id = 1L;
+        Message message = new Message("매장 상세보기 조회 실패");
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        유저_매장_상세보기_조회_실패(resultActions, message);
+    }
+
+    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/detail/" + id));
+    }
+
+    private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-fail"));
+    }
+
+    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailResponseDto shopDetailResponseDto) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopDetailResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user-visit-shop-success"));
+    }
+
     private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
         return mockMvc.perform(get("/api/v1/shops/near/" + x + "/" + y));
     }
@@ -246,7 +292,7 @@ class ShopControllerTest extends ApiDocument {
 
     private ResultActions 상점지역검색_요청(String query, String region) throws Exception {
         return mockMvc.perform(get("/api/v1/shops/" + query + "/" + region)
-                                .characterEncoding("UTF-8"));
+                .characterEncoding("UTF-8"));
     }
 
     private void 상점지역검색요청_성공(ResultActions resultActions, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
