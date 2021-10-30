@@ -8,7 +8,6 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
-import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.domain.UseStatus;
 import com.minionz.backend.shop.service.ShopService;
 import org.junit.jupiter.api.DisplayName;
@@ -195,9 +194,10 @@ class ShopControllerTest extends ApiDocument {
     @Test
     void 상점지역검색_실패() throws Exception {
         String query = "맘스터치";
+        String region = "경기도";
         Message message = new Message("등록된 매장이 존재하지 않습니다.");
-        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShop(any(String.class));
-        ResultActions resultActions = 상점검색_요청(query);
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        ResultActions resultActions = 상점지역검색_요청(query, region);
         상점지역검색요청_실패(message, resultActions);
     }
 
@@ -273,7 +273,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/near/" + x + "/" + y));
+        return mockMvc.perform(get("/api/v1/shops/near?x=" + x + "&y=" + y));
     }
 
     private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
@@ -291,7 +291,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 상점지역검색_요청(String query, String region) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/" + query + "/" + region)
+        return mockMvc.perform(get("/api/v1/shops/search/region?region=" + region + "&keyword=" + query)
                 .characterEncoding("UTF-8"));
     }
 
@@ -324,7 +324,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 상점검색_요청(String query) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/" + query));
+        return mockMvc.perform(get("/api/v1/shops/search?keyword=" + query));
     }
 
     @DisplayName("테이블 목록 조회 성공")
