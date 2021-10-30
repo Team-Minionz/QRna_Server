@@ -63,9 +63,9 @@ public class UserController {
     @GetMapping("/shop/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<OwnerShopResponseDto> viewMyShop(@PathVariable("id") Long id) {
-        List<OwnerShopResponseDto> ownerShopResponseDtos = userService.viewMyShop(id);
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = userService.viewMyShop(id);
         log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
-        return ownerShopResponseDtos;
+        return ownerShopResponseDtoList;
     }
 
     @PostMapping("/bookmark")
