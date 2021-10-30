@@ -1,6 +1,7 @@
 package com.minionz.backend.user.controller;
 
 import com.minionz.backend.common.domain.Message;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +66,26 @@ public class UserController {
         List<OwnerShopResponseDto> ownerShopResponseDtoList = userService.viewMyShop(id);
         log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
         return ownerShopResponseDtoList;
+    }
+
+    @PostMapping("/bookmark")
+    @ResponseStatus(HttpStatus.OK)
+    public Message addBookmark(@RequestBody BookmarkRequestDto bookmarkRequestDto) {
+        Message message = userService.addBookmark(bookmarkRequestDto);
+        return message;
+    }
+
+    @DeleteMapping("/bookmark/{userId}/{shopId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Message deleteBookmark(@PathVariable("userId") Long userId, @PathVariable Long shopId) {
+        Message message = userService.deleteBookmark(userId, shopId);
+        return message;
+    }
+
+    @GetMapping("/bookmark/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommonShopResponseDto> viewMyBookmark(@PathVariable("id") Long id) {
+        List<CommonShopResponseDto> commonShopResponseDtoList = userService.viewMyBookmark(id);
+        return commonShopResponseDtoList;
     }
 }

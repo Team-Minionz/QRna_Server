@@ -28,6 +28,9 @@ public class User extends UserBaseEntity {
     @Column(nullable = false, unique = true)
     private String nickName;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
     @Builder
     public User(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String nickName, String telNumber, Address address) {
         super(id, createdDate, modifiedDate, name, email, password, telNumber);

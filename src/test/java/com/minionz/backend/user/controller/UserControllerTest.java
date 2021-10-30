@@ -6,6 +6,8 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
+import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.user.controller.dto.*;
@@ -334,6 +336,72 @@ class UserControllerTest extends ApiDocument {
         오너_샵조회_실패(response, errorMessage);
     }
 
+    @DisplayName("즐겨찾기 등록 성공")
+    @Test
+    void 즐겨찾기등록_성공() throws Exception {
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, 1L);
+        Message message = new Message("즐겨찾기 등록 성공");
+        willReturn(message).given(userService).addBookmark(any(BookmarkRequestDto.class));
+        final ResultActions response = 즐겨찾기_등록_요청(bookmarkRequestDto);
+        즐겨찾기_등록_성공(response, message);
+    }
+
+    @DisplayName("즐겨찾기 등록 실패")
+    @Test
+    void 즐겨찾기등록_실패() throws Exception {
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, 1L);
+        Message message = new Message("즐겨찾기 등록 실패");
+        willThrow(new NotFoundException("즐겨찾기 등록 실패")).given(userService).addBookmark(any(BookmarkRequestDto.class));
+        ResultActions response = 즐겨찾기_등록_요청(bookmarkRequestDto);
+        즐겨찾기_등록_실패(response, message);
+    }
+
+    @DisplayName("즐겨찾기 삭제 성공")
+    @Test
+    void 즐겨찾기삭제_성공() throws Exception {
+        Long userId = 1L;
+        Long shopId = 2L;
+        Message message = new Message("즐겨찾기 삭제 성공");
+        willReturn(message).given(userService).deleteBookmark(any(Long.class), any(Long.class));
+        final ResultActions response = 즐겨찾기_삭제_요청(userId, shopId);
+        즐겨찾기_삭제_성공(response, message);
+    }
+
+    @DisplayName("즐겨찾기 삭제 실패")
+    @Test
+    void 즐겨찾기삭제_실패() throws Exception {
+        Long userId = 1L;
+        Long shopId = 2L;
+        Message message = new Message("즐겨찾기 삭제 실패");
+        willThrow(new NotFoundException(message.getMessage())).given(userService).deleteBookmark(any(Long.class), any(Long.class));
+        final ResultActions response = 즐겨찾기_삭제_요청(userId, shopId);
+        즐겨찾기_삭제_실패(response, message);
+    }
+
+    @DisplayName("즐겨찾기 조회 성공")
+    @Test
+    void 즐겨찾기조회_성공() throws Exception {
+        Long userId = 1L;
+        Address address = new Address("인천시", "부평구", "산곡동");
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
+        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
+        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        willReturn(shopResponseDtoList).given(userService).viewMyBookmark(any(Long.class));
+        final ResultActions response = 즐겨찾기_조회_요청(userId);
+        즐겨찾기_조회_성공(response, shopResponseDtoList);
+    }
+
+    @DisplayName("즐겨찾기 조회 실패")
+    @Test
+    void 즐겨찾기조회_실패() throws Exception {
+        Long userId = 1L;
+        Message message = new Message("즐겨찾기 조회 실패");
+        willThrow(new NotFoundException(message.getMessage())).given(userService).viewMyBookmark(any(Long.class));
+        final ResultActions response = 즐겨찾기_조회_요청(userId);
+        즐겨찾기_조회_실패(response, message);
+    }
+
     private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(ownerShopResponseDtoList)))
@@ -511,5 +579,62 @@ class UserControllerTest extends ApiDocument {
 
     private ResultActions 유저_마이페이지_요청(Long id, Role role) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/page/" + id + "/" + role));
+    }
+
+    private void 즐겨찾기_등록_성공(ResultActions response, Message message) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-add-bookmark-success"));
+    }
+
+    private ResultActions 즐겨찾기_등록_요청(BookmarkRequestDto bookmarkRequestDto) throws Exception {
+        String content = objectMapper.writeValueAsString(bookmarkRequestDto);
+        return mockMvc.perform(post("/api/v1/users/bookmark")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private void 즐겨찾기_등록_실패(ResultActions response, Message message) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-add-bookmark-fail"));
+    }
+
+    private void 즐겨찾기_삭제_성공(ResultActions response, Message message) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-delete-bookmark-success"));
+    }
+
+    private ResultActions 즐겨찾기_삭제_요청(Long userId, Long shopId) throws Exception {
+        return mockMvc.perform(delete("/api/v1/users/bookmark/" + userId + "/" + shopId));
+    }
+
+    private void 즐겨찾기_삭제_실패(ResultActions response, Message message) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-delete-bookmark-fail"));
+    }
+
+    private void 즐겨찾기_조회_성공(ResultActions response, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-view-bookmark-success"));
+    }
+
+    private ResultActions 즐겨찾기_조회_요청(Long userId) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/bookmark/" + userId));
+    }
+
+    private void 즐겨찾기_조회_실패(ResultActions response, Message message) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-view-bookmark-fail"));
     }
 }
