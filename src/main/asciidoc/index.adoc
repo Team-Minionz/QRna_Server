@@ -213,6 +213,20 @@ include::{snippets}/owner-shop-view-success/http-response.adoc[]
 include::{snippets}/owner-shop-view-fail/http-request.adoc[]
 
 .response
+include::{snippets}/owner-view-page-fail/http-response.adoc[]
+==== 테이블 퇴장
+===== 성공
+.request
+include::{snippets}/table-exit-success/http-request.adoc[]
+
+.response
+include::{snippets}/table-exit-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/table-exit-fail/http-request.adoc[]
+
+.response
+include::{snippets}/table-exit-fail/http-response.adoc[]
 include::{snippets}/owner-shop-view-fail/http-response.adoc[]
 
 === 매장
@@ -268,6 +282,19 @@ include::{snippets}/shop-all-view-fail/http-request.adoc[]
 
 .response
 include::{snippets}/shop-all-view-fail/http-response.adoc[]
+==== 테이블 목록 조회
+===== 성공
+.request
+include::{snippets}/table-list-view-success/http-request.adoc[]
+
+.response
+include::{snippets}/table-list-view-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/table-list-view-fail/http-request.adoc[]
+
+.response
+include::{snippets}/table-list-view-fail/http-response.adoc[]
 ==== 매장 검색
 ===== 성공
 .request
