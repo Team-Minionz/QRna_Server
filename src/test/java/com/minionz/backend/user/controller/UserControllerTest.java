@@ -27,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,7 +233,7 @@ class UserControllerTest extends ApiDocument {
                 .address(address)
                 .build();
         Long id = 1L;
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user);
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user,null);
         willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class), any(Role.class));
         final ResultActions response = 유저_마이페이지_요청(id, Role.USER);
         유저_마이페이지_성공(response, userPageResponseDto);
@@ -400,6 +401,76 @@ class UserControllerTest extends ApiDocument {
         willThrow(new NotFoundException(message.getMessage())).given(userService).viewMyBookmark(any(Long.class));
         final ResultActions response = 즐겨찾기_조회_요청(userId);
         즐겨찾기_조회_실패(response, message);
+    }
+
+    @DisplayName("유저 마이페이지 조회 성공")
+    @Test
+    void 유저_마이페이지_조회_성공() throws Exception {
+        Long id = 1L;
+        Address userAddress = new Address("안산시", "상록구", "월피동");
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTable> shopTables = new ArrayList<>();
+        LocalDateTime visitedDate = LocalDateTime.now();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        shopTables.add(ShopTable.builder()
+                .maxUser(3)
+                .tableNumber(1)
+                .build());
+        Shop shop = Shop.builder()
+                .name("가게")
+                .address(address)
+                .owner(owner)
+                .telNumber("010-2222-1111")
+                .tableList(shopTables)
+                .build();
+        User user = User.builder()
+                .name("정재욱")
+                .address(userAddress)
+                .telNumber("010-2242-5567")
+                .build();
+        List<UserVisitResponseDto> userVisitResponseList = new ArrayList<>();
+        userVisitResponseList.add(new UserVisitResponseDto(shop, visitedDate));
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto(user, userVisitResponseList);
+        willReturn(userPageResponseDto).given(userService).viewMypage(any(Long.class), any(Role.class));
+        ResultActions resultActions = 유저_마이페이지_조회_요청(id, Role.USER);
+        유저_마이페이지_조회_성공(resultActions, userPageResponseDto);
+    }
+
+    @DisplayName("유저 방문매장 조회 실패")
+    @Test
+    void 유저_마이페이지_조회_실패() throws Exception {
+        Long id = 1L;
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(userService).viewMypage(any(Long.class), any(Role.class));
+        ResultActions resultActions = 유저_마이페이지_조회_요청(id, Role.USER);
+        유저_마이페이지_조회_실패(resultActions, errorMessage);
+    }
+
+    private void 유저_마이페이지_조회_성공(ResultActions response, UserPageResponseDto userPageResponseDto) throws Exception {
+        response.andExpect(status().isOk())
+                .andExpect(content().json(toJson(userPageResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("user-view-page-success"));
+    }
+
+    private void 유저_마이페이지_조회_실패(ResultActions response, Message errorMessage) throws Exception {
+        response.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(errorMessage)))
+                .andDo(print())
+                .andDo(toDocument("user-view-page-fail"));
+    }
+
+    private ResultActions 유저_마이페이지_조회_요청(Long id, Role role) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/page/" + id + "/" + role));
     }
 
     private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {

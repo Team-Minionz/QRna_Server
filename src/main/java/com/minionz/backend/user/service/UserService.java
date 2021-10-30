@@ -175,6 +175,6 @@ public class UserService {
     private UserPageResponseDto userMyPageView(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new UserPageResponseDto(user);
+        return null;
     }
 }

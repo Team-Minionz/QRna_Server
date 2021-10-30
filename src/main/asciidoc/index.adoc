@@ -375,3 +375,18 @@ include::{snippets}/user-visit-shop-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-visit-shop-fail/http-response.adoc[]
+
+=== 마이페이지 조회
+==== 성공
+.request
+include::{snippets}/user-view-page-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-page-success/http-response.adoc[]
+==== 실패
+.request
+include::{snippets}/user-view-page-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-view-page-fail/http-response.adoc[]
+
