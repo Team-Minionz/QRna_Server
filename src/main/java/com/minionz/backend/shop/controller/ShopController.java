@@ -18,7 +18,6 @@ public class ShopController {
 
     private static final String SHOP_SAVE_SUCCESS_MESSAGE = "매장 등록 성공";
     private static final String VIEW_SHOP_LIST_SUCCESS_MESSAGE = "매장 리스트 조회 성공";
-    private static final String VIEW_MY_NEAR_SHOP_SUCCESS_MESSAGE = "주변 가게 조회 성공";
 
     private final ShopService shopService;
 
@@ -52,14 +51,14 @@ public class ShopController {
         return shopResponseDtos;
     }
 
-    @GetMapping("/{keyword}")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> searchShop(@RequestParam("keyword") String keyword) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.searchShop(keyword);
         return shopResponseDtoList;
     }
 
-    @GetMapping("/{keyword}/{region}")
+    @GetMapping("/search/region")
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> searchRegionShop(@RequestParam("keyword") String keyword,
                                                         @RequestParam("region") String region) {
@@ -67,7 +66,7 @@ public class ShopController {
         return shopResponseDtoList;
     }
 
-    @GetMapping("/near/{x}/{y}")
+    @GetMapping("/near")
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> viewNearShop(@RequestParam("x") double x, @RequestParam("y") double y) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(x, y);
