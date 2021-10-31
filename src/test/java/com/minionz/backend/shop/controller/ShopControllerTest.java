@@ -262,14 +262,14 @@ class ShopControllerTest extends ApiDocument {
         resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
-                .andDo(toDocument("user-visit-shop-fail"));
+                .andDo(toDocument("shop-detail-fail"));
     }
 
     private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailResponseDto shopDetailResponseDto) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(shopDetailResponseDto)))
                 .andDo(print())
-                .andDo(toDocument("user-visit-shop-success"));
+                .andDo(toDocument("shop-detail-success"));
     }
 
     private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
