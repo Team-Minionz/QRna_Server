@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class OwnerShopResponseDto {
 
+    private Long id;
     private String name;
     private Address address;
     private String telNumber;
     private int numberOfTables;
 
     public OwnerShopResponseDto(Shop shop) {
+        this.id = shop.getId();
         this.name = shop.getName();
         this.address = shop.getAddress();
         this.telNumber = shop.getTelNumber();

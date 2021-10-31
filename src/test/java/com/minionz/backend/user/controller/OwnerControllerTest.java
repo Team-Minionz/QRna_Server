@@ -184,6 +184,7 @@ class OwnerControllerTest extends ApiDocument {
                 .tableNumber(1)
                 .build());
         Shop shop = Shop.builder()
+                .id(1L)
                 .name("가게")
                 .address(address)
                 .owner(owner)

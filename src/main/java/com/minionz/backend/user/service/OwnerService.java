@@ -57,8 +57,8 @@ public class OwnerService {
     }
 
     @Transactional
-    public List<OwnerShopResponseDto> viewMyShop(Long id) {
-        Owner owner = ownerRepository.findById(id)
+    public List<OwnerShopResponseDto> viewMyShop(Long userId) {
+        Owner owner = ownerRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
         for (Shop shop : owner.getShops()) {

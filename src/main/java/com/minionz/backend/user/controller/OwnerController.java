@@ -59,10 +59,10 @@ public class OwnerController {
         return ownerPageResponseDto;
     }
 
-    @GetMapping("/shop/{id}")
+    @GetMapping("/{ownerId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<OwnerShopResponseDto> viewMyShop(@PathVariable("id") Long id) {
-        List<OwnerShopResponseDto> ownerShopResponseDtoList = ownerService.viewMyShop(id);
+    public List<OwnerShopResponseDto> viewMyShop(@PathVariable("ownerId") Long ownerId) {
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = ownerService.viewMyShop(ownerId);
         log.info(VIEW_MY_SHOP_SUCCESS_MESSAGE);
         return ownerShopResponseDtoList;
     }

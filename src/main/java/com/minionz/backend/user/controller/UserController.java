@@ -53,10 +53,10 @@ public class UserController {
 
     @GetMapping("/page/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MyPageResponseDto viewMyPage(@PathVariable("id") Long id) {
-        MyPageResponseDto myPageResponseDto = userService.viewMyPage(id);
+    public UserPageResponseDto viewMyPage(@PathVariable("id") Long id) {
+        UserPageResponseDto userPageResponseDto = userService.viewMyPage(id);
         log.info(VIEW_MY_PAGE_SUCCESS_MESSAGE);
-        return myPageResponseDto;
+        return userPageResponseDto;
     }
 
     @PostMapping("/bookmark")

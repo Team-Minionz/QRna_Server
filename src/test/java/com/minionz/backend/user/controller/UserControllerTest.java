@@ -246,6 +246,7 @@ class UserControllerTest extends ApiDocument {
                 .tableList(shopTables)
                 .build();
         User user = User.builder()
+                .nickName("바보")
                 .name("정재욱")
                 .address(userAddress)
                 .telNumber("010-2242-5567")
@@ -284,13 +285,6 @@ class UserControllerTest extends ApiDocument {
 
     private ResultActions 유저_마이페이지_조회_요청(Long id) throws Exception {
         return mockMvc.perform(get("/api/v1/users/page/" + id));
-    }
-
-    private void 오너_샵조회_성공(ResultActions resultActions, List<OwnerShopResponseDto> ownerShopResponseDtoList) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().json(toJson(ownerShopResponseDtoList)))
-                .andDo(print())
-                .andDo(toDocument("owner-shop-view-success"));
     }
 
     private ResultActions 유저_회원가입_요청(JoinRequestDto signUpRequest) throws Exception {
