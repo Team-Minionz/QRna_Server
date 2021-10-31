@@ -20,17 +20,15 @@ public class JoinRequestDto {
     private String telNumber;
     private String password;
     private Address address;
-    private Role role = Role.USER;
 
     @Builder
-    public JoinRequestDto(String name, String email, String nickName, String telNumber, String password, Address address, Role role) {
+    public JoinRequestDto(String name, String email, String nickName, String telNumber, String password, Address address) {
         this.name = name;
         this.email = email;
         this.nickName = nickName;
         this.telNumber = telNumber;
         this.password = password;
         this.address = address;
-        this.role = role;
     }
 
     public User toUser(PasswordEncoder passwordEncoder) {

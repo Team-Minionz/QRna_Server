@@ -4,23 +4,21 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
-import com.minionz.backend.user.controller.dto.JoinRequestDto;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserPageResponseDto;
+import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.user.controller.dto.*;
-import com.minionz.backend.user.domain.User;
-import com.minionz.backend.user.domain.UserRepository;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class OwnerService {
 
     private static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
     private static final String SIGN_UP_SUCCESS_MESSAGE = "회원가입 성공";
@@ -30,44 +28,43 @@ public class UserService {
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
     private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
 
-    private final UserRepository userRepository;
+    private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        return new LoginResponseDto(userLogin(loginRequestDto), new Message(LOGIN_SUCCESS_MESSAGE));
+        return new LoginResponseDto(ownerLogin(loginRequestDto),new Message(LOGIN_SUCCESS_MESSAGE));
     }
 
     @Transactional(readOnly = true)
     public Message logout(Long id) {
-        return userLogout(id);
+        return ownerLogout(id);
     }
 
     @Transactional
     public Message signUp(JoinRequestDto joinRequestDto) {
-        return userSave(joinRequestDto);
+        return ownerSave(joinRequestDto);
     }
 
     @Transactional
     public Message withdraw(Long id) {
-        return userDelete(id);
+        return ownerDelete(id);
     }
 
     @Transactional
-    public UserPageResponseDto viewMyPage(Long id) {
-        return userMyPageView(id);
+    public OwnerPageResponseDto viewMyPage(Long id) {
+        return ownerMyPageView(id);
     }
 
-    public List<CommonShopResponseDto> viewMyBookmark(Long id) {
-        return null;
-    }
-
-    public Message addBookmark(BookmarkRequestDto bookmarkRequestDto) {
-        return null;
-    }
-
-    public Message deleteBookmark(Long userId, Long shopId) {
-        return null;
+    @Transactional
+    public List<OwnerShopResponseDto> viewMyShop(Long id) {
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
+        for (Shop shop : owner.getShops()) {
+            ownerShopResponseDtoList.add(new OwnerShopResponseDto(shop));
+        }
+        return ownerShopResponseDtoList;
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {
@@ -76,38 +73,38 @@ public class UserService {
         }
     }
 
-    private Message userDelete(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        userRepository.delete(user);
-        return new Message(WITHDRAW_SUCCESS_MESSAGE);
-    }
-
-    private Message userSave(JoinRequestDto joinRequestDto) {
-        if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
+    private Message ownerSave(JoinRequestDto joinRequestDto) {
+        if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
             throw new BadRequestException(USER_DUPLICATION_MESSAGE);
         }
-        User user = joinRequestDto.toUser(passwordEncoder);
-        userRepository.save(user);
+        Owner owner = joinRequestDto.toOwner(passwordEncoder);
+        ownerRepository.save(owner);
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
-    private Long userLogin(LoginRequestDto loginRequestDto) {
-        User findUser = userRepository.findByEmail(loginRequestDto.getEmail())
+    private Message ownerDelete(Long id) {
+        Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        validatePassword(loginRequestDto, findUser.getPassword());
-        return findUser.getId();
+        ownerRepository.delete(owner);
+        return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    private Message userLogout(Long id) {
-        userRepository.findById(id)
+    private Long ownerLogin(LoginRequestDto loginRequestDto) {
+        Owner findOwner = ownerRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        validatePassword(loginRequestDto, findOwner.getPassword());
+        return findOwner.getId();
+    }
+
+    private Message ownerLogout(Long id) {
+        ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
-    private UserPageResponseDto userMyPageView(Long id) {
-        User user = userRepository.findById(id)
+    private OwnerPageResponseDto ownerMyPageView(Long id) {
+        Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return null;
+        return new OwnerPageResponseDto(owner);
     }
 }
