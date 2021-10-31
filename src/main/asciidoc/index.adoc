@@ -349,7 +349,7 @@ include::{snippets}/shop-search-region-fail/http-request.adoc[]
 .response
 include::{snippets}/shop-search-region-fail/http-response.adoc[]
 
-==== 상세정보조회
+==== 상세 정보 조회
 ===== 성공
 .request
 include::{snippets}/shop-detail-success/http-request.adoc[]
