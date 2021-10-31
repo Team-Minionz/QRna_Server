@@ -257,7 +257,7 @@ class ShopControllerTest extends ApiDocument {
     }
 
     private ResultActions 유저_매장_상세보기_조회_요청(Long userId, Long shopId) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/detail/" + userId + "/" + shopId));
+        return mockMvc.perform(get("/api/v1/shops/detail/" + shopId + "/" + userId));
     }
 
     private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {

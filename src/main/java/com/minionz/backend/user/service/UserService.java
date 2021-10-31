@@ -35,27 +35,40 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        return new LoginResponseDto(userLogin(loginRequestDto), new Message(LOGIN_SUCCESS_MESSAGE));
+        User findUser = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        validatePassword(loginRequestDto, findUser.getPassword());
+        return new LoginResponseDto(findUser.getId(), new Message(LOGIN_SUCCESS_MESSAGE));
     }
 
     @Transactional(readOnly = true)
     public Message logout(Long id) {
-        return userLogout(id);
+        userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public Message signUp(JoinRequestDto joinRequestDto) {
-        return userSave(joinRequestDto);
+        if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
+            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
+        }
+        User user = joinRequestDto.toUser(passwordEncoder);
+        userRepository.save(user);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public Message withdraw(Long id) {
-        return userDelete(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        userRepository.delete(user);
+        return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public UserPageResponseDto viewMyPage(Long id) {
-        return userMyPageView(id);
+        return null;
     }
 
     public List<CommonShopResponseDto> viewMyBookmark(Long id) {
@@ -74,40 +87,5 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), password)) {
             throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
         }
-    }
-
-    private Message userDelete(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        userRepository.delete(user);
-        return new Message(WITHDRAW_SUCCESS_MESSAGE);
-    }
-
-    private Message userSave(JoinRequestDto joinRequestDto) {
-        if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
-            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
-        }
-        User user = joinRequestDto.toUser(passwordEncoder);
-        userRepository.save(user);
-        return new Message(SIGN_UP_SUCCESS_MESSAGE);
-    }
-
-    private Long userLogin(LoginRequestDto loginRequestDto) {
-        User findUser = userRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        validatePassword(loginRequestDto, findUser.getPassword());
-        return findUser.getId();
-    }
-
-    private Message userLogout(Long id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new Message(LOGOUT_SUCCESS_MESSAGE);
-    }
-
-    private UserPageResponseDto userMyPageView(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return null;
     }
 }

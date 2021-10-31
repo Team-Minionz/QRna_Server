@@ -33,27 +33,42 @@ public class OwnerService {
 
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        return new LoginResponseDto(ownerLogin(loginRequestDto),new Message(LOGIN_SUCCESS_MESSAGE));
+        Owner findOwner = ownerRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        validatePassword(loginRequestDto, findOwner.getPassword());
+        return new LoginResponseDto(findOwner.getId(),new Message(LOGIN_SUCCESS_MESSAGE));
     }
 
     @Transactional(readOnly = true)
     public Message logout(Long id) {
-        return ownerLogout(id);
+        ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new Message(LOGOUT_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public Message signUp(JoinRequestDto joinRequestDto) {
-        return ownerSave(joinRequestDto);
+        if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
+            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
+        }
+        Owner owner = joinRequestDto.toOwner(passwordEncoder);
+        ownerRepository.save(owner);
+        return new Message(SIGN_UP_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public Message withdraw(Long id) {
-        return ownerDelete(id);
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        ownerRepository.delete(owner);
+        return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
     @Transactional
     public OwnerPageResponseDto viewMyPage(Long id) {
-        return ownerMyPageView(id);
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        return new OwnerPageResponseDto(owner);
     }
 
     @Transactional
@@ -71,40 +86,5 @@ public class OwnerService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), password)) {
             throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
         }
-    }
-
-    private Message ownerSave(JoinRequestDto joinRequestDto) {
-        if (ownerRepository.existsByEmail(joinRequestDto.getEmail())) {
-            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
-        }
-        Owner owner = joinRequestDto.toOwner(passwordEncoder);
-        ownerRepository.save(owner);
-        return new Message(SIGN_UP_SUCCESS_MESSAGE);
-    }
-
-    private Message ownerDelete(Long id) {
-        Owner owner = ownerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        ownerRepository.delete(owner);
-        return new Message(WITHDRAW_SUCCESS_MESSAGE);
-    }
-
-    private Long ownerLogin(LoginRequestDto loginRequestDto) {
-        Owner findOwner = ownerRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        validatePassword(loginRequestDto, findOwner.getPassword());
-        return findOwner.getId();
-    }
-
-    private Message ownerLogout(Long id) {
-        ownerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new Message(LOGOUT_SUCCESS_MESSAGE);
-    }
-
-    private OwnerPageResponseDto ownerMyPageView(Long id) {
-        Owner owner = ownerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        return new OwnerPageResponseDto(owner);
     }
 }

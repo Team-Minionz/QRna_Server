@@ -12,14 +12,12 @@ public class OwnerShopResponseDto {
     private Long id;
     private String name;
     private AddressDto address;
-    private String telNumber;
     private int numberOfTables;
 
     public OwnerShopResponseDto(Shop shop) {
         this.id = shop.getId();
         this.name = shop.getName();
         this.address = new AddressDto(shop.getAddress());
-        this.telNumber = shop.getTelNumber();
         this.numberOfTables = shop.getNumberOfTables();
     }
 }

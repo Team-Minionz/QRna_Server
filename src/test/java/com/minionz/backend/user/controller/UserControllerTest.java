@@ -71,8 +71,6 @@ class UserControllerTest extends ApiDocument {
         유저_로그인_실패(errorMessage, resultActions);
     }
 
-
-
     @DisplayName("유저 로그아웃 성공")
     @Test
     public void 유저로그아웃테스트_성공() throws Exception {
@@ -92,8 +90,6 @@ class UserControllerTest extends ApiDocument {
         final ResultActions resultActions = 유저_로그아웃_요청(id);
         유저_로그아웃_실패(errorMessage, resultActions);
     }
-
-
 
     @DisplayName("유저 회원가입 성공")
     @Test

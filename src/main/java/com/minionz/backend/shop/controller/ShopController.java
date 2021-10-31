@@ -79,7 +79,7 @@ public class ShopController {
         return shopService.viewTables(id);
     }
 
-    @GetMapping("/detail/{userId}/{shopId}")
+    @GetMapping("/detail/{shopId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public ShopDetailResponseDto detailShop(@PathVariable("userId") Long userId, @PathVariable("shopId") Long shopId) {
         return shopService.viewDetail(userId, shopId);
