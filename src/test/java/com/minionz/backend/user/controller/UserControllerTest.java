@@ -98,7 +98,7 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 회원가입 성공")
     @Test
     void 유저회원가입_성공() throws Exception {
-        Address address = new Address("안산시", "상록구", "성포동");
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         JoinRequestDto signUpRequest = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -116,7 +116,7 @@ class UserControllerTest extends ApiDocument {
     @DisplayName("유저 회원가입 실패")
     @Test
     void 유저회원가입_실패() throws Exception {
-        final Address address = new Address("안산시", "상록구", "성포동");
+        final Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         JoinRequestDto signUpRequest = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -196,7 +196,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     void 즐겨찾기조회_성공() throws Exception {
         Long userId = 1L;
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
         shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
         shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
@@ -220,7 +220,7 @@ class UserControllerTest extends ApiDocument {
     @Test
     void 유저_마이페이지_조회_성공() throws Exception {
         Long id = 1L;
-        Address userAddress = new Address("안산시", "상록구", "월피동");
+        Address userAddress = new Address("안산시", "상록구", "월피동", 1.0, 2.0);
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         List<ShopTable> shopTables = new ArrayList<>();
         LocalDateTime visitedDate = LocalDateTime.now();

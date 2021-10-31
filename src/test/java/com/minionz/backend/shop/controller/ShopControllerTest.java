@@ -154,7 +154,7 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 검색 성공")
     @Test
     void 상점검색_성공() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         String query = "맘스터치";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
         shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
@@ -178,7 +178,7 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 지역검색 성공")
     @Test
     void 상점지역검색_성공() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         String query = "맘스터치";
         String region = "경기도";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
@@ -206,7 +206,7 @@ class ShopControllerTest extends ApiDocument {
     void 유저_주변가게_조회_성공() throws Exception {
         double x = 0.1;
         double y = 0.1;
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> nearShopResponseDtoList = new ArrayList<>();
         nearShopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
         nearShopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));

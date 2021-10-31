@@ -83,7 +83,7 @@ class OwnerServiceTest {
     @Test
     void 오너샵조회_성공() {
         //given
-        Address address = new Address("믿음", "소망", "씨티");
+        Address address = new Address("믿음", "소망", "씨티", 1.0, 2.0);
         List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
         shopTables1.add(new ShopTableRequestDto(2));
         shopTables1.add(new ShopTableRequestDto(4));
@@ -112,7 +112,7 @@ class OwnerServiceTest {
     @Test
     void 오너샵조회_실패() {
         //given
-        Address address = new Address("믿음", "소망", "씨티");
+        Address address = new Address("믿음", "소망", "씨티",  1.0, 2.0);
         List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
         shopTables1.add(new ShopTableRequestDto(2));
         shopTables1.add(new ShopTableRequestDto(4));

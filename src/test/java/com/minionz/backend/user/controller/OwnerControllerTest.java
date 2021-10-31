@@ -91,7 +91,6 @@ class OwnerControllerTest extends ApiDocument {
     @DisplayName("오너 회원가입 성공")
     @Test
     void 오너회원가입_성공() throws Exception {
-        Address address = new Address("안산시", "상록구", "성포동");
         JoinRequestDto signUpRequest = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -168,7 +167,7 @@ class OwnerControllerTest extends ApiDocument {
     void 오너샵조회_성공() throws Exception {
         List<OwnerShopResponseDto> ownerShopResponseDtoList = new ArrayList<>();
         List<ShopTable> shopTables = new ArrayList<>();
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         Owner owner = Owner.builder()
                 .email("hjhj@naver.com")
                 .password("123")

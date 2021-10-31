@@ -44,7 +44,7 @@ public class UserServiceTest {
     @Test
     void 회원가입_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -62,9 +62,11 @@ public class UserServiceTest {
     @Test
     void 회원가입_성공_테스트_오너() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .nickName("바보")
+                .address(address)
                 .email("operation@naver.com")
                 .telNumber("11111111")
                 .password("1234")
@@ -78,7 +80,7 @@ public class UserServiceTest {
     @Test
     void 회원탈퇴_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         User user = User.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
@@ -97,7 +99,7 @@ public class UserServiceTest {
     @Test
     void 회원중복_성공_테스트() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         User user = User.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
@@ -124,7 +126,7 @@ public class UserServiceTest {
     @Test
     void 로그인_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -146,9 +148,11 @@ public class UserServiceTest {
     @Test
     void 로그인_아이디_불일치_테스트() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
+                .address(address)
                 .password("123456")
                 .nickName("donglee99")
                 .telNumber("010111111111")
@@ -165,10 +169,12 @@ public class UserServiceTest {
     @Test
     void 로그인_비밀번호_불일치_테스트() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
                 .password("123456")
+                .address(address)
                 .nickName("donglee99")
                 .telNumber("010111111111")
                 .build();
@@ -184,7 +190,7 @@ public class UserServiceTest {
     @Test
     void 마이페이지_조회_성공() {
         //given
-        Address address = new Address("믿음", "소망", "씨티");
+        Address address = new Address("믿음", "소망", "씨티", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
@@ -204,11 +210,13 @@ public class UserServiceTest {
     @Test
     void 마이페이지_조회_실패() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
                 .password("123456")
                 .nickName("donglee99")
+                .address(address)
                 .telNumber("010111111111")
                 .build();
         userRepository.save(user);
@@ -223,7 +231,7 @@ public class UserServiceTest {
     @Test
     void passwordEncode() {
         // given
-        Address address = new Address("a", "b", "C");
+        Address address = new Address("a", "b", "C", 1.0, 2.0);
         String rawPassword = "12345678";
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
