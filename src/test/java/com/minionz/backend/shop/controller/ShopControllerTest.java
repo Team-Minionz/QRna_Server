@@ -230,7 +230,8 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("매장 상세보기 조회 성공")
     @Test
     void 매장_상세보기_조회_성공() throws Exception {
-        Long id = 1L;
+        Long userId = 1L;
+        Long shopId = 1L;
         String name = "BBQ";
         String telNumber = "010-6634-3435";
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
@@ -239,23 +240,24 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableCountResponseDto(3, 5));
         list.add(new ShopTableCountResponseDto(4, 7));
         ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, 20, 47, CongestionStatus.SMOOTH, true);
-        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
     }
 
     @DisplayName("매장 상세보기 조회 실패")
     @Test
     void 매장_상세보기_조회_실패() throws Exception {
-        Long id = 1L;
+        Long userId = 1L;
+        Long shopId = 1L;
         Message message = new Message("매장 상세보기 조회 실패");
-        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
         유저_매장_상세보기_조회_실패(resultActions, message);
     }
 
-    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/detail/" + id));
+    private ResultActions 유저_매장_상세보기_조회_요청(Long userId, Long shopId) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/detail/" + userId + "/" + shopId));
     }
 
     private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
