@@ -87,7 +87,7 @@ public class ShopService {
         return null;
     }
 
-    public ShopDetailResponseDto viewDetail(Long id) {
+    public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
         return null;
     }
 }

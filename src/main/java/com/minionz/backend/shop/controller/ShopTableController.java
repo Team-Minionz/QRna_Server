@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/owners")
+@RequestMapping("/api/v1/tables")
 public class ShopTableController {
 
     private final ShopTableService shopTableService;

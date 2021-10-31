@@ -121,6 +121,7 @@ include::{snippets}/user-view-page-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-view-page-fail/http-response.adoc[]
+
 ==== 즐겨찾기 등록
 ===== 성공
 .request
@@ -348,6 +349,20 @@ include::{snippets}/shop-search-region-fail/http-request.adoc[]
 .response
 include::{snippets}/shop-search-region-fail/http-response.adoc[]
 
+==== 상세 정보 조회
+===== 성공
+.request
+include::{snippets}/shop-detail-success/http-request.adoc[]
+
+.response
+include::{snippets}/shop-detail-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/shop-detail-fail/http-request.adoc[]
+
+.response
+include::{snippets}/shop-detail-fail/http-response.adoc[]
+
 === 방문기록
 ==== 성공
 .request
@@ -361,32 +376,3 @@ include::{snippets}/visit-checkin-fail/http-request.adoc[]
 
 .response
 include::{snippets}/visit-checkin-fail/http-response.adoc[]
-
-=== 상세정보조회
-==== 성공
-.request
-include::{snippets}/user-visit-shop-success/http-request.adoc[]
-
-.response
-include::{snippets}/user-visit-shop-success/http-response.adoc[]
-==== 실패
-.request
-include::{snippets}/user-visit-shop-fail/http-request.adoc[]
-
-.response
-include::{snippets}/user-visit-shop-fail/http-response.adoc[]
-
-=== 마이페이지 조회
-==== 성공
-.request
-include::{snippets}/user-view-page-success/http-request.adoc[]
-
-.response
-include::{snippets}/user-view-page-success/http-response.adoc[]
-==== 실패
-.request
-include::{snippets}/user-view-page-fail/http-request.adoc[]
-
-.response
-include::{snippets}/user-view-page-fail/http-response.adoc[]
-

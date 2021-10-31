@@ -154,7 +154,7 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 검색 성공")
     @Test
     void 상점검색_성공() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         String query = "맘스터치";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
         shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
@@ -178,7 +178,7 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("상점 지역검색 성공")
     @Test
     void 상점지역검색_성공() throws Exception {
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         String query = "맘스터치";
         String region = "경기도";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
@@ -206,7 +206,7 @@ class ShopControllerTest extends ApiDocument {
     void 유저_주변가게_조회_성공() throws Exception {
         double x = 0.1;
         double y = 0.1;
-        Address address = new Address("인천시", "부평구", "산곡동");
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> nearShopResponseDtoList = new ArrayList<>();
         nearShopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
         nearShopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
@@ -230,7 +230,8 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("매장 상세보기 조회 성공")
     @Test
     void 매장_상세보기_조회_성공() throws Exception {
-        Long id = 1L;
+        Long userId = 1L;
+        Long shopId = 1L;
         String name = "BBQ";
         String telNumber = "010-6634-3435";
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
@@ -239,37 +240,38 @@ class ShopControllerTest extends ApiDocument {
         list.add(new ShopTableCountResponseDto(3, 5));
         list.add(new ShopTableCountResponseDto(4, 7));
         ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, 20, 47, CongestionStatus.SMOOTH, true);
-        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
     }
 
     @DisplayName("매장 상세보기 조회 실패")
     @Test
     void 매장_상세보기_조회_실패() throws Exception {
-        Long id = 1L;
+        Long userId = 1L;
+        Long shopId = 1L;
         Message message = new Message("매장 상세보기 조회 실패");
-        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class));
-        ResultActions resultActions = 유저_매장_상세보기_조회_요청(id);
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
         유저_매장_상세보기_조회_실패(resultActions, message);
     }
 
-    private ResultActions 유저_매장_상세보기_조회_요청(Long id) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/detail/" + id));
+    private ResultActions 유저_매장_상세보기_조회_요청(Long userId, Long shopId) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/detail/" + shopId + "/" + userId));
     }
 
     private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
         resultActions.andExpect(status().isNotFound())
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
-                .andDo(toDocument("user-visit-shop-fail"));
+                .andDo(toDocument("shop-detail-fail"));
     }
 
     private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailResponseDto shopDetailResponseDto) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(shopDetailResponseDto)))
                 .andDo(print())
-                .andDo(toDocument("user-visit-shop-success"));
+                .andDo(toDocument("shop-detail-success"));
     }
 
     private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {

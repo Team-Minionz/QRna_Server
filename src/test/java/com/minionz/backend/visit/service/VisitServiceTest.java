@@ -49,7 +49,7 @@ public class VisitServiceTest {
 
     @BeforeEach
     void setUp() {
-        Address address = new Address("123-456", "송도동", "인천시 연수구");
+        Address address = new Address("123-456", "송도동", "인천시 연수구", 1.0, 2.0);
         List<ShopTableRequestDto> list = new ArrayList<>();
         list.add(new ShopTableRequestDto(2));
         list.add(new ShopTableRequestDto(4));
@@ -64,7 +64,7 @@ public class VisitServiceTest {
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         shopService.save(shopRequestDto);
 
-        Address userAddress = new Address("456-789", "송도동", "인천시 연수구");
+        Address userAddress = new Address("456-789", "송도동", "인천시 연수구", 1.0, 2.0);
         User user = User.builder()
                 .name("미니언")
                 .email("minionz@naver.com")

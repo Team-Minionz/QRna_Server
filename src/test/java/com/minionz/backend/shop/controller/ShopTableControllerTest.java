@@ -51,7 +51,7 @@ public class ShopTableControllerTest extends ApiDocument {
     }
 
     private ResultActions 테이블_퇴장_요청(Long id) throws Exception {
-        return mockMvc.perform(get("/api/v1/owners/" + id));
+        return mockMvc.perform(get("/api/v1/tables/" + id));
     }
 
     private void 테이블_퇴장_성공(ResultActions resultActions, Message message) throws Exception {
