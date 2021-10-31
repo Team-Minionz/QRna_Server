@@ -227,7 +227,7 @@ class OwnerControllerTest extends ApiDocument {
     }
 
     private ResultActions 오너_샵조회_요청(Long id) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/owners/shop/" + id));
+        return mockMvc.perform(get("/api/v1/owners/" + id));
     }
 
     private ResultActions 오너_회원가입_요청(JoinRequestDto signUpRequest) throws Exception {
