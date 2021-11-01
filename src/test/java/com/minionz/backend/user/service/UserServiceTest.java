@@ -5,9 +5,14 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.controller.dto.*;
-import com.minionz.backend.user.domain.User;
-import com.minionz.backend.user.domain.UserRepository;
+import com.minionz.backend.user.domain.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +22,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +39,19 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private ShopService shopService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,6 +59,9 @@ public class UserServiceTest {
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        ownerRepository.deleteAll();
+        bookmarkRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @Test
@@ -251,5 +274,213 @@ public class UserServiceTest {
                 () -> assertNotEquals(rawPassword, encode),
                 () -> assertTrue(passwordEncoder.matches(rawPassword, encode))
         );
+    }
+
+    @DisplayName("즐겨찾기 추가 성공")
+    @Test
+    public void 즐겨찾기_추가_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        userService.signUp(joinRequestDto);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        //when
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, save.getId());
+        Message message = userService.addBookmark(bookmarkRequestDto);
+        //then
+        assertThat(message.getMessage()).isEqualTo("즐겨찾기 추가 성공");
+    }
+
+    @DisplayName("즐겨찾기 추가 실패")
+    @Test
+    public void 즐겨찾기_추가_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, save.getId());
+        //when
+        //then
+        assertThatThrownBy(() -> userService.addBookmark(bookmarkRequestDto))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @DisplayName("즐겨찾기 삭제 성공")
+    @Test
+    public void 즐겨찾기_삭제_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        Message message = userService.deleteBookmark(savedUser.getId(), save.getId());
+        //then
+        assertThat(message.getMessage()).isEqualTo("즐겨찾기 삭제 성공");
+    }
+
+    @DisplayName("즐겨찾기 삭제 실패")
+    @Test
+    public void 즐겨찾기_삭제_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        //then
+        assertThatThrownBy(() -> userService.deleteBookmark(1L, save.getId()))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @DisplayName("즐겨찾기 조회 성공")
+    @Test
+    public void 즐겨찾기_조회_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("맘스터치", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        List<CommonShopResponseDto> commonShopResponseDtos = userService.viewMyBookmark(savedUser.getId());
+        //then
+        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
+    }
+
+    @DisplayName("즐겨찾기 조회 실패")
+    @Test
+    public void 즐겨찾기_조회_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("맘스터치", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        //then
+        assertThatThrownBy(() -> userService.viewMyBookmark(2L))
+                .isInstanceOf(NotFoundException.class);
     }
 }
