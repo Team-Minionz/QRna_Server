@@ -89,6 +89,12 @@ public class Shop extends BaseEntity {
         numberOfTables = tableList.size();
     }
 
+    public int getNumberOfUsingTables() {
+        return (int) tableList.stream()
+                .filter(status -> status.getUseStatus() == UseStatus.USING)
+                .count();
+    }
+
     public void updateDegreeOfCongestion() {
         double ratioOfCongestion = getNumberOfUsingTables() / (double) numberOfTables;
         if (ratioOfCongestion < 0.3) {
@@ -103,11 +109,5 @@ public class Shop extends BaseEntity {
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
-    }
-
-    private int getNumberOfUsingTables() {
-        return (int) tableList.stream()
-                .filter(status -> status.getUseStatus() == UseStatus.USING)
-                .count();
     }
 }
