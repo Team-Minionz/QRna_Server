@@ -323,7 +323,6 @@ public class UserServiceTest {
                 .telNumber("010-111-1111")
                 .address(address)
                 .build();
-        User savedUser = userRepository.save(user);
         Owner owner = Owner.builder()
                 .name("주인")
                 .email("223@naver.com")
