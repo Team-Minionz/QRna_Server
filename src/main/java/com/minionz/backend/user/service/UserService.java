@@ -34,7 +34,7 @@ public class UserService {
     private static final String WITHDRAW_SUCCESS_MESSAGE = "회원탈퇴 성공";
     private static final String ADD_BOOKMARK_SUCCESS_MESSAGE = "즐겨찾기 추가 성공";
     private static final String DELETE_BOOKMARK_SUCCESS_MESSAGE = "즐겨찾기 삭제 성공";
-    private static final String USER_NOT_FOUND_MESSAGE = "해당 유저 이메일이 존재하지 않습니다.";
+    private static final String USER_NOT_FOUND_MESSAGE = "해당 유저가 존재하지 않습니다.";
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
     private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
     private static final String SHOP_NOT_FOUND_MESSAGE = "해당 매장이 존재하지 않습니다.";
@@ -94,7 +94,7 @@ public class UserService {
 
     @Transactional
     public Message addBookmark(BookmarkRequestDto bookmarkRequestDto) {
-        bookmarkRepository.save(mapToBookmark(bookmarkRequestDto));
+        bookmarkRepository.save(toBookmark(bookmarkRequestDto));
         return new Message(ADD_BOOKMARK_SUCCESS_MESSAGE);
     }
 
@@ -121,7 +121,7 @@ public class UserService {
         }
     }
 
-    private Bookmark mapToBookmark(BookmarkRequestDto bookmarkRequestDto) {
+    private Bookmark toBookmark(BookmarkRequestDto bookmarkRequestDto) {
         User user = userRepository.findById(bookmarkRequestDto.getUserId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
         Shop shop = shopRepository.findById(bookmarkRequestDto.getShopId())
@@ -129,8 +129,6 @@ public class UserService {
         return Bookmark.builder()
                 .user(user)
                 .shop(shop)
-                .createdDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now())
                 .build();
     }
 }

@@ -186,7 +186,7 @@ public class UserServiceTest {
         //then
         assertThatThrownBy(() -> userService.login(LoginRequestDto))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @Test
@@ -341,7 +341,8 @@ public class UserServiceTest {
         //when
         //then
         assertThatThrownBy(() -> userService.addBookmark(bookmarkRequestDto))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @DisplayName("즐겨찾기 삭제 성공")
@@ -411,7 +412,8 @@ public class UserServiceTest {
         //when
         //then
         assertThatThrownBy(() -> userService.deleteBookmark(1L, save.getId()))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @DisplayName("즐겨찾기 조회 성공")
@@ -481,6 +483,7 @@ public class UserServiceTest {
         //when
         //then
         assertThatThrownBy(() -> userService.viewMyBookmark(2L))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 }
