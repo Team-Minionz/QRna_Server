@@ -7,7 +7,6 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
-import com.minionz.backend.shop.domain.CongestionStatus;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.user.controller.dto.*;
@@ -194,9 +193,47 @@ class UserControllerTest extends ApiDocument {
         Long userId = 1L;
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
-        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
-        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
-        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
         willReturn(shopResponseDtoList).given(userService).viewMyBookmark(any(Long.class));
         final ResultActions response = 즐겨찾기_조회_요청(userId);
         즐겨찾기_조회_성공(response, shopResponseDtoList);
