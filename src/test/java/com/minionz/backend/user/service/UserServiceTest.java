@@ -5,9 +5,22 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.user.controller.dto.*;
+import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
+import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.shop.service.ShopService;
+import com.minionz.backend.user.controller.dto.JoinRequestDto;
+import com.minionz.backend.user.controller.dto.LoginRequestDto;
+import com.minionz.backend.user.controller.dto.LoginResponseDto;
+import com.minionz.backend.user.controller.dto.UserPageResponseDto;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
+import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
+import com.minionz.backend.visit.domain.VisitRepository;
+import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +31,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
@@ -35,6 +50,21 @@ public class UserServiceTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
+    private ShopRepository shopRepository;
+
+    @Autowired
+    private VisitRepository visitRepository;
+
+    @Autowired
+    private VisitService visitService;
 
     @AfterEach
     void cleanUp() {
@@ -231,25 +261,65 @@ public class UserServiceTest {
     @Test
     void passwordEncode() {
         // given
-        Address address = new Address("a", "b", "C", 1.0, 2.0);
+        Address userAddress = new Address("안산시", "상록구", "월피동", 1.0, 2.0);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         String rawPassword = "12345678";
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
-                .name("정재욱")
-                .email("operation@naver.com")
-                .nickName("라이언")
-                .telNumber("11111111")
-                .password("12345678")
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
                 .address(address)
                 .build();
         userService.signUp(joinRequestDto);
-        User user = userRepository.findByEmail("operation@naver.com")
-                .orElseThrow(() -> new BadRequestException("실패"));
-        String encode = user.getPassword();
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
         //when
         //then
-        assertAll(
-                () -> assertNotEquals(rawPassword, encode),
-                () -> assertTrue(passwordEncoder.matches(rawPassword, encode))
-        );
+        assertThatThrownBy(() -> userService.viewMyPage(2L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+    }
+
+    @DisplayName("마이페이지 내 방문매장 리스트 테스트")
+    @Test
+    void ViewMyVisitList() {
+        // given
+        Address address = new Address("123-456", "송도동", "인천시 연수구", 1.0, 2.0);
+        Address userAddress = new Address("456-789", "송도동", "인천시 연수구", 1.0, 2.0);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        User user = User.builder()
+                .name("미니언")
+                .email("minionz@naver.com")
+                .password("1234")
+                .nickName("미니언")
+                .telNumber("010-1111-1111")
+                .address(userAddress)
+                .build();
+        userRepository.save(user);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopSaveResponseDto.getId());
+        visitService.checkIn(checkInRequestDto);
+        UserPageResponseDto userPageResponseDtoList = userService.viewMyPage(user.getId());
+        //when
+        //then
+        assertThat(userPageResponseDtoList.getUserVisitResponseList().get(0).getShopTelNumber()).isEqualTo(shopRequestDto.getTelNumber());
     }
 }
