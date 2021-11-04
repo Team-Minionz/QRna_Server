@@ -5,18 +5,17 @@ import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
-import com.minionz.backend.user.controller.dto.JoinRequestDto;
-import com.minionz.backend.user.controller.dto.LoginRequestDto;
-import com.minionz.backend.user.controller.dto.UserPageResponseDto;
 import com.minionz.backend.user.controller.dto.*;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
+import com.minionz.backend.visit.domain.Visit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -68,7 +67,13 @@ public class UserService {
 
     @Transactional
     public UserPageResponseDto viewMyPage(Long id) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        List<Visit> visitList = user.getVisitList();
+        List<UserVisitResponseDto> userVisitResponseDtoList = visitList.stream()
+                .map(visit -> new UserVisitResponseDto(visit.getShop(), visit.getCreatedDate()))
+                .collect(Collectors.toList());
+        return new UserPageResponseDto(user, userVisitResponseDtoList);
     }
 
     public List<CommonShopResponseDto> viewMyBookmark(Long id) {
