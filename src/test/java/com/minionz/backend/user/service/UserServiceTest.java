@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class UserServiceTest {
 
     @AfterEach
     void cleanUp() {
+        visitRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -287,7 +289,7 @@ public class UserServiceTest {
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
-    @DisplayName("마이페이지 내 방문매장 리스트 테스트")
+    @Transactional
     @Test
     void ViewMyVisitList() {
         // given
@@ -313,13 +315,13 @@ public class UserServiceTest {
                 .address(userAddress)
                 .build();
         userRepository.save(user);
+        //when
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
         CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopSaveResponseDto.getId());
         visitService.checkIn(checkInRequestDto);
         UserPageResponseDto userPageResponseDtoList = userService.viewMyPage(user.getId());
-        //when
         //then
-        assertThat(userPageResponseDtoList.getUserVisitResponseList().get(0).getShopTelNumber()).isEqualTo(shopRequestDto.getTelNumber());
+        assertThat(userPageResponseDtoList.getUserVisitResponseList().get(0).getShopTelNumber()).isEqualTo("032-888-8888");
     }
 }

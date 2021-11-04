@@ -65,14 +65,10 @@ public class UserService {
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
-    @Transactional
     public UserPageResponseDto viewMyPage(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        List<Visit> visitList = user.getVisitList();
-        List<UserVisitResponseDto> userVisitResponseDtoList = visitList.stream()
-                .map(visit -> new UserVisitResponseDto(visit.getShop(), visit.getCreatedDate()))
-                .collect(Collectors.toList());
+        List<UserVisitResponseDto> userVisitResponseDtoList = mapToUserVisitResponseDto(user.getVisitList());
         return new UserPageResponseDto(user, userVisitResponseDtoList);
     }
 
@@ -92,5 +88,11 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), password)) {
             throw new NotEqualsException(PASSWORD_NOT_EQUALS_MESSAGE);
         }
+    }
+
+    private List<UserVisitResponseDto> mapToUserVisitResponseDto(List<Visit> visitList) {
+        return visitList.stream()
+                .map(visit -> new UserVisitResponseDto(visit.getShop(), visit.getCreatedDate()))
+                .collect(Collectors.toList());
     }
 }
