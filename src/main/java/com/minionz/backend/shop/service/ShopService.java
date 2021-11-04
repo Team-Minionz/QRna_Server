@@ -71,7 +71,7 @@ public class ShopService {
         return responseDtos;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommonShopResponseDto> searchShop(String keyword) {
         List<Shop> findShopList = shopRepository.findByNameContains(keyword);
         findValidate(findShopList);
@@ -80,8 +80,8 @@ public class ShopService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public List<CommonShopResponseDto> searchRegionShop(String query, String region) {
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShopByRegion(String query, String region) {
         List<Shop> findShopList = shopRepository.findByAddressCityEqualsAndNameContains(region, query);
         findValidate(findShopList);
         return findShopList.stream()

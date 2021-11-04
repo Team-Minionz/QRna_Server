@@ -89,7 +89,7 @@ public class ShopServiceTest {
         // when
         List<CommonShopResponseDto> commonShopResponseDtos = shopService.searchShop("맘스터치");
         // then
-        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
+        assertThat(commonShopResponseDtos.get(0).getName()).contains("맘스터치");
     }
 
     @DisplayName("매장 검색 실패")
@@ -136,9 +136,9 @@ public class ShopServiceTest {
         ShopRequestDto shopRequestDto = new ShopRequestDto("맘스터치", address, "032-888-8888", list, savedOwner.getId());
         shopService.save(shopRequestDto);
         // when
-        List<CommonShopResponseDto> commonShopResponseDtos = shopService.searchRegionShop("맘스터치", "인천시 남동구");
+        List<CommonShopResponseDto> commonShopResponseDtos = shopService.searchShopByRegion("맘스터치", "인천시 남동구");
         // then
-        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
+        assertThat(commonShopResponseDtos.get(0).getName()).contains("맘스터치");
     }
 
     @DisplayName("매장 지역 + 키워드 검색 실패")
@@ -161,7 +161,7 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto);
         // when
         // then
-        assertThatThrownBy(() -> shopService.searchRegionShop("맘스터", "인천시 구월동"))
+        assertThatThrownBy(() -> shopService.searchShopByRegion("맘스터", "인천시 구월동"))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("등록된 매장이 존재하지 않습니다.");
     }

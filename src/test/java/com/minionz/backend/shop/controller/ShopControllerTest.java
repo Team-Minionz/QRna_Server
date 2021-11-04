@@ -185,7 +185,7 @@ class ShopControllerTest extends ApiDocument {
         shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
         shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
         shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
-        willReturn(shopResponseDtoList).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        willReturn(shopResponseDtoList).given(shopService).searchShopByRegion(any(String.class), any(String.class));
         ResultActions resultActions = 상점지역검색_요청(query, region);
         상점지역검색요청_성공(resultActions, shopResponseDtoList);
     }
@@ -196,7 +196,7 @@ class ShopControllerTest extends ApiDocument {
         String query = "맘스터치";
         String region = "경기도";
         Message message = new Message("등록된 매장이 존재하지 않습니다.");
-        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShopByRegion(any(String.class), any(String.class));
         ResultActions resultActions = 상점지역검색_요청(query, region);
         상점지역검색요청_실패(message, resultActions);
     }

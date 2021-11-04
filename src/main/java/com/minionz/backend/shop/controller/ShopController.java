@@ -64,7 +64,7 @@ public class ShopController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> searchRegionShop(@RequestParam("keyword") String keyword,
                                                         @RequestParam("region") String region) {
-        List<CommonShopResponseDto> shopResponseDtoList = shopService.searchRegionShop(keyword, region);
+        List<CommonShopResponseDto> shopResponseDtoList = shopService.searchShopByRegion(keyword, region);
         log.info(SEARCH_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
