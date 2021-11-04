@@ -70,6 +70,7 @@ public class ShopController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> viewNearShop(@RequestParam("x") double x, @RequestParam("y") double y) {
         List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(x, y);
+        log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
 
