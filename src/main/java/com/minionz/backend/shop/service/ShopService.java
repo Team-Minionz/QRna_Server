@@ -6,8 +6,7 @@ import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
-import com.minionz.backend.user.domain.Owner;
-import com.minionz.backend.user.domain.OwnerRepository;
+import com.minionz.backend.user.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +19,18 @@ import java.util.stream.Collectors;
 public class ShopService {
 
     private static final String NOT_FOUND_SHOP_MESSAGE = "존재 하지 않는 Shop 입니다.";
+    private static final String NOT_FOUND_USER_MESSAGE = "존재 하지 않는 User 입니다.";
     private static final String NOT_FOUND_SHOP_LIST_MESSAGE = "등록된 매장이 존재하지 않습니다.";
     private static final String SHOP_SAVE_SUCCESS = "SAVE 성공";
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
+    private static final String SHOP_NOT_FOUND_MESSAGE = "해당 매장이 존재하지 않습니다.";
 
     private final ShopRepository shopRepository;
     private final OwnerRepository ownerRepository;
+    private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     @Transactional
     public ShopSaveResponseDto save(ShopRequestDto shopRequestDto) {
@@ -71,6 +74,19 @@ public class ShopService {
         return responseDtos;
     }
 
+    @Transactional
+    public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER_MESSAGE));
+        boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
+        List<ShopTableCountResponseDto> list = shop.createShopTableCountResponseDtoList();
+        int maxUser = shop.calculateMaxUser();
+        int useUser = shop.calculateUseUser();
+        return new ShopDetailResponseDto(shop.getName(), shop.getAddress(), shop.getTelNumber(), list, useUser, maxUser, shop.getCongestionStatus(), isBookmark);
+    }
+
     public List<CommonShopResponseDto> searchShop(String keyword) {
         return null;
     }
@@ -87,7 +103,9 @@ public class ShopService {
         return null;
     }
 
-    public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
-        return null;
+    private boolean checkBookmark(List<Bookmark> bookmarkList, Long shopId) throws NotFoundException {
+        return bookmarkList.stream()
+                .map(Bookmark::getShop)
+                .anyMatch(b -> b.getId().equals(shopId));
     }
 }
