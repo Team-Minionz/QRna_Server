@@ -88,7 +88,8 @@ public class ShopServiceTest {
         List<ShopTableRequestDto> list = new ArrayList<>();
         list.add(new ShopTableRequestDto(2));
         list.add(new ShopTableRequestDto(4));
-        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(5));
+        list.add(new ShopTableRequestDto(6));
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         Address userAddress = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         Owner owner = Owner.builder()
@@ -114,7 +115,7 @@ public class ShopServiceTest {
         visitService.checkIn(checkInRequestDto);
         ShopDetailResponseDto shopDetailResponseDto = shopService.viewDetail(user.getId(), shopSaveResponseDto.getId());
         // then
-        assertThat(shopDetailResponseDto.getMaxUser()).isEqualTo(10);
+        assertThat(shopDetailResponseDto.getMaxUser()).isEqualTo(17);
         assertThat(shopDetailResponseDto.getUseUser()).isEqualTo(1);
     }
 }
