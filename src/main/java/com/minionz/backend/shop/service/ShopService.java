@@ -81,7 +81,7 @@ public class ShopService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER_MESSAGE));
         boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
-        List<ShopTableCountResponseDto> list = shop.createShopTableCountResponseDtoList();
+        List<ShopTableCountResponseDto> list = shop.countNumberOfTables();
         int maxUser = shop.calculateMaxUser();
         int useUser = shop.calculateUseUser();
         return new ShopDetailResponseDto(shop.getName(), shop.getAddress(), shop.getTelNumber(), list, useUser, maxUser, shop.getCongestionStatus(), isBookmark);
