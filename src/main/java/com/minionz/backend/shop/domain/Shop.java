@@ -3,7 +3,6 @@ package com.minionz.backend.shop.domain;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopTableCountResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.visit.domain.Visit;
@@ -101,16 +100,6 @@ public class Shop extends BaseEntity {
         }
     }
 
-    public List<ShopTableCountResponseDto> countNumberOfTables() {
-        List<ShopTableCountResponseDto> list = new ArrayList<>();
-        List<Integer> uniqueTable = countUniqueTable();
-        for (Integer maxUser : uniqueTable) {
-            int numberOfTable = countShopMaxUser(maxUser);
-            list.add(new ShopTableCountResponseDto(maxUser, numberOfTable));
-        }
-        return list;
-    }
-
     public int calculateMaxUser() {
         return tableList.stream()
                 .mapToInt(ShopTable::getMaxUser)
@@ -123,6 +112,20 @@ public class Shop extends BaseEntity {
                 .sum();
     }
 
+    public List<Integer> countUniqueTable() {
+        return tableList.stream()
+                .map(ShopTable::getMaxUser)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public int countShopMaxUser(Integer maxUser) {
+        return (int) tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .filter(user -> user == maxUser)
+                .count();
+    }
+
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
@@ -131,20 +134,6 @@ public class Shop extends BaseEntity {
     private int getNumberOfUsingTables() {
         return (int) tableList.stream()
                 .filter(status -> status.getUseStatus().equals(UseStatus.USING))
-                .count();
-    }
-
-    private List<Integer> countUniqueTable() {
-        return tableList.stream()
-                .map(ShopTable::getMaxUser)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private int countShopMaxUser(Integer maxUser) {
-        return (int) tableList.stream()
-                .mapToInt(ShopTable::getMaxUser)
-                .filter(user -> user == maxUser)
                 .count();
     }
 }
