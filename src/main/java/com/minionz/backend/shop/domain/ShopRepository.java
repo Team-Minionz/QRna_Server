@@ -12,7 +12,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     Optional<Shop> findByTelNumber(String telNumber);
 
-    List<Shop> findByNameContains(@Param("name") String query);
+    List<Shop> findByNameContains(String name);
 
-    List<Shop> findByAddressCityEqualsAndNameContains(@Param("city") String region, @Param("name") String query);
+    List<Shop> findByAddressCityEqualsAndNameContains(String city, String name);
 }
