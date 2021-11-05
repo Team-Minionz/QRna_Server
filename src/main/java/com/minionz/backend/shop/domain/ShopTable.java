@@ -16,6 +16,8 @@ import java.util.Optional;
 @AttributeOverride(name = "id", column = @Column(name = "table_id"))
 public class ShopTable extends BaseEntity {
 
+    private static final int NO_USER = 0;
+
     private int tableNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,7 +60,7 @@ public class ShopTable extends BaseEntity {
     }
 
     public void exit() {
-        countUser = 0;
+        countUser = NO_USER;
         useStatus = UseStatus.EMPTY;
         shop.updateDegreeOfCongestion();
     }
