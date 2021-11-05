@@ -101,15 +101,12 @@ public class Shop extends BaseEntity {
         }
     }
 
-    public List<ShopTableCountResponseDto> createShopTableCountResponseDtoList() {
+    public List<ShopTableCountResponseDto> countNumberOfTables() {
         List<ShopTableCountResponseDto> list = new ArrayList<>();
-        List<Integer> uniqueUser = makeUniqueMaxUserList();
-        for (Integer maxUser : uniqueUser) {
-            int count = (int) tableList.stream()
-                    .mapToInt(ShopTable::getMaxUser)
-                    .filter(s -> s == maxUser)
-                    .count();
-            list.add(new ShopTableCountResponseDto(maxUser, count));
+        List<Integer> uniqueTable = countUniqueTable();
+        for (Integer maxUser : uniqueTable) {
+            int numberOfTable = countShopMaxUser(maxUser);
+            list.add(new ShopTableCountResponseDto(maxUser, numberOfTable));
         }
         return list;
     }
@@ -133,15 +130,21 @@ public class Shop extends BaseEntity {
 
     private int getNumberOfUsingTables() {
         return (int) tableList.stream()
-                .filter(status -> status.getUseStatus() == UseStatus.USING)
+                .filter(status -> status.getUseStatus().equals(UseStatus.USING))
                 .count();
     }
 
-    private List<Integer> makeUniqueMaxUserList() {
+    private List<Integer> countUniqueTable() {
         return tableList.stream()
-                .mapToInt(ShopTable::getMaxUser)
+                .map(ShopTable::getMaxUser)
                 .distinct()
-                .boxed()
                 .collect(Collectors.toList());
+    }
+
+    private int countShopMaxUser(Integer maxUser) {
+        return (int) tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .filter(user -> user == maxUser)
+                .count();
     }
 }
