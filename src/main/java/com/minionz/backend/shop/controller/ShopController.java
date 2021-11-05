@@ -68,8 +68,8 @@ public class ShopController {
 
     @GetMapping("/near")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommonShopResponseDto> viewNearShop(@RequestParam("x") double x, @RequestParam("y") double y) {
-        List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(x, y);
+    public List<CommonShopResponseDto> viewNearShop(@RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude) {
+        List<CommonShopResponseDto> shopResponseDtoList = shopService.nearShop(latitude, longitude);
         log.info(VIEW_SHOP_LIST_SUCCESS_MESSAGE);
         return shopResponseDtoList;
     }
