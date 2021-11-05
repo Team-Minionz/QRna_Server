@@ -3,6 +3,7 @@ package com.minionz.backend.shop.domain;
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.BaseEntity;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopTableCountResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.visit.domain.Visit;
@@ -100,6 +101,31 @@ public class Shop extends BaseEntity {
         }
     }
 
+    public List<ShopTableCountResponseDto> createShopTableCountResponseDtoList() {
+        List<ShopTableCountResponseDto> list = new ArrayList<>();
+        List<Integer> uniqueUser = makeUniqueMaxUserList();
+        for (Integer maxUser : uniqueUser) {
+            int count = (int) tableList.stream()
+                    .mapToInt(ShopTable::getMaxUser)
+                    .filter(s -> s == maxUser)
+                    .count();
+            list.add(new ShopTableCountResponseDto(maxUser, count));
+        }
+        return list;
+    }
+
+    public int calculateMaxUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .sum();
+    }
+
+    public int calculateUseUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getCountUser)
+                .sum();
+    }
+
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
@@ -109,5 +135,13 @@ public class Shop extends BaseEntity {
         return (int) tableList.stream()
                 .filter(status -> status.getUseStatus() == UseStatus.USING)
                 .count();
+    }
+
+    private List<Integer> makeUniqueMaxUserList() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .distinct()
+                .boxed()
+                .collect(Collectors.toList());
     }
 }
