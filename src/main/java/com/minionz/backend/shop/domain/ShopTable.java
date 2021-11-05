@@ -56,4 +56,10 @@ public class ShopTable extends BaseEntity {
         useStatus = UseStatus.USING;
         shop.updateDegreeOfCongestion();
     }
+
+    public void exit() {
+        countUser = 0;
+        useStatus = UseStatus.EMPTY;
+        shop.updateDegreeOfCongestion();
+    }
 }
