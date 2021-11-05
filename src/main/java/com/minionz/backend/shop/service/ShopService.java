@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,10 +81,10 @@ public class ShopService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER_MESSAGE));
-        boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
-        List<ShopTableCountResponseDto> list = shop.countNumberOfTables();
+        List<ShopTableCountResponseDto> list = countNumberOfTables(shop);
         int maxUser = shop.calculateMaxUser();
         int useUser = shop.calculateUseUser();
+        boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
         return new ShopDetailResponseDto(shop.getName(), shop.getAddress(), shop.getTelNumber(), list, useUser, maxUser, shop.getCongestionStatus(), isBookmark);
     }
 
@@ -101,6 +102,16 @@ public class ShopService {
 
     public List<ShopTableResponseDto> viewTables(Long id) {
         return null;
+    }
+
+    private List<ShopTableCountResponseDto> countNumberOfTables(Shop shop) {
+        List<ShopTableCountResponseDto> list = new ArrayList<>();
+        List<Integer> uniqueTable = shop.countUniqueTable();
+        for (Integer maxUser : uniqueTable) {
+            int numberOfTable = shop.countShopMaxUser(maxUser);
+            list.add(new ShopTableCountResponseDto(maxUser, numberOfTable));
+        }
+        return list;
     }
 
     private boolean checkBookmark(List<Bookmark> bookmarkList, Long shopId) throws NotFoundException {
