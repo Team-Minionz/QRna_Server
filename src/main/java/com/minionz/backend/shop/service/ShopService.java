@@ -71,6 +71,15 @@ public class ShopService {
         return responseDtos;
     }
 
+    public List<ShopTableResponseDto> viewTables(Long id) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        return shop.getTableList()
+                .stream()
+                .map(table -> new ShopTableResponseDto(table.getId(), table.getTableNumber(), table.getMaxUser(), table.getCountUser(), table.getUseStatus()))
+                .collect(Collectors.toList());
+    }
+
     public List<CommonShopResponseDto> searchShop(String keyword) {
         return null;
     }
@@ -80,10 +89,6 @@ public class ShopService {
     }
 
     public List<CommonShopResponseDto> nearShop(double x, double y) {
-        return null;
-    }
-
-    public List<ShopTableResponseDto> viewTables(Long id) {
         return null;
     }
 
