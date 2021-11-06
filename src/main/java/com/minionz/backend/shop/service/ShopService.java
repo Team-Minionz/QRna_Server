@@ -81,7 +81,7 @@ public class ShopService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER_MESSAGE));
-        List<ShopTableCountResponseDto> list = countNumberOfTables(shop);
+        List<ShopTableCountResponseDto> list = createShopTableCountList(shop);
         int maxUser = shop.calculateMaxUser();
         int useUser = shop.calculateUseUser();
         boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
@@ -104,10 +104,10 @@ public class ShopService {
         return null;
     }
 
-    private List<ShopTableCountResponseDto> countNumberOfTables(Shop shop) {
+    private List<ShopTableCountResponseDto> createShopTableCountList(Shop shop) {
         List<ShopTableCountResponseDto> list = new ArrayList<>();
-        List<Integer> uniqueTable = shop.countUniqueTable();
-        for (Integer maxUser : uniqueTable) {
+        List<Integer> uniqueMaxUser = shop.makeUniqueMaxUserList();
+        for (Integer maxUser : uniqueMaxUser) {
             int numberOfTable = shop.countShopMaxUser(maxUser);
             list.add(new ShopTableCountResponseDto(maxUser, numberOfTable));
         }

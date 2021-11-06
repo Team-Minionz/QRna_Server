@@ -112,7 +112,7 @@ public class Shop extends BaseEntity {
                 .sum();
     }
 
-    public List<Integer> countUniqueTable() {
+    public List<Integer> makeUniqueMaxUserList() {
         return tableList.stream()
                 .map(ShopTable::getMaxUser)
                 .distinct()
