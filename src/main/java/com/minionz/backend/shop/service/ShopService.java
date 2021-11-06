@@ -71,12 +71,32 @@ public class ShopService {
         return responseDtos;
     }
 
-    public List<CommonShopResponseDto> searchShop(String keyword) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<ShopTableResponseDto> viewTables(Long id) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        return shop.getTableList()
+                .stream()
+                .map(table -> new ShopTableResponseDto(table.getId(), table.getTableNumber(), table.getMaxUser(), table.getCountUser(), table.getUseStatus()))
+                .collect(Collectors.toList());
     }
 
-    public List<CommonShopResponseDto> searchRegionShop(String keyword, String region) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShop(String keyword) {
+        List<Shop> findShopList = shopRepository.findByNameContains(keyword);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShopByRegion(String query, String region) {
+        List<Shop> findShopList = shopRepository.findByAddressCityEqualsAndNameContains(region, query);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -86,10 +106,6 @@ public class ShopService {
         return shopList.stream()
                 .map(CommonShopResponseDto::new)
                 .collect(Collectors.toList());
-    }
-
-    public List<ShopTableResponseDto> viewTables(Long id) {
-        return null;
     }
 
     public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
