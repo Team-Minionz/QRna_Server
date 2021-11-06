@@ -15,7 +15,7 @@ public class ShopTableController {
 
     private final ShopTableService shopTableService;
 
-    @GetMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Message exitTable(@PathVariable("id") Long tableId) {
         Message message = shopTableService.exitTable(tableId);
