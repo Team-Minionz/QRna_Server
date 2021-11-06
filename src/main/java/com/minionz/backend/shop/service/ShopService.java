@@ -71,12 +71,22 @@ public class ShopService {
         return responseDtos;
     }
 
+    @Transactional(readOnly = true)
     public List<CommonShopResponseDto> searchShop(String keyword) {
-        return null;
+        List<Shop> findShopList = shopRepository.findByNameContains(keyword);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
     }
 
-    public List<CommonShopResponseDto> searchRegionShop(String keyword, String region) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShopByRegion(String query, String region) {
+        List<Shop> findShopList = shopRepository.findByAddressCityEqualsAndNameContains(region, query);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
     }
 
     public List<CommonShopResponseDto> nearShop(double x, double y) {
@@ -89,5 +99,11 @@ public class ShopService {
 
     public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
         return null;
+    }
+
+    private void findValidate(List<Shop> byNameContains) {
+        if (byNameContains.size() == 0) {
+            throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);
+        }
     }
 }
