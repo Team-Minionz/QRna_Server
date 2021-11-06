@@ -72,6 +72,16 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
+    public List<ShopTableResponseDto> viewTables(Long id) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        return shop.getTableList()
+                .stream()
+                .map(table -> new ShopTableResponseDto(table.getId(), table.getTableNumber(), table.getMaxUser(), table.getCountUser(), table.getUseStatus()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<CommonShopResponseDto> searchShop(String keyword) {
         List<Shop> findShopList = shopRepository.findByNameContains(keyword);
         findValidate(findShopList);
@@ -90,10 +100,6 @@ public class ShopService {
     }
 
     public List<CommonShopResponseDto> nearShop(double x, double y) {
-        return null;
-    }
-
-    public List<ShopTableResponseDto> viewTables(Long id) {
         return null;
     }
 
