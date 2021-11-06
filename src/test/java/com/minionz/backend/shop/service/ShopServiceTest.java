@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,7 @@ public class ShopServiceTest {
         assertThat(shopSaveResponseDto.getId()).isEqualTo(shop.getId());
     }
 
+    @Transactional
     @DisplayName("Shop 상세보기 매장(공통) 테스트")
     @Test
     public void viewShopDetailTest() {

@@ -75,7 +75,6 @@ public class ShopService {
         return responseDtos;
     }
 
-    @Transactional
     public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
