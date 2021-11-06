@@ -99,16 +99,21 @@ public class ShopService {
                 .collect(Collectors.toList());
     }
 
-    public List<CommonShopResponseDto> nearShop(double x, double y) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> nearShop(double latitude, double longitude) {
+        List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
+        findValidate(shopList);
+        return shopList.stream()
+                .map(CommonShopResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
         return null;
     }
 
-    private void findValidate(List<Shop> byNameContains) {
-        if (byNameContains.size() == 0) {
+    private void findValidate(List<Shop> shopList) {
+        if (shopList.size() == 0) {
             throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);
         }
     }

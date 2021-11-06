@@ -283,8 +283,8 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("유저 주변가게 조회 성공")
     @Test
     void 유저_주변가게_조회_성공() throws Exception {
-        double x = 0.1;
-        double y = 0.1;
+        double latitude = 0.1;
+        double longitude = 0.1;
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
         List<ShopTable> tableList1 = new ArrayList<>();
@@ -329,18 +329,18 @@ class ShopControllerTest extends ApiDocument {
         shopResponseDtoList.add(new CommonShopResponseDto(shop2));
         shopResponseDtoList.add(new CommonShopResponseDto(shop3));
         willReturn(shopResponseDtoList).given(shopService).nearShop(any(double.class), any(double.class));
-        ResultActions resultActions = 유저_주변가게_조회_요청(x, y);
+        ResultActions resultActions = 유저_주변가게_조회_요청(latitude, longitude);
         유저_주변가게_조회_성공(resultActions, shopResponseDtoList);
     }
 
     @DisplayName("유저 주변가게 조회 실패")
     @Test
     void 유저_주변가게_조회_실패() throws Exception {
-        double x = 0.1;
-        double y = 0.1;
+        double latitude = 0.1;
+        double longitude = 0.1;
         Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
         willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(double.class), any(double.class));
-        final ResultActions response = 유저_주변가게_조회_요청(x, y);
+        final ResultActions response = 유저_주변가게_조회_요청(latitude, longitude);
         유저_주변가게_조회_실패(response, errorMessage);
     }
 
@@ -391,8 +391,8 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("shop-detail-success"));
     }
 
-    private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/near?x=" + x + "&y=" + y));
+    private ResultActions 유저_주변가게_조회_요청(double latitude, double longitude) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/near?latitude=" + latitude + "&longitude=" + longitude));
     }
 
     private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
