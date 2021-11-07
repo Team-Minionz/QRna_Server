@@ -8,6 +8,7 @@ import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.shop.domain.ShopTableRepository;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
@@ -40,6 +41,9 @@ public class VisitServiceTest {
 
     @Autowired
     private ShopRepository shopRepository;
+
+    @Autowired
+    private ShopTableRepository shopTableRepository;
 
     @Autowired
     private ShopService shopService;
@@ -110,8 +114,12 @@ public class VisitServiceTest {
     @Test
     public void changeCongestionStatusTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(1L, 1L);
-        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(2L, 2L);
+        Long userId1 = userRepository.findAll().get(0).getId();
+        Long userId2 = userRepository.findAll().get(1).getId();
+        Long tableId1 = shopTableRepository.findAll().get(0).getId();
+        Long tableId2 = shopTableRepository.findAll().get(1).getId();
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(userId1, tableId1);
+        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(userId2, tableId2);
         // when
         visitService.checkIn(checkInRequestDto);
         visitService.checkIn(checkInRequestDto1);

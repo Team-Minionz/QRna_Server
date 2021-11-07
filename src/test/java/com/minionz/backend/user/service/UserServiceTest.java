@@ -389,7 +389,8 @@ public class UserServiceTest {
         list.add(new ShopTableRequestDto(4));
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         ShopSaveResponseDto save = shopService.save(shopRequestDto);
-        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, save.getId());
+        Long userId = userRepository.findAll().get(0).getId();
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(userId, save.getId());
         //when
         //then
         assertThatThrownBy(() -> userService.addBookmark(bookmarkRequestDto))
@@ -461,9 +462,10 @@ public class UserServiceTest {
         ShopSaveResponseDto save = shopService.save(shopRequestDto);
         BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
         userService.addBookmark(bookmarkRequestDto);
+        Long userId = userRepository.findAll().get(0).getId();
         //when
         //then
-        assertThatThrownBy(() -> userService.deleteBookmark(1L, save.getId()))
+        assertThatThrownBy(() -> userService.deleteBookmark(userId, save.getId()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 유저가 존재하지 않습니다.");
     }
