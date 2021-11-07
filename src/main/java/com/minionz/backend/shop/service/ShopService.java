@@ -83,20 +83,41 @@ public class ShopService {
         return new ShopDetailResponseDto(shop, createShopTableCountList(shop), user);
     }
 
-    public List<CommonShopResponseDto> searchShop(String keyword) {
-        return null;
-    }
-
-    public List<CommonShopResponseDto> searchRegionShop(String keyword, String region) {
-        return null;
-    }
-
-    public List<CommonShopResponseDto> nearShop(double x, double y) {
-        return null;
-    }
-
+    @Transactional(readOnly = true)
     public List<ShopTableResponseDto> viewTables(Long id) {
-        return null;
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+        return shop.getTableList()
+                .stream()
+                .map(table -> new ShopTableResponseDto(table.getId(), table.getTableNumber(), table.getMaxUser(), table.getCountUser(), table.getUseStatus()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShop(String keyword) {
+        List<Shop> findShopList = shopRepository.findByNameContains(keyword);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> searchShopByRegion(String query, String region) {
+        List<Shop> findShopList = shopRepository.findByAddressCityEqualsAndNameContains(region, query);
+        findValidate(findShopList);
+        return findShopList.stream()
+                .map(shop -> new CommonShopResponseDto(shop))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommonShopResponseDto> nearShop(double latitude, double longitude) {
+        List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
+        findValidate(shopList);
+        return shopList.stream()
+                .map(CommonShopResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     private List<ShopTableCountResponseDto> createShopTableCountList(Shop shop) {
@@ -104,5 +125,11 @@ public class ShopService {
                 .stream()
                 .map(maxUser -> new ShopTableCountResponseDto(shop, maxUser))
                 .collect(Collectors.toList());
+    }
+
+    private void findValidate(List<Shop> shopList) {
+        if (shopList.size() == 0) {
+            throw new NotFoundException(NOT_FOUND_SHOP_LIST_MESSAGE);
+        }
     }
 }

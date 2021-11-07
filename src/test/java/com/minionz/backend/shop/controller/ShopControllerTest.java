@@ -161,9 +161,47 @@ class ShopControllerTest extends ApiDocument {
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         String query = "맘스터치";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
-        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
-        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
-        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
         willReturn(shopResponseDtoList).given(shopService).searchShop(any(String.class));
         ResultActions resultActions = 상점검색_요청(query);
         상점검색요청_성공(resultActions, shopResponseDtoList);
@@ -186,10 +224,48 @@ class ShopControllerTest extends ApiDocument {
         String query = "맘스터치";
         String region = "경기도";
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
-        shopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
-        shopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
-        shopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
-        willReturn(shopResponseDtoList).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).searchShopByRegion(any(String.class), any(String.class));
         ResultActions resultActions = 상점지역검색_요청(query, region);
         상점지역검색요청_성공(resultActions, shopResponseDtoList);
     }
@@ -200,7 +276,7 @@ class ShopControllerTest extends ApiDocument {
         String query = "맘스터치";
         String region = "경기도";
         Message message = new Message("등록된 매장이 존재하지 않습니다.");
-        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchRegionShop(any(String.class), any(String.class));
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShopByRegion(any(String.class), any(String.class));
         ResultActions resultActions = 상점지역검색_요청(query, region);
         상점지역검색요청_실패(message, resultActions);
     }
@@ -208,26 +284,64 @@ class ShopControllerTest extends ApiDocument {
     @DisplayName("유저 주변가게 조회 성공")
     @Test
     void 유저_주변가게_조회_성공() throws Exception {
-        double x = 0.1;
-        double y = 0.1;
+        double latitude = 0.1;
+        double longitude = 0.1;
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
-        List<CommonShopResponseDto> nearShopResponseDtoList = new ArrayList<>();
-        nearShopResponseDtoList.add(new CommonShopResponseDto(1L, "맘스터치1", address, CongestionStatus.NORMAL, 10, 5));
-        nearShopResponseDtoList.add(new CommonShopResponseDto(2L, "맘스터치2", address, CongestionStatus.NORMAL, 11, 2));
-        nearShopResponseDtoList.add(new CommonShopResponseDto(3L, "맘스터치3", address, CongestionStatus.NORMAL, 13, 4));
-        willReturn(nearShopResponseDtoList).given(shopService).nearShop(any(double.class), any(double.class));
-        ResultActions resultActions = 유저_주변가게_조회_요청(x, y);
-        유저_주변가게_조회_성공(resultActions, nearShopResponseDtoList);
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).nearShop(any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(latitude, longitude);
+        유저_주변가게_조회_성공(resultActions, shopResponseDtoList);
     }
 
     @DisplayName("유저 주변가게 조회 실패")
     @Test
     void 유저_주변가게_조회_실패() throws Exception {
-        double x = 0.1;
-        double y = 0.1;
+        double latitude = 0.1;
+        double longitude = 0.1;
         Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
         willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(double.class), any(double.class));
-        final ResultActions response = 유저_주변가게_조회_요청(x, y);
+        final ResultActions response = 유저_주변가게_조회_요청(latitude, longitude);
         유저_주변가게_조회_실패(response, errorMessage);
     }
 
@@ -272,7 +386,6 @@ class ShopControllerTest extends ApiDocument {
                 .telNumber("123-123-123")
                 .name("유저")
                 .build();
-
         ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(shop1, list, user);
         willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class), any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
@@ -308,8 +421,8 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("shop-detail-success"));
     }
 
-    private ResultActions 유저_주변가게_조회_요청(double x, double y) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/near?x=" + x + "&y=" + y));
+    private ResultActions 유저_주변가게_조회_요청(double latitude, double longitude) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/near?latitude=" + latitude + "&longitude=" + longitude));
     }
 
     private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
