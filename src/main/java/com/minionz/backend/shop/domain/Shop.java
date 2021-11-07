@@ -119,7 +119,7 @@ public class Shop extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public int countShopMaxUser(Integer maxUser) {
+    public int countTablesEqualMaxUser(Integer maxUser) {
         return (int) tableList.stream()
                 .mapToInt(ShopTable::getMaxUser)
                 .filter(user -> user == maxUser)
