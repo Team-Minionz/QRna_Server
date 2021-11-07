@@ -65,10 +65,11 @@ public class UserService {
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
+    @Transactional(readOnly = true)
     public UserPageResponseDto viewMyPage(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        List<UserVisitResponseDto> userVisitResponseDtoList = mapToUserVisitResponseDto(user.getVisitList());
+        List<UserVisitResponseDto> userVisitResponseDtoList = toUserVisitResponseDto(user.getVisitList());
         return new UserPageResponseDto(user, userVisitResponseDtoList);
     }
 
@@ -90,7 +91,7 @@ public class UserService {
         }
     }
 
-    private List<UserVisitResponseDto> mapToUserVisitResponseDto(List<Visit> visitList) {
+    private List<UserVisitResponseDto> toUserVisitResponseDto(List<Visit> visitList) {
         return visitList.stream()
                 .map(visit -> new UserVisitResponseDto(visit.getShop(), visit.getCreatedDate()))
                 .collect(Collectors.toList());
