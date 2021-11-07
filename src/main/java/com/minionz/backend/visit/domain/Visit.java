@@ -5,11 +5,13 @@ import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "visit_id"))
 @Entity
