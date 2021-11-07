@@ -8,11 +8,11 @@ import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
+import com.minionz.backend.shop.domain.ShopTableRepository;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
-import com.minionz.backend.user.service.UserService;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
 import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class ShopServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
+    private ShopTableRepository shopTableRepository;
 
     @Autowired
     private VisitService visitService;
@@ -55,6 +54,7 @@ public class ShopServiceTest {
     void cleanUp() {
         shopRepository.deleteAll();
         ownerRepository.deleteAll();
+        shopTableRepository.deleteAll();
     }
 
     @DisplayName("Shop 생성 테스트")
@@ -82,7 +82,6 @@ public class ShopServiceTest {
         assertThat(shopSaveResponseDto.getId()).isEqualTo(shop.getId());
     }
 
-    @Transactional
     @DisplayName("Shop 상세보기 매장(공통) 테스트")
     @Test
     public void viewShopDetailTest() {
@@ -113,7 +112,9 @@ public class ShopServiceTest {
         //when
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopSaveResponseDto.getId());
+        Shop findShop = shopRepository.findById(shopSaveResponseDto.getId())
+                .orElseThrow(() -> new NotFoundException("No shop"));
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), findShop.getTableList().get(0).getId());
         visitService.checkIn(checkInRequestDto);
         ShopDetailResponseDto shopDetailResponseDto = shopService.viewDetail(user.getId(), shopSaveResponseDto.getId());
         // then
