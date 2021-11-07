@@ -126,14 +126,14 @@ public class Shop extends BaseEntity {
                 .count();
     }
 
-    private void setOwner(Owner owner) {
-        this.owner = owner;
-        owner.getShops().add(this);
-    }
-
-    private int getNumberOfUsingTables() {
+    public int getNumberOfUsingTables() {
         return (int) tableList.stream()
                 .filter(status -> status.getUseStatus().equals(UseStatus.USING))
                 .count();
+    }
+
+    private void setOwner(Owner owner) {
+        this.owner = owner;
+        owner.getShops().add(this);
     }
 }
