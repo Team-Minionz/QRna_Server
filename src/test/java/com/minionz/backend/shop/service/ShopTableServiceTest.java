@@ -102,12 +102,16 @@ public class ShopTableServiceTest {
     @Test
     void exitTableTest() {
         // given
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(1L, 1L);
-        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(2L, 2L);
+        Long userId1 = userRepository.findAll().get(0).getId();
+        Long userId2 = userRepository.findAll().get(1).getId();
+        Long tableId1 = shopTableRepository.findAll().get(0).getId();
+        Long tableId2 = shopTableRepository.findAll().get(1).getId();
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(userId1, tableId1);
+        CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(userId2, tableId2);
         visitService.checkIn(checkInRequestDto);
         visitService.checkIn(checkInRequestDto1);
         // when
-        Message message = shopTableService.exitTable(1L);
+        Message message = shopTableService.exitTable(tableId1);
         // then
         assertThat(message.getMessage()).isEqualTo("테이블 퇴장 성공");
     }
