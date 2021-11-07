@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,16 +74,13 @@ public class ShopService {
         return responseDtos;
     }
 
+    @Transactional(readOnly = true)
     public ShopDetailResponseDto viewDetail(Long userId, Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_USER_MESSAGE));
-        List<ShopTableCountResponseDto> list = createShopTableCountList(shop);
-        int maxUser = shop.calculateMaxUser();
-        int useUser = shop.calculateUseUser();
-        boolean isBookmark = checkBookmark(user.getBookmarks(), shopId);
-        return new ShopDetailResponseDto(shop.getName(), shop.getAddress(), shop.getTelNumber(), list, useUser, maxUser, shop.getCongestionStatus(), isBookmark);
+        return new ShopDetailResponseDto(shop, createShopTableCountList(shop), user);
     }
 
     public List<CommonShopResponseDto> searchShop(String keyword) {
@@ -104,18 +100,9 @@ public class ShopService {
     }
 
     private List<ShopTableCountResponseDto> createShopTableCountList(Shop shop) {
-        List<ShopTableCountResponseDto> list = new ArrayList<>();
-        List<Integer> uniqueMaxUser = shop.makeUniqueMaxUserList();
-        for (Integer maxUser : uniqueMaxUser) {
-            int numberOfTable = shop.countShopMaxUser(maxUser);
-            list.add(new ShopTableCountResponseDto(maxUser, numberOfTable));
-        }
-        return list;
-    }
-
-    private boolean checkBookmark(List<Bookmark> bookmarkList, Long shopId) throws NotFoundException {
-        return bookmarkList.stream()
-                .map(Bookmark::getShop)
-                .anyMatch(b -> b.getId().equals(shopId));
+        return shop.makeUniqueMaxUserList()
+                .stream()
+                .map(maxUser -> new ShopTableCountResponseDto(shop, maxUser))
+                .collect(Collectors.toList());
     }
 }
