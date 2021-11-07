@@ -289,7 +289,6 @@ public class UserServiceTest {
                 .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
     }
 
-    @Transactional
     @Test
     void ViewMyVisitList() {
         // given
