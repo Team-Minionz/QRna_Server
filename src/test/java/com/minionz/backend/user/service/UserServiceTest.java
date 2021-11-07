@@ -355,8 +355,9 @@ public class UserServiceTest {
         list.add(new ShopTableRequestDto(4));
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        Long userId = userRepository.findAll().get(0).getId();
         //when
-        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(1L, save.getId());
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(userId, save.getId());
         Message message = userService.addBookmark(bookmarkRequestDto);
         //then
         assertThat(message.getMessage()).isEqualTo("즐겨찾기 추가 성공");
