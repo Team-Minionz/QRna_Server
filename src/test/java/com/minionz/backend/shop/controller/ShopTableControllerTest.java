@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.BDDMockito.willThrow;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +51,7 @@ public class ShopTableControllerTest extends ApiDocument {
     }
 
     private ResultActions 테이블_퇴장_요청(Long id) throws Exception {
-        return mockMvc.perform(get("/api/v1/tables/" + id));
+        return mockMvc.perform(patch("/api/v1/tables/" + id));
     }
 
     private void 테이블_퇴장_성공(ResultActions resultActions, Message message) throws Exception {

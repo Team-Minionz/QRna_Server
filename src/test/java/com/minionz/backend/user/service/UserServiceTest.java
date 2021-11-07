@@ -9,6 +9,7 @@ import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.controller.dto.*;
@@ -256,7 +257,7 @@ public class UserServiceTest {
         //then
         assertThatThrownBy(() -> userService.viewMyPage(2L))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @DisplayName("패스워드 암호화 테스트")
@@ -286,11 +287,12 @@ public class UserServiceTest {
         //then
         assertThatThrownBy(() -> userService.viewMyPage(2L))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
+    @DisplayName("방문 매장 리스트 조회 테스트")
     @Test
-    void ViewMyVisitList() {
+    void 마이페이지_방문매장목록_조회_성공() {
         // given
         Address address = new Address("123-456", "송도동", "인천시 연수구", 1.0, 2.0);
         Address userAddress = new Address("456-789", "송도동", "인천시 연수구", 1.0, 2.0);
@@ -314,11 +316,13 @@ public class UserServiceTest {
                 .address(userAddress)
                 .build();
         userRepository.save(user);
-        //when
         ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
         ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopSaveResponseDto.getId());
+        Shop shop = shopRepository.findById(shopSaveResponseDto.getId())
+                .orElseThrow(() -> new NotFoundException("해당 매장이 존재하지 않습니다."));
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shop.getTableList().get(0).getId());
         visitService.checkIn(checkInRequestDto);
+        //when
         UserPageResponseDto userPageResponseDtoList = userService.viewMyPage(user.getId());
         //then
         assertThat(userPageResponseDtoList.getUserVisitResponseList().get(0).getShopTelNumber()).isEqualTo("032-888-8888");
