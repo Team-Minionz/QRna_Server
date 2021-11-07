@@ -13,6 +13,7 @@ import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.domain.UseStatus;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -349,14 +350,43 @@ class ShopControllerTest extends ApiDocument {
     void 매장_상세보기_조회_성공() throws Exception {
         Long userId = 1L;
         Long shopId = 1L;
-        String name = "BBQ";
-        String telNumber = "010-6634-3435";
         Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .telNumber("123-123-123")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
         List<ShopTableCountResponseDto> list = new ArrayList<>();
-        list.add(new ShopTableCountResponseDto(2, 2));
-        list.add(new ShopTableCountResponseDto(3, 5));
-        list.add(new ShopTableCountResponseDto(4, 7));
-        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(name, address, telNumber, list, 20, 47, CongestionStatus.SMOOTH, true);
+        list.add(new ShopTableCountResponseDto(shop1, 2));
+        list.add(new ShopTableCountResponseDto(shop1, 5));
+        list.add(new ShopTableCountResponseDto(shop1, 7));
+        User user = User.builder()
+                .email("kjk@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("유저")
+                .build();
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(shop1, list, user);
         willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class), any(Long.class));
         ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
         유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);

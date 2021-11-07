@@ -1,5 +1,6 @@
 package com.minionz.backend.shop.controller.dto;
 
+import com.minionz.backend.shop.domain.Shop;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ public class ShopTableCountResponseDto {
     private int maxUser;
     private int numberOfTable;
 
-    public ShopTableCountResponseDto(int maxUser, int numberOfTable) {
-        this.maxUser = maxUser;
-        this.numberOfTable = numberOfTable;
+    public ShopTableCountResponseDto(Shop shop, Integer maxUser) {
+        this.maxUser = shop.countTablesEqualMaxUser(maxUser);
+        this.numberOfTable = shop.getNumberOfTables();
     }
 }

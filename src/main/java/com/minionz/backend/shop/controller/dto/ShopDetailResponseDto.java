@@ -1,8 +1,9 @@
 package com.minionz.backend.shop.controller.dto;
 
-import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.dto.AddressDto;
 import com.minionz.backend.shop.domain.CongestionStatus;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,14 +22,14 @@ public class ShopDetailResponseDto {
     private int maxUser;
     private boolean bookMark;
 
-    public ShopDetailResponseDto(String name, Address address, String telNumber, List<ShopTableCountResponseDto> tableInfoList, int useUser, int maxUser, CongestionStatus congestionStatus, boolean bookMark) {
-        this.name = name;
-        this.address = new AddressDto(address);
-        this.telNumber = telNumber;
+    public ShopDetailResponseDto(Shop shop, List<ShopTableCountResponseDto> tableInfoList, User user) {
+        this.name = shop.getName();
+        this.address = new AddressDto(shop.getAddress());
+        this.telNumber = shop.getTelNumber();
         this.tableInfoList = tableInfoList;
-        this.useUser = useUser;
-        this.maxUser = maxUser;
-        this.congestionStatus = congestionStatus;
-        this.bookMark = bookMark;
+        this.useUser = shop.calculateUseUser();
+        this.maxUser = shop.calculateMaxUser();
+        this.congestionStatus = shop.getCongestionStatus();
+        this.bookMark = user.checkBookmark(shop.getId());
     }
 }
