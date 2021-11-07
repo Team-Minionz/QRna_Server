@@ -19,6 +19,7 @@ public class UserController {
 
     private static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
     private static final String VIEW_MY_PAGE_SUCCESS_MESSAGE = "마이페이지 조회 성공";
+    private static final String VIEW_MY_BOOKMARK_SUCCESS_MESSAGE = "즐겨찾기 조회 성공";
 
     private final UserService userService;
 
@@ -63,6 +64,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Message addBookmark(@RequestBody BookmarkRequestDto bookmarkRequestDto) {
         Message message = userService.addBookmark(bookmarkRequestDto);
+        log.info(message.getMessage());
         return message;
     }
 
@@ -70,6 +72,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Message deleteBookmark(@PathVariable("userId") Long userId, @PathVariable Long shopId) {
         Message message = userService.deleteBookmark(userId, shopId);
+        log.info(message.getMessage());
         return message;
     }
 
@@ -77,6 +80,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommonShopResponseDto> viewMyBookmark(@PathVariable("id") Long id) {
         List<CommonShopResponseDto> commonShopResponseDtoList = userService.viewMyBookmark(id);
+        log.info(VIEW_MY_BOOKMARK_SUCCESS_MESSAGE);
         return commonShopResponseDtoList;
     }
 }

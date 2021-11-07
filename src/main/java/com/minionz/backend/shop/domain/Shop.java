@@ -100,6 +100,32 @@ public class Shop extends BaseEntity {
         }
     }
 
+    public int calculateMaxUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .sum();
+    }
+
+    public int calculateUseUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getCountUser)
+                .sum();
+    }
+
+    public List<Integer> makeUniqueMaxUserList() {
+        return tableList.stream()
+                .map(ShopTable::getMaxUser)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public int countTablesEqualMaxUser(Integer maxUser) {
+        return (int) tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .filter(user -> user == maxUser)
+                .count();
+    }
+
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
@@ -107,7 +133,7 @@ public class Shop extends BaseEntity {
 
     private int getNumberOfUsingTables() {
         return (int) tableList.stream()
-                .filter(status -> status.getUseStatus() == UseStatus.USING)
+                .filter(status -> status.getUseStatus().equals(UseStatus.USING))
                 .count();
     }
 }
