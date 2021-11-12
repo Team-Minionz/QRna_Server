@@ -275,7 +275,7 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto1);
         shopService.save(shopRequestDto2);
         // then
-        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop("37.515", "126.940");
+        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop(37.515, 126.940);
         assertThat(commonShopResponseDtos.size()).isEqualTo(1);
     }
 
@@ -305,7 +305,7 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto1);
         shopService.save(shopRequestDto2);
         // then
-        assertThatThrownBy(() -> shopService.nearShop("40.515", "132.940"))
+        assertThatThrownBy(() -> shopService.nearShop(40.515, 132.940))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("등록된 매장이 존재하지 않습니다.");
     }
