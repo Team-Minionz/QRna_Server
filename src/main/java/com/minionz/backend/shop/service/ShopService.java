@@ -20,22 +20,21 @@ public class ShopService {
 
     private static final String NOT_FOUND_SHOP_MESSAGE = "존재 하지 않는 Shop 입니다.";
     private static final String NOT_FOUND_USER_MESSAGE = "존재 하지 않는 User 입니다.";
+    private static final String NOT_FOUND_OWNER_MESSAGE = "존재 하지 않는 Owner 입니다.";
     private static final String NOT_FOUND_SHOP_LIST_MESSAGE = "등록된 매장이 존재하지 않습니다.";
     private static final String SHOP_SAVE_SUCCESS = "SAVE 성공";
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
-    private static final String SHOP_NOT_FOUND_MESSAGE = "해당 매장이 존재하지 않습니다.";
 
     private final ShopRepository shopRepository;
     private final OwnerRepository ownerRepository;
     private final UserRepository userRepository;
-    private final BookmarkRepository bookmarkRepository;
 
     @Transactional
     public ShopSaveResponseDto save(ShopRequestDto shopRequestDto) {
         Owner owner = ownerRepository.findById(shopRequestDto.getOwnerId())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_SHOP_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_OWNER_MESSAGE));
         Shop shop = shopRequestDto.toEntity(owner);
         shop.makeShopTable(shopRequestDto.getTableList());
         shop.mapShopWithTable();
@@ -112,8 +111,8 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommonShopResponseDto> nearShop(double latitude, double longitude) {
-        List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
+    public List<CommonShopResponseDto> nearShop(String latitude, String longitude) {
+        List<Shop> shopList = shopRepository.findByNearShop(Double.parseDouble(latitude), Double.parseDouble(longitude));
         findValidate(shopList);
         return shopList.stream()
                 .map(CommonShopResponseDto::new)
