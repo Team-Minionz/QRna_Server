@@ -20,5 +20,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     List<Shop> findByNameContains(String name);
 
-    List<Shop> findByNameContainsAndAddress_CityContains(String name, String addressCity);
+    @Query("select s from Shop as s where s.name like '%name%' and s.address.city like '%city%'")
+    List<Shop> findByNameContainsAndAddress_CityContains(@Param("name") String name, @Param("city") String city);
 }
