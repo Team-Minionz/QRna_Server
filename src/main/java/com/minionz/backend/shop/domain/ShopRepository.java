@@ -15,11 +15,11 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<Shop> findByTelNumber(String telNumber);
 
     @Query(value = "select * from Shop where (6371*acos(cos(radians(latitude))*cos(radians(:latitude))*cos(radians(:longitude)-radians(longitude))+sin(radians(latitude))*sin(radians(:latitude)))) < 0.5"
-    , nativeQuery = true)
+            , nativeQuery = true)
     List<Shop> findByNearShop(@Param("latitude") double latitude, @Param("longitude") double longitude);
 
     List<Shop> findByNameContains(String name);
 
-    @Query(value = "select * from Shop as s where s.name like '%name%' and s.address.city like '%city'%", nativeQuery = true)
+    @Query(value = "select * from shop where shop_name like %:name% and city like %:city%", nativeQuery = true)
     List<Shop> findByNameContainsAndAddress_CityContains(@Param("name") String name, @Param("city") String city);
 }
