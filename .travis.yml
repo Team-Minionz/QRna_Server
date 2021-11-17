@@ -4,7 +4,7 @@ jdk:
 
 branches:
   only:
-    - develop
+    - main
 
 cache:
   directories:
