@@ -2,7 +2,6 @@ package com.minionz.backend.user.domain;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.visit.domain.Visit;
 import lombok.*;
 
@@ -44,5 +43,9 @@ public class User extends UserBaseEntity {
         return bookmarks.stream()
                 .map(Bookmark::getShop)
                 .anyMatch(b -> b.getId().equals(shopId));
+    }
+
+    public void deleteBookmark(Bookmark findBookmark) {
+        this.getBookmarks().remove(findBookmark);
     }
 }
