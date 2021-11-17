@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +26,6 @@ public class ShopService {
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
-    private static final int POSITIVE_NUMBER = 1;
-    private static final int NEGATIVE_NUMBER = -1;
-    private static final int ZERO = 0;
 
     private final ShopRepository shopRepository;
     private final OwnerRepository ownerRepository;
@@ -119,26 +115,11 @@ public class ShopService {
         List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
         findValidate(shopList);
         if (isCongestion(sort)) {
-            sortRatioOfCongestion(shopList);
+            Collections.sort(shopList);
         }
         return shopList.stream()
                 .map(CommonShopResponseDto::new)
                 .collect(Collectors.toList());
-    }
-
-    private void sortRatioOfCongestion(List<Shop> shopList) {
-        Collections.sort(shopList, new Comparator<Shop>() {
-            @Override
-            public int compare(Shop o1, Shop o2) {
-                if (o1.getRatioOfCongestion() > o2.getRatioOfCongestion()) {
-                    return NEGATIVE_NUMBER;
-                }
-                if (o1.getRatioOfCongestion() < o2.getRatioOfCongestion()) {
-                    return POSITIVE_NUMBER;
-                }
-                return ZERO;
-            }
-        });
     }
 
     private boolean isCongestion(String sort) {
