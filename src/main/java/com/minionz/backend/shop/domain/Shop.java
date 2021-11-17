@@ -90,7 +90,7 @@ public class Shop extends BaseEntity {
     }
 
     public void updateDegreeOfCongestion() {
-        double ratioOfCongestion = getNumberOfUsingTables() / (double) numberOfTables;
+        double ratioOfCongestion = getRatioOfCongestion();
         if (ratioOfCongestion < 0.3) {
             congestionStatus = CongestionStatus.SMOOTH;
         } else if (ratioOfCongestion >= 0.3 && ratioOfCongestion < 0.7) {
@@ -98,6 +98,10 @@ public class Shop extends BaseEntity {
         } else {
             congestionStatus = CongestionStatus.CONGESTED;
         }
+    }
+
+    public double getRatioOfCongestion() {
+        return getNumberOfUsingTables() / (double) numberOfTables;
     }
 
     public int calculateMaxUser() {
