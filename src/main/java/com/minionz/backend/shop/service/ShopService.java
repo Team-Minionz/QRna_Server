@@ -104,7 +104,7 @@ public class ShopService {
 
     @Transactional(readOnly = true)
     public List<CommonShopResponseDto> searchShopByRegion(String query, String region) {
-        List<Shop> findShopList = shopRepository.findByAddress_CityAndName(region, query);
+        List<Shop> findShopList = shopRepository.findByNameAndAddressContains(query, region);
         findValidate(findShopList);
         return findShopList.stream()
                 .map(shop -> new CommonShopResponseDto(shop))
