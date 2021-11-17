@@ -322,6 +322,19 @@ include::{snippets}/user-near-shop-fail/http-request.adoc[]
 
 .response
 include::{snippets}/user-near-shop-fail/http-response.adoc[]
+==== 주변 매장 목록 (혼잡도 정렬) 조회
+===== 성공
+.request
+include::{snippets}/user-near-shop-sort-success/http-request.adoc[]
+
+.response
+include::{snippets}/user-near-shop-sort-success/http-response.adoc[]
+===== 실패
+.request
+include::{snippets}/user-near-shop-sort-fail/http-request.adoc[]
+
+.response
+include::{snippets}/user-near-shop-sort-fail/http-response.adoc[]
 ==== 테이블 목록 조회
 ===== 성공
 .request
