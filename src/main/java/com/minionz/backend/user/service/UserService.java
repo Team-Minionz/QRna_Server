@@ -68,24 +68,21 @@ public class UserService {
 
     @Transactional
     public Message withdraw(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         userRepository.delete(user);
         return new Message(WITHDRAW_SUCCESS_MESSAGE);
     }
 
     @Transactional(readOnly = true)
     public UserPageResponseDto viewMyPage(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         List<UserVisitResponseDto> userVisitResponseDtoList = toUserVisitResponseDto(user.getVisitList());
         return new UserPageResponseDto(user, userVisitResponseDtoList);
     }
 
     @Transactional(readOnly = true)
     public List<CommonShopResponseDto> viewMyBookmark(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         List<Bookmark> bookmarks = user.getBookmarks();
         return bookmarks.stream()
                 .map(bookmark -> new CommonShopResponseDto(bookmark.getShop()))
@@ -100,19 +97,28 @@ public class UserService {
 
     @Transactional
     public Message deleteBookmark(Long userId, Long shopId) {
-        bookmarkRepository.delete(findBookmark(userId, shopId));
+        User user = findUserById(userId);
+        List<Bookmark> bookmarks = user.getBookmarks();
+        deleteBookmark(user, findBookmark(shopId, bookmarks));
         return new Message(DELETE_BOOKMARK_SUCCESS_MESSAGE);
     }
 
-    private Bookmark findBookmark(Long userId, Long shopId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        List<Bookmark> bookmarks = user.getBookmarks();
+    private Bookmark findBookmark(Long shopId, List<Bookmark> bookmarks) {
         Bookmark findBookmark = bookmarks.stream()
                 .filter(bookmark -> bookmark.getShop().getId().equals(shopId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(SHOP_NOT_FOUND_MESSAGE));
         return findBookmark;
+    }
+
+    private void deleteBookmark(User user, Bookmark findBookmark) {
+        user.deleteBookmark(findBookmark);
+        bookmarkRepository.delete(findBookmark);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, String password) {
