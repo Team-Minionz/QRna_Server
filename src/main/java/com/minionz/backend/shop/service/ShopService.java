@@ -111,14 +111,14 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommonShopResponseDto> nearShop(String sort, double latitude, double longitude) {
+    public List<NearShopResponseDto> nearShop(String sort, double latitude, double longitude) {
         List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
         findValidate(shopList);
         if (isCongestion(sort)) {
             Collections.sort(shopList);
         }
         return shopList.stream()
-                .map(CommonShopResponseDto::new)
+                .map(NearShopResponseDto::new)
                 .collect(Collectors.toList());
     }
 
