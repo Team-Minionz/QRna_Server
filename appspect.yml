@@ -1,6 +1,0 @@
-vrsion: 0.0
-os: linux
-files:
-  - source: /
-    destination: /home/ec2-user/qrna/v2/zip/
-    overwrite: yes
