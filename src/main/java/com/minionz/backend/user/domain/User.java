@@ -44,4 +44,8 @@ public class User extends UserBaseEntity {
                 .map(Bookmark::getShop)
                 .anyMatch(b -> b.getId().equals(shopId));
     }
+
+    public void deleteBookmark(Bookmark findBookmark) {
+        this.getBookmarks().remove(findBookmark);
+    }
 }
