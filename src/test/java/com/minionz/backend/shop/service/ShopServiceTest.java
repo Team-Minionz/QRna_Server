@@ -2,12 +2,7 @@ package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopDetailResponseDto;
-import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopTableResponseDto;
+import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.domain.ShopTableRepository;
@@ -276,8 +271,8 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto1);
         shopService.save(shopRequestDto2);
         // then
-        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop("default", 37.515, 126.940);
-        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
+        List<NearShopResponseDto> nearShopResponseDtoList = shopService.nearShop("default", 37.515, 126.940);
+        assertThat(nearShopResponseDtoList.get(0).getName()).isEqualTo("맘스터치");
     }
 
     @DisplayName("근처매장_조회_실패")
@@ -349,9 +344,9 @@ public class ShopServiceTest {
         Shop shop = shopRepository.findById(savedShop.getId())
                 .orElseThrow(() -> new NotFoundException("해당 매장 X"));
         visitService.checkIn(new CheckInRequestDto(savedUser.getId(), shop.getTableList().get(0).getId()));
-        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop("congestion", 37.515, 126.940);
+        List<NearShopResponseDto> nearShopResponseDtoList = shopService.nearShop("congestion", 37.515, 126.940);
         // then
-        assertThat(commonShopResponseDtos.get(0).getUseTables()).isEqualTo(1);
+        assertThat(nearShopResponseDtoList.get(0).getUseTables()).isEqualTo(1);
     }
 
     @DisplayName("근처매장_조회_혼잡도정렬_실패")

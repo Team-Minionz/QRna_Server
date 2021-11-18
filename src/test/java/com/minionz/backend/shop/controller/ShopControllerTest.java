@@ -288,7 +288,7 @@ class ShopControllerTest extends ApiDocument {
         double longitude = 0.1;
         String sort = "default";
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
-        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<NearShopResponseDto> shopResponseDtoList = new ArrayList<>();
         List<ShopTable> tableList1 = new ArrayList<>();
         Owner owner = Owner.builder()
                 .email("hjhj@naver.com")
@@ -327,9 +327,9 @@ class ShopControllerTest extends ApiDocument {
                 .owner(owner)
                 .tableList(tableList1)
                 .build();
-        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
-        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
-        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        shopResponseDtoList.add(new NearShopResponseDto(shop1));
+        shopResponseDtoList.add(new NearShopResponseDto(shop2));
+        shopResponseDtoList.add(new NearShopResponseDto(shop3));
         willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
         ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
         유저_주변가게_조회_성공(resultActions, shopResponseDtoList);
@@ -354,7 +354,7 @@ class ShopControllerTest extends ApiDocument {
         double longitude = 0.1;
         String sort = "congestion";
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
-        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<NearShopResponseDto> shopResponseDtoList = new ArrayList<>();
         List<ShopTable> tableList1 = new ArrayList<>();
         Owner owner = Owner.builder()
                 .email("hjhj@naver.com")
@@ -393,9 +393,9 @@ class ShopControllerTest extends ApiDocument {
                 .owner(owner)
                 .tableList(tableList1)
                 .build();
-        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
-        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
-        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        shopResponseDtoList.add(new NearShopResponseDto(shop1));
+        shopResponseDtoList.add(new NearShopResponseDto(shop2));
+        shopResponseDtoList.add(new NearShopResponseDto(shop3));
         willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
         ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
         유저_주변가게_혼잡도정렬_조회_성공(resultActions, shopResponseDtoList);
@@ -493,7 +493,7 @@ class ShopControllerTest extends ApiDocument {
         return mockMvc.perform(get("/api/v1/shops/near?sort=" + sort + "&latitude=" + latitude + "&longitude=" + longitude));
     }
 
-    private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
+    private void 유저_주변가게_조회_성공(ResultActions resultActions, List<NearShopResponseDto> nearShopResponseDtoList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(nearShopResponseDtoList)))
                 .andDo(print())
@@ -507,7 +507,7 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("user-near-shop-fail"));
     }
 
-    private void 유저_주변가게_혼잡도정렬_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
+    private void 유저_주변가게_혼잡도정렬_조회_성공(ResultActions resultActions, List<NearShopResponseDto> nearShopResponseDtoList) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().json(toJson(nearShopResponseDtoList)))
                 .andDo(print())
