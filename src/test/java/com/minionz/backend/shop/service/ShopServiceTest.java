@@ -56,6 +56,7 @@ public class ShopServiceTest {
     @AfterEach
     void cleanUp() {
         shopRepository.deleteAll();
+        userRepository.deleteAll();
         ownerRepository.deleteAll();
         shopTableRepository.deleteAll();
     }
@@ -256,12 +257,12 @@ public class ShopServiceTest {
         list1.add(new ShopTableRequestDto(2));
         list1.add(new ShopTableRequestDto(4));
         list1.add(new ShopTableRequestDto(4));
-        Address address1 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.518378).longitude(126.940114).build();
+        Address address1 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.515).longitude(126.940).build();
         List<ShopTableRequestDto> list2 = new ArrayList<>();
         list2.add(new ShopTableRequestDto(2));
         list2.add(new ShopTableRequestDto(4));
         list2.add(new ShopTableRequestDto(4));
-        Address address2 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(38.518378).longitude(127.940114).build();
+        Address address2 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.518378).longitude(126.940).build();
         Owner owner = Owner.builder()
                 .name("주인")
                 .email("jhnj841@naba.com")
@@ -275,8 +276,8 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto1);
         shopService.save(shopRequestDto2);
         // then
-        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop(37.515, 126.940);
-        assertThat(commonShopResponseDtos.size()).isEqualTo(1);
+        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop("default", 37.515, 126.940);
+        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
     }
 
     @DisplayName("근처매장_조회_실패")
@@ -305,7 +306,94 @@ public class ShopServiceTest {
         shopService.save(shopRequestDto1);
         shopService.save(shopRequestDto2);
         // then
-        assertThatThrownBy(() -> shopService.nearShop(40.515, 132.940))
+        assertThatThrownBy(() -> shopService.nearShop("default", 40.515, 132.940))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("등록된 매장이 존재하지 않습니다.");
+    }
+
+    @DisplayName("근처매장_조회_혼잡도정렬_성공")
+    @Test
+    void 근처매장_조회_혼잡도정렬_성공() {
+        Address userAddress = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        User user = User.builder()
+                .name("정재욱")
+                .password("12345")
+                .telNumber("010-9969-9776")
+                .address(userAddress)
+                .email("wodnr8462@naver.com")
+                .nickName("김해룡축구장")
+                .build();
+        User savedUser = userRepository.save(user);
+        List<ShopTableRequestDto> list1 = new ArrayList<>();
+        list1.add(new ShopTableRequestDto(2));
+        list1.add(new ShopTableRequestDto(4));
+        list1.add(new ShopTableRequestDto(4));
+        Address address1 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.518378).longitude(126.940114).build();
+        List<ShopTableRequestDto> list2 = new ArrayList<>();
+        list2.add(new ShopTableRequestDto(2));
+        list2.add(new ShopTableRequestDto(4));
+        list2.add(new ShopTableRequestDto(4));
+        Address address2 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.518378).longitude(126.940114).build();
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("jhnj841@naba.com")
+                .password("123")
+                .telNumber("123123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치", address1, "032-888-8838", list1, savedOwner.getId());
+        ShopRequestDto shopRequestDto2 = new ShopRequestDto("롯데리아", address2, "032-888-8888", list2, savedOwner.getId());
+        // when
+        ShopSaveResponseDto savedShop = shopService.save(shopRequestDto1);
+        shopService.save(shopRequestDto2);
+        Shop shop = shopRepository.findById(savedShop.getId())
+                .orElseThrow(() -> new NotFoundException("해당 매장 X"));
+        visitService.checkIn(new CheckInRequestDto(savedUser.getId(), shop.getTableList().get(0).getId()));
+        List<CommonShopResponseDto> commonShopResponseDtos = shopService.nearShop("congestion", 37.515, 126.940);
+        // then
+        assertThat(commonShopResponseDtos.get(0).getUseTables()).isEqualTo(1);
+    }
+
+    @DisplayName("근처매장_조회_혼잡도정렬_실패")
+    @Test
+    void 근처매장_조회_혼잡도정렬_실패() {
+        Address userAddress = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        User user = User.builder()
+                .name("정재욱")
+                .password("12345")
+                .telNumber("010-9969-9776")
+                .address(userAddress)
+                .email("wodnr8462@naver.com")
+                .nickName("김해룡축구장")
+                .build();
+        User savedUser = userRepository.save(user);
+        List<ShopTableRequestDto> list1 = new ArrayList<>();
+        list1.add(new ShopTableRequestDto(2));
+        list1.add(new ShopTableRequestDto(4));
+        list1.add(new ShopTableRequestDto(4));
+        Address address1 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(37.518378).longitude(126.940114).build();
+        List<ShopTableRequestDto> list2 = new ArrayList<>();
+        list2.add(new ShopTableRequestDto(2));
+        list2.add(new ShopTableRequestDto(4));
+        list2.add(new ShopTableRequestDto(4));
+        Address address2 = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").latitude(0.518378).longitude(126.940114).build();
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("jhnj841@naba.com")
+                .password("123")
+                .telNumber("123123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치", address1, "032-888-8838", list1, savedOwner.getId());
+        ShopRequestDto shopRequestDto2 = new ShopRequestDto("롯데리아", address2, "032-888-8888", list2, savedOwner.getId());
+        // when
+        ShopSaveResponseDto savedShop = shopService.save(shopRequestDto1);
+        shopService.save(shopRequestDto2);
+
+        Shop shop = shopRepository.findById(savedShop.getId()).orElseThrow(() -> new NotFoundException("해당 매장 X"));
+        visitService.checkIn(new CheckInRequestDto(savedUser.getId(), shop.getTableList().get(0).getId()));
+        // then
+        assertThatThrownBy(() -> shopService.nearShop("congestion", 42.515, 135.940))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("등록된 매장이 존재하지 않습니다.");
     }

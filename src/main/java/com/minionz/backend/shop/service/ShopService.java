@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,10 @@ public class ShopService {
     private static final String SHOP_UPDATE_SUCCESS = "UPDATE 성공";
     private static final String SHOP_DELETE_SUCCESS = "DELETE 성공";
     private static final String SHOP_SAVE_FAILURE = "SHOP 등록 실패";
-    private static final String SHOP_NOT_FOUND_MESSAGE = "해당 매장이 존재하지 않습니다.";
 
     private final ShopRepository shopRepository;
     private final OwnerRepository ownerRepository;
     private final UserRepository userRepository;
-    private final BookmarkRepository bookmarkRepository;
 
     @Transactional
     public ShopSaveResponseDto save(ShopRequestDto shopRequestDto) {
@@ -112,12 +111,19 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommonShopResponseDto> nearShop(double latitude, double longitude) {
+    public List<CommonShopResponseDto> nearShop(String sort, double latitude, double longitude) {
         List<Shop> shopList = shopRepository.findByNearShop(latitude, longitude);
         findValidate(shopList);
+        if (isCongestion(sort)) {
+            Collections.sort(shopList);
+        }
         return shopList.stream()
                 .map(CommonShopResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isCongestion(String sort) {
+        return sort.equals("congestion");
     }
 
     private List<ShopTableCountResponseDto> createShopTableCountList(Shop shop) {

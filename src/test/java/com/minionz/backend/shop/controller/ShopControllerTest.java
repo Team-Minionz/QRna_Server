@@ -286,6 +286,7 @@ class ShopControllerTest extends ApiDocument {
     void 유저_주변가게_조회_성공() throws Exception {
         double latitude = 0.1;
         double longitude = 0.1;
+        String sort = "default";
         Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
         List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
         List<ShopTable> tableList1 = new ArrayList<>();
@@ -329,8 +330,8 @@ class ShopControllerTest extends ApiDocument {
         shopResponseDtoList.add(new CommonShopResponseDto(shop1));
         shopResponseDtoList.add(new CommonShopResponseDto(shop2));
         shopResponseDtoList.add(new CommonShopResponseDto(shop3));
-        willReturn(shopResponseDtoList).given(shopService).nearShop(any(double.class), any(double.class));
-        ResultActions resultActions = 유저_주변가게_조회_요청(latitude, longitude);
+        willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
         유저_주변가게_조회_성공(resultActions, shopResponseDtoList);
     }
 
@@ -339,10 +340,77 @@ class ShopControllerTest extends ApiDocument {
     void 유저_주변가게_조회_실패() throws Exception {
         double latitude = 0.1;
         double longitude = 0.1;
+        String sort = "default";
         Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
-        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(double.class), any(double.class));
-        final ResultActions response = 유저_주변가게_조회_요청(latitude, longitude);
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(sort, latitude, longitude);
         유저_주변가게_조회_실패(response, errorMessage);
+    }
+
+    @DisplayName("유저 주변가게 혼잡도정렬 조회 성공")
+    @Test
+    void 유저_주변가게_혼잡도정렬_조회_성공() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "congestion";
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_혼잡도정렬_조회_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("유저 주변가게 혼잡도정렬 조회 실패")
+    @Test
+    void 유저_주변가게_혼잡도정렬_조회_실패() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "congestion";
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_혼잡도정렬_조회_실패(response, errorMessage);
     }
 
     @DisplayName("매장 상세보기 조회 성공")
@@ -421,8 +489,8 @@ class ShopControllerTest extends ApiDocument {
                 .andDo(toDocument("shop-detail-success"));
     }
 
-    private ResultActions 유저_주변가게_조회_요청(double latitude, double longitude) throws Exception {
-        return mockMvc.perform(get("/api/v1/shops/near?latitude=" + latitude + "&longitude=" + longitude));
+    private ResultActions 유저_주변가게_조회_요청(String sort, double latitude, double longitude) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/near?sort=" + sort + "&latitude=" + latitude + "&longitude=" + longitude));
     }
 
     private void 유저_주변가게_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
@@ -437,6 +505,20 @@ class ShopControllerTest extends ApiDocument {
                 .andExpect(content().json(toJson(message)))
                 .andDo(print())
                 .andDo(toDocument("user-near-shop-fail"));
+    }
+
+    private void 유저_주변가게_혼잡도정렬_조회_성공(ResultActions resultActions, List<CommonShopResponseDto> nearShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(nearShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-sort-success"));
+    }
+
+    private void 유저_주변가게_혼잡도정렬_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-sort-fail"));
     }
 
     private ResultActions 상점지역검색_요청(String query, String region) throws Exception {

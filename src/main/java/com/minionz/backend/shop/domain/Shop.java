@@ -22,7 +22,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
 @Entity
-public class Shop extends BaseEntity {
+public class Shop extends BaseEntity implements Comparable<Shop> {
+
+    private static final int POSITIVE_NUMBER = 1;
+    private static final int NEGATIVE_NUMBER = -1;
+    private static final int ZERO = 0;
 
     @Column(name = "shop_name", nullable = false)
     private String name;
@@ -90,7 +94,7 @@ public class Shop extends BaseEntity {
     }
 
     public void updateDegreeOfCongestion() {
-        double ratioOfCongestion = getNumberOfUsingTables() / (double) numberOfTables;
+        double ratioOfCongestion = getRatioOfCongestion();
         if (ratioOfCongestion < 0.3) {
             congestionStatus = CongestionStatus.SMOOTH;
         } else if (ratioOfCongestion >= 0.3 && ratioOfCongestion < 0.7) {
@@ -98,6 +102,10 @@ public class Shop extends BaseEntity {
         } else {
             congestionStatus = CongestionStatus.CONGESTED;
         }
+    }
+
+    public double getRatioOfCongestion() {
+        return getNumberOfUsingTables() / (double) numberOfTables;
     }
 
     public int calculateMaxUser() {
@@ -135,5 +143,16 @@ public class Shop extends BaseEntity {
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
+    }
+
+    @Override
+    public int compareTo(Shop shop) {
+        if (this.getRatioOfCongestion() > shop.getRatioOfCongestion()) {
+            return NEGATIVE_NUMBER;
+        }
+        if (this.getRatioOfCongestion() < shop.getRatioOfCongestion()) {
+            return POSITIVE_NUMBER;
+        }
+        return ZERO;
     }
 }
