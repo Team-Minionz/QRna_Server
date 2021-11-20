@@ -34,6 +34,7 @@ public class UserService {
     private static final String USER_NOT_FOUND_MESSAGE = "해당 유저가 존재하지 않습니다.";
     private static final String PASSWORD_NOT_EQUALS_MESSAGE = "비밀번호가 일치하지 않습니다.";
     private static final String USER_DUPLICATION_MESSAGE = "해당 유저 이메일이 중복입니다.";
+    private static final String USER_NICKNAME_DUPLICATION_MESSAGE = "해당 유저 닉네임이 중복입니다.";
     private static final String SHOP_NOT_FOUND_MESSAGE = "해당 매장이 존재하지 않습니다.";
 
     private final UserRepository userRepository;
@@ -58,9 +59,8 @@ public class UserService {
 
     @Transactional
     public Message signUp(JoinRequestDto joinRequestDto) {
-        if (userRepository.existsByEmail(joinRequestDto.getEmail())) {
-            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
-        }
+        checkDuplicateEmail(joinRequestDto.getEmail());
+        checkDuplicateNickname(joinRequestDto.getNickName());
         User user = joinRequestDto.toUser(passwordEncoder);
         userRepository.save(user);
         return new Message(SIGN_UP_SUCCESS_MESSAGE);
@@ -142,5 +142,17 @@ public class UserService {
                 .user(user)
                 .shop(shop)
                 .build();
+    }
+
+    private void checkDuplicateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new BadRequestException(USER_DUPLICATION_MESSAGE);
+        }
+    }
+
+    private void checkDuplicateNickname(String nickname) {
+        if (userRepository.existsByNickName(nickname)) {
+            throw new BadRequestException(USER_NICKNAME_DUPLICATION_MESSAGE);
+        }
     }
 }
