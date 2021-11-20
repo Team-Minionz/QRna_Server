@@ -34,7 +34,7 @@ public class Shop extends BaseEntity implements Comparable<Shop> {
     @Embedded
     private Address address;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String telNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
