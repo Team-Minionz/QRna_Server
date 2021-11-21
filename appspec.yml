@@ -2,7 +2,7 @@ vrsion: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/qrna/v3/zip/
+    destination: /home/ec2-user/qrna/v2/zip/
     overwrite: yes
 
 permissions:
@@ -12,15 +12,19 @@ permissions:
     group: ec2-user
 
 hooks:
-  AfterInstall:
-    - location: stop.sh
-      timeout: 60
-      runas: ec2-user
   ApplicationStart:
-    - location: start.sh
+    - location: deploy.sh
       timeout: 60
       runas: ec2-user
-  ValidateService:
-    - location: health.sh
-      timeout: 60
-      runas: ec2-user
+#  AfterInstall:
+#    - location: stop.sh
+#      timeout: 60
+#      runas: ec2-user
+#  ApplicationStart:
+#    - location: start.sh
+#      timeout: 60
+#      runas: ec2-user
+#  ValidateService:
+#    - location: health.sh
+#      timeout: 60
+#      runas: ec2-user
