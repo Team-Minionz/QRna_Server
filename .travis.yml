@@ -20,7 +20,7 @@ before_deploy:
   - cp build/libs/*.jar before-deploy/
   - cd before-deploy && zip -r before-deploy *
   - cd ../ && mkdir -p deploy
-  - mv before-deploy/before-deploy.zip deploy/springboot-study-project-qrna.zip
+  - mv before-deploy/springboot-study-project-qrna.zip deploy/springboot-study-project-qrna.zip
 
 deploy:
   - provider: s3
