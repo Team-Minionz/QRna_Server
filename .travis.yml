@@ -48,8 +48,6 @@ deploy:
     deployment_group: springboot-study-project-qrna-group
     region: ap-northeast-2
     wait_until_deployed: true
-    on:
-      all_branches: true
 
 notifications:
   email:
