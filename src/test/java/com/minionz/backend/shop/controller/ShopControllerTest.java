@@ -6,12 +6,14 @@ import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotFoundException;
-import com.minionz.backend.shop.controller.dto.ShopResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopRequestDto;
-import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
-import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.controller.dto.*;
 import com.minionz.backend.shop.domain.CongestionStatus;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.shop.domain.ShopTable;
+import com.minionz.backend.shop.domain.UseStatus;
 import com.minionz.backend.shop.service.ShopService;
+import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -151,6 +153,456 @@ class ShopControllerTest extends ApiDocument {
         willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).viewAll();
         ResultActions resultActions = 상점목록조회_요청();
         상점목록조회요청_실패(resultActions, message);
+    }
+
+    @DisplayName("상점 검색 성공")
+    @Test
+    void 상점검색_성공() throws Exception {
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
+        String query = "맘스터치";
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).searchShop(any(String.class));
+        ResultActions resultActions = 상점검색_요청(query);
+        상점검색요청_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("상점 검색 실패")
+    @Test
+    void 상점검색_실패() throws Exception {
+        String query = "맘스터치";
+        Message message = new Message("등록된 매장이 존재하지 않습니다.");
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShop(any(String.class));
+        ResultActions resultActions = 상점검색_요청(query);
+        상점검색요청_실패(message, resultActions);
+    }
+
+    @DisplayName("상점 지역검색 성공")
+    @Test
+    void 상점지역검색_성공() throws Exception {
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
+        String query = "맘스터치";
+        String region = "경기도";
+        List<CommonShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new CommonShopResponseDto(shop1));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop2));
+        shopResponseDtoList.add(new CommonShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).searchShopByRegion(any(String.class), any(String.class));
+        ResultActions resultActions = 상점지역검색_요청(query, region);
+        상점지역검색요청_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("상점 지역검색 실패")
+    @Test
+    void 상점지역검색_실패() throws Exception {
+        String query = "맘스터치";
+        String region = "경기도";
+        Message message = new Message("등록된 매장이 존재하지 않습니다.");
+        willThrow(new NotFoundException("등록된 매장이 존재하지 않습니다.")).given(shopService).searchShopByRegion(any(String.class), any(String.class));
+        ResultActions resultActions = 상점지역검색_요청(query, region);
+        상점지역검색요청_실패(message, resultActions);
+    }
+
+    @DisplayName("유저 주변가게 조회 성공")
+    @Test
+    void 유저_주변가게_조회_성공() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "default";
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
+        List<NearShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new NearShopResponseDto(shop1));
+        shopResponseDtoList.add(new NearShopResponseDto(shop2));
+        shopResponseDtoList.add(new NearShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_조회_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("유저 주변가게 조회 실패")
+    @Test
+    void 유저_주변가게_조회_실패() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "default";
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_조회_실패(response, errorMessage);
+    }
+
+    @DisplayName("유저 주변가게 혼잡도정렬 조회 성공")
+    @Test
+    void 유저_주변가게_혼잡도정렬_조회_성공() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "congestion";
+        Address address = new Address("인천시", "부평구", "산곡동", 1.0, 2.0);
+        List<NearShopResponseDto> shopResponseDtoList = new ArrayList<>();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop2 = Shop.builder()
+                .id(2L)
+                .address(address)
+                .name("맘스터치2")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        Shop shop3 = Shop.builder()
+                .id(3L)
+                .address(address)
+                .name("맘스터치3")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        shopResponseDtoList.add(new NearShopResponseDto(shop1));
+        shopResponseDtoList.add(new NearShopResponseDto(shop2));
+        shopResponseDtoList.add(new NearShopResponseDto(shop3));
+        willReturn(shopResponseDtoList).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        ResultActions resultActions = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_혼잡도정렬_조회_성공(resultActions, shopResponseDtoList);
+    }
+
+    @DisplayName("유저 주변가게 혼잡도정렬 조회 실패")
+    @Test
+    void 유저_주변가게_혼잡도정렬_조회_실패() throws Exception {
+        double latitude = 0.1;
+        double longitude = 0.1;
+        String sort = "congestion";
+        Message errorMessage = new Message("해당 유저가 존재하지 않습니다.");
+        willThrow(new NotFoundException("해당 유저가 존재하지 않습니다.")).given(shopService).nearShop(any(String.class), any(double.class), any(double.class));
+        final ResultActions response = 유저_주변가게_조회_요청(sort, latitude, longitude);
+        유저_주변가게_혼잡도정렬_조회_실패(response, errorMessage);
+    }
+
+    @DisplayName("매장 상세보기 조회 성공")
+    @Test
+    void 매장_상세보기_조회_성공() throws Exception {
+        Long userId = 1L;
+        Long shopId = 1L;
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
+        List<ShopTable> tableList1 = new ArrayList<>();
+        Owner owner = Owner.builder()
+                .email("hjhj@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("사장")
+                .build();
+        tableList1.add(ShopTable.builder()
+                .id(1L)
+                .maxUser(10)
+                .tableNumber(1)
+                .build());
+        tableList1.add(ShopTable.builder()
+                .id(2L)
+                .maxUser(10)
+                .tableNumber(2)
+                .build());
+        Shop shop1 = Shop.builder()
+                .id(1L)
+                .address(address)
+                .name("맘스터치1")
+                .telNumber("123-123-123")
+                .owner(owner)
+                .tableList(tableList1)
+                .build();
+        List<ShopTableCountResponseDto> list = new ArrayList<>();
+        list.add(new ShopTableCountResponseDto(shop1, 2));
+        list.add(new ShopTableCountResponseDto(shop1, 5));
+        list.add(new ShopTableCountResponseDto(shop1, 7));
+        User user = User.builder()
+                .email("kjk@naver.com")
+                .password("123")
+                .telNumber("123-123-123")
+                .name("유저")
+                .build();
+        ShopDetailResponseDto shopDetailResponseDto = new ShopDetailResponseDto(shop1, list, user);
+        willReturn(shopDetailResponseDto).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
+        유저_매장_상세보기_조회_성공(resultActions, shopDetailResponseDto);
+    }
+
+    @DisplayName("매장 상세보기 조회 실패")
+    @Test
+    void 매장_상세보기_조회_실패() throws Exception {
+        Long userId = 1L;
+        Long shopId = 1L;
+        Message message = new Message("매장 상세보기 조회 실패");
+        willThrow(new NotFoundException("매장 상세보기 조회 실패")).given(shopService).viewDetail(any(Long.class), any(Long.class));
+        ResultActions resultActions = 유저_매장_상세보기_조회_요청(userId, shopId);
+        유저_매장_상세보기_조회_실패(resultActions, message);
+    }
+
+    private ResultActions 유저_매장_상세보기_조회_요청(Long userId, Long shopId) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/detail/" + shopId + "/" + userId));
+    }
+
+    private void 유저_매장_상세보기_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-detail-fail"));
+    }
+
+    private void 유저_매장_상세보기_조회_성공(ResultActions resultActions, ShopDetailResponseDto shopDetailResponseDto) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopDetailResponseDto)))
+                .andDo(print())
+                .andDo(toDocument("shop-detail-success"));
+    }
+
+    private ResultActions 유저_주변가게_조회_요청(String sort, double latitude, double longitude) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/near?sort=" + sort + "&latitude=" + latitude + "&longitude=" + longitude));
+    }
+
+    private void 유저_주변가게_조회_성공(ResultActions resultActions, List<NearShopResponseDto> nearShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(nearShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-success"));
+    }
+
+    private void 유저_주변가게_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-fail"));
+    }
+
+    private void 유저_주변가게_혼잡도정렬_조회_성공(ResultActions resultActions, List<NearShopResponseDto> nearShopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(nearShopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-sort-success"));
+    }
+
+    private void 유저_주변가게_혼잡도정렬_조회_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("user-near-shop-sort-fail"));
+    }
+
+    private ResultActions 상점지역검색_요청(String query, String region) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/search/region?region=" + region + "&keyword=" + query)
+                .characterEncoding("UTF-8"));
+    }
+
+    private void 상점지역검색요청_성공(ResultActions resultActions, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-region-success"));
+    }
+
+    private void 상점지역검색요청_실패(Message message, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-region-fail"));
+    }
+
+    private void 상점검색요청_성공(ResultActions resultActions, List<CommonShopResponseDto> shopResponseDtoList) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(shopResponseDtoList)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-success"));
+    }
+
+    private void 상점검색요청_실패(Message message, ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("shop-search-fail"));
+    }
+
+    private ResultActions 상점검색_요청(String query) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/search?keyword=" + query));
+    }
+
+    @DisplayName("테이블 목록 조회 성공")
+    @Test
+    void 테이블목록조회_성공() throws Exception {
+        // given
+        Long id = 1L;
+        List<ShopTableResponseDto> list = new ArrayList<>();
+        list.add(new ShopTableResponseDto(1L, 1, 2, 0, UseStatus.EMPTY));
+        list.add(new ShopTableResponseDto(2L, 2, 2, 2, UseStatus.USING));
+        list.add(new ShopTableResponseDto(3L, 3, 3, 0, UseStatus.EMPTY));
+        // when
+        willReturn(list).given(shopService).viewTables(any(Long.class));
+        ResultActions resultActions = 테이블목록_조회_요청(id);
+        // then
+        테이블목록_조회_요청_성공(resultActions, list);
+    }
+
+    @DisplayName("테이블 목록 조회 실패")
+    @Test
+    void 테이블목록조회_실패() throws Exception {
+        // given
+        Long id = 1L;
+        Message message = new Message("테이블 목록 조회 실패");
+        // when
+        willThrow(new NotFoundException("테이블 목록 조회 실패")).given(shopService).viewTables(any(Long.class));
+        ResultActions resultActions = 테이블목록_조회_요청(id);
+        // then
+        테이블목록_조회_요청_실패(resultActions, message);
+    }
+
+    private ResultActions 테이블목록_조회_요청(Long id) throws Exception {
+        return mockMvc.perform(get("/api/v1/shops/" + id));
+    }
+
+    private void 테이블목록_조회_요청_성공(ResultActions resultActions, List<ShopTableResponseDto> list) throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().json(toJson(list)))
+                .andDo(print())
+                .andDo(toDocument("table-list-view-success"));
+    }
+
+    private void 테이블목록_조회_요청_실패(ResultActions resultActions, Message message) throws Exception {
+        resultActions.andExpect(status().isNotFound())
+                .andExpect(content().json(toJson(message)))
+                .andDo(print())
+                .andDo(toDocument("table-list-view-fail"));
     }
 
     private void 상점삭제요청_실패(Message message, ResultActions resultActions) throws Exception {

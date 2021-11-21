@@ -1,27 +1,22 @@
 package com.minionz.backend.user.controller.dto;
 
-import com.minionz.backend.common.domain.Address;
-import com.minionz.backend.user.domain.Owner;
+import com.minionz.backend.common.dto.AddressDto;
 import com.minionz.backend.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
-public class UserPageResponseDto {
+public class UserPageResponseDto extends MyPageResponseDto{
 
-    private String nickname;
-    private String telNumber;
-    private Address address;
+    private AddressDto address;
+    private List<UserVisitResponseDto> userVisitResponseList;
 
-    public UserPageResponseDto(User user) {
-        this.nickname = user.getNickName();
-        this.address = user.getAddress();
-        this.telNumber = user.getTelNumber();
-    }
-
-    public UserPageResponseDto(Owner owner) {
-        this.nickname = owner.getName();
-        this.telNumber = owner.getTelNumber();
+    public UserPageResponseDto(User user, List<UserVisitResponseDto> userVisitResponseList) {
+        super(user.getNickName(), user.getTelNumber());
+        this.address = new AddressDto(user.getAddress());
+        this.userVisitResponseList = userVisitResponseList;
     }
 }

@@ -5,14 +5,18 @@ import com.minionz.backend.common.domain.Message;
 import com.minionz.backend.common.exception.BadRequestException;
 import com.minionz.backend.common.exception.NotEqualsException;
 import com.minionz.backend.common.exception.NotFoundException;
+import com.minionz.backend.shop.controller.dto.CommonShopResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
+import com.minionz.backend.shop.controller.dto.ShopSaveResponseDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
+import com.minionz.backend.shop.domain.Shop;
+import com.minionz.backend.shop.domain.ShopRepository;
 import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.controller.dto.*;
-import com.minionz.backend.user.domain.Owner;
-import com.minionz.backend.user.domain.OwnerRepository;
-import com.minionz.backend.user.domain.User;
-import com.minionz.backend.user.domain.UserRepository;
+import com.minionz.backend.user.domain.*;
+import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
+import com.minionz.backend.visit.domain.VisitRepository;
+import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +32,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
@@ -42,24 +45,39 @@ public class UserServiceTest {
     private OwnerRepository ownerRepository;
 
     @Autowired
-    private UserService userService;
+    private BookmarkRepository bookmarkRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private ShopRepository shopRepository;
+
+    @Autowired
+    private VisitRepository visitRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private VisitService visitService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @AfterEach
     void cleanUp() {
+        visitRepository.deleteAll();
         userRepository.deleteAll();
         ownerRepository.deleteAll();
+        bookmarkRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @Test
     void 회원가입_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -67,7 +85,6 @@ public class UserServiceTest {
                 .telNumber("11111111")
                 .password("1234")
                 .address(address)
-                .role(Role.USER)
                 .build();
         //when
         Message message = userService.signUp(joinRequestDto);
@@ -78,12 +95,14 @@ public class UserServiceTest {
     @Test
     void 회원가입_성공_테스트_오너() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
+                .nickName("바보")
+                .address(address)
                 .email("operation@naver.com")
                 .telNumber("11111111")
                 .password("1234")
-                .role(Role.OWNER)
                 .build();
         //when
         Message message = userService.signUp(joinRequestDto);
@@ -94,7 +113,7 @@ public class UserServiceTest {
     @Test
     void 회원탈퇴_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         User user = User.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
@@ -105,23 +124,7 @@ public class UserServiceTest {
                 .build();
         User save = userRepository.save(user);
         //when
-        Message message = userService.withdraw(save.getId(), Role.USER);
-        //then
-        assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
-    }
-
-    @Test
-    void 회원탈퇴_성공_테스트_오너() {
-        //given
-        Owner owner = Owner.builder()
-                .email("wodnr8462@naver.com")
-                .name("정재욱")
-                .password("1234")
-                .telNumber("1111111")
-                .build();
-        Owner save = ownerRepository.save(owner);
-        //when
-        Message message = userService.withdraw(save.getId(), Role.OWNER);
+        Message message = userService.withdraw(save.getId());
         //then
         assertThat(message.getMessage()).isEqualTo("회원탈퇴 성공");
     }
@@ -129,7 +132,7 @@ public class UserServiceTest {
     @Test
     void 회원중복_성공_테스트() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         User user = User.builder()
                 .email("wodnr8462@naver.com")
                 .name("정재욱")
@@ -145,7 +148,6 @@ public class UserServiceTest {
                 .nickName("라이언")
                 .telNumber("11111111")
                 .password("1234")
-                .role(Role.USER)
                 .address(address)
                 .build();
         //when
@@ -157,7 +159,7 @@ public class UserServiceTest {
     @Test
     void 로그인_성공_테스트_유저() {
         //given
-        final Address address = new Address("안산시", "성포동", "우리집");
+        final Address address = new Address("안산시", "성포동", "우리집", 1.0, 2.0);
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
                 .name("정재욱")
                 .email("operation@naver.com")
@@ -165,12 +167,11 @@ public class UserServiceTest {
                 .telNumber("11111111")
                 .password("1234")
                 .address(address)
-                .role(Role.USER)
                 .build();
         userService.signUp(joinRequestDto);
         User findUser = userRepository.findByEmail("operation@naver.com")
                 .orElseThrow(() -> new NotFoundException("회원가입 실패"));
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.USER);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234");
         //when
         LoginResponseDto login = userService.login(LoginRequestDto);
         //then
@@ -178,55 +179,39 @@ public class UserServiceTest {
     }
 
     @Test
-    void 로그인_성공_테스트_오너() {
-        //given
-        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
-                .name("정재욱")
-                .email("operation@naver.com")
-                .telNumber("11111111")
-                .password("1234")
-                .role(Role.OWNER)
-                .build();
-        userService.signUp(joinRequestDto);
-        Owner findOwner = ownerRepository.findByEmail("operation@naver.com")
-                .orElseThrow(() -> new NotFoundException("회원가입 실패"));
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("operation@naver.com", "1234", Role.OWNER);
-        //when
-        LoginResponseDto login = userService.login(LoginRequestDto);
-        //then
-        assertThat(login.getId()).isEqualTo(findOwner.getId());
-    }
-
-    @Test
     void 로그인_아이디_불일치_테스트() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
+                .address(address)
                 .password("123456")
                 .nickName("donglee99")
                 .telNumber("010111111111")
                 .build();
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("jh3j741@naver.com", "123456", Role.USER);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("jh3j741@naver.com", "123456");
         userRepository.save(user);
         //when
         //then
         assertThatThrownBy(() -> userService.login(LoginRequestDto))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @Test
     void 로그인_비밀번호_불일치_테스트() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
                 .password("123456")
+                .address(address)
                 .nickName("donglee99")
                 .telNumber("010111111111")
                 .build();
-        LoginRequestDto LoginRequestDto = new LoginRequestDto("jhnj741@naver.com", "12346", Role.USER);
+        LoginRequestDto LoginRequestDto = new LoginRequestDto("jhnj741@naver.com", "12346");
         userRepository.save(user);
         //when
         //then
@@ -238,7 +223,7 @@ public class UserServiceTest {
     @Test
     void 마이페이지_조회_성공() {
         //given
-        Address address = new Address("믿음", "소망", "씨티");
+        Address address = new Address("믿음", "소망", "씨티", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
@@ -247,9 +232,9 @@ public class UserServiceTest {
                 .telNumber("010111111111")
                 .address(address)
                 .build();
-        userRepository.save(user);
+        User save = userRepository.save(user);
         //when
-        UserPageResponseDto userPageResponseDto = userService.viewMypage(user.getId(), Role.USER);
+        UserPageResponseDto userPageResponseDto = userService.viewMyPage(save.getId());
         //then
         assertThat(userPageResponseDto.getNickname()).isEqualTo("donglee99");
         assertThat(userPageResponseDto.getTelNumber()).isEqualTo("010111111111");
@@ -258,103 +243,300 @@ public class UserServiceTest {
     @Test
     void 마이페이지_조회_실패() {
         //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
         User user = User.builder()
                 .email("jhnj741@naver.com")
                 .name("동현")
                 .password("123456")
                 .nickName("donglee99")
+                .address(address)
                 .telNumber("010111111111")
                 .build();
         userRepository.save(user);
         //when
         //then
-        assertThatThrownBy(() -> userService.viewMypage(2L, Role.USER))
+        assertThatThrownBy(() -> userService.viewMyPage(2L))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 유저 이메일이 존재하지 않습니다.");
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
     @DisplayName("패스워드 암호화 테스트")
     @Test
     void passwordEncode() {
         // given
-        Address address = new Address("a", "b", "C");
+        Address userAddress = new Address("안산시", "상록구", "월피동", 1.0, 2.0);
+        Address address = Address.builder().zipcode("111-222").street("구월동").city("인천시 남동구").build();
         String rawPassword = "12345678";
         JoinRequestDto joinRequestDto = JoinRequestDto.builder()
-                .name("정재욱")
-                .email("operation@naver.com")
-                .nickName("라이언")
-                .telNumber("11111111")
-                .password("12345678")
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
                 .address(address)
-                .role(Role.USER)
                 .build();
         userService.signUp(joinRequestDto);
-        User user = userRepository.findByEmail("operation@naver.com")
-                .orElseThrow(() -> new BadRequestException("실패"));
-        String encode = user.getPassword();
-        //when
-        //then
-        assertAll(
-                () -> assertNotEquals(rawPassword, encode),
-                () -> assertTrue(passwordEncoder.matches(rawPassword, encode))
-        );
-    }
-
-    @Test
-    void 오너샵조회_성공() {
-        //given
-        Address address = new Address("믿음", "소망", "씨티");
-        List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
-        shopTables1.add(new ShopTableRequestDto(2));
-        shopTables1.add(new ShopTableRequestDto(4));
-        shopTables1.add(new ShopTableRequestDto(4));
-        List<ShopTableRequestDto> shopTables2 = new ArrayList<>();
-        shopTables2.add(new ShopTableRequestDto(4));
-        shopTables2.add(new ShopTableRequestDto(4));
-        shopTables2.add(new ShopTableRequestDto(4));
         Owner owner = Owner.builder()
                 .name("주인")
-                .email("jhnj841@naba.com")
+                .email("223@naver.com")
                 .password("123")
-                .telNumber("123123")
+                .telNumber("012030123")
                 .build();
         Owner savedOwner = ownerRepository.save(owner);
-        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치1", address, "010-111-33332", shopTables1, savedOwner.getId());
-        ShopRequestDto shopRequestDto2 = new ShopRequestDto("맘스터치2", address, "010-111-33333", shopTables2, savedOwner.getId());
-        shopService.save(shopRequestDto1);
-        shopService.save(shopRequestDto2);
         //when
-        List<OwnerShopResponseDto> ownerShopResponseDtoList = userService.viewMyShop(savedOwner.getId());
         //then
-        assertThat(ownerShopResponseDtoList.size()).isEqualTo(2);
+        assertThatThrownBy(() -> userService.viewMyPage(2L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 
+    @DisplayName("방문 매장 리스트 조회 테스트")
     @Test
-    void 오너샵조회_실패() {
-        //given
-        Address address = new Address("믿음", "소망", "씨티");
-        List<ShopTableRequestDto> shopTables1 = new ArrayList<>();
-        shopTables1.add(new ShopTableRequestDto(2));
-        shopTables1.add(new ShopTableRequestDto(4));
-        shopTables1.add(new ShopTableRequestDto(4));
-        List<ShopTableRequestDto> shopTables2 = new ArrayList<>();
-        shopTables2.add(new ShopTableRequestDto(4));
-        shopTables2.add(new ShopTableRequestDto(4));
-        shopTables2.add(new ShopTableRequestDto(4));
+    void 마이페이지_방문매장목록_조회_성공() {
+        // given
+        Address address = new Address("123-456", "송도동", "인천시 연수구", 1.0, 2.0);
+        Address userAddress = new Address("456-789", "송도동", "인천시 연수구", 1.0, 2.0);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
         Owner owner = Owner.builder()
-                .name("주인")
-                .email("jhnj841@naba.com")
+                .email("hjhj@naver.com")
                 .password("123")
-                .telNumber("123123")
+                .telNumber("123-123-123")
+                .name("사장")
                 .build();
         Owner savedOwner = ownerRepository.save(owner);
-        ShopRequestDto shopRequestDto1 = new ShopRequestDto("맘스터치1", address, "010-111-33332", shopTables1, savedOwner.getId());
-        ShopRequestDto shopRequestDto2 = new ShopRequestDto("맘스터치2", address, "010-111-33333", shopTables2, savedOwner.getId());
-        shopService.save(shopRequestDto1);
-        shopService.save(shopRequestDto2);
+        User user = User.builder()
+                .name("미니언")
+                .email("minionz@naver.com")
+                .password("1234")
+                .nickName("미니언")
+                .telNumber("010-1111-1111")
+                .address(userAddress)
+                .build();
+        userRepository.save(user);
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto shopSaveResponseDto = shopService.save(shopRequestDto);
+        Shop shop = shopRepository.findById(shopSaveResponseDto.getId())
+                .orElseThrow(() -> new NotFoundException("해당 매장이 존재하지 않습니다."));
+        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shop.getTableList().get(0).getId());
+        visitService.checkIn(checkInRequestDto);
+        //when
+        UserPageResponseDto userPageResponseDtoList = userService.viewMyPage(user.getId());
+        //then
+        assertThat(userPageResponseDtoList.getUserVisitResponseList().get(0).getShopTelNumber()).isEqualTo("032-888-8888");
+    }
+
+    @DisplayName("즐겨찾기 추가 성공")
+    @Test
+    public void 즐겨찾기_추가_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        JoinRequestDto joinRequestDto = JoinRequestDto.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        userService.signUp(joinRequestDto);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        Long userId = userRepository.findAll().get(0).getId();
+        //when
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(userId, save.getId());
+        Message message = userService.addBookmark(bookmarkRequestDto);
+        //then
+        assertThat(message.getMessage()).isEqualTo("즐겨찾기 추가 성공");
+    }
+
+    @DisplayName("즐겨찾기 추가 실패")
+    @Test
+    public void 즐겨찾기_추가_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        User savedUser = userRepository.save(user);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(100L, save.getId());
         //when
         //then
-        assertThatThrownBy(() -> userService.viewMyShop(2L))
-                .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> userService.addBookmark(bookmarkRequestDto))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
+    }
+
+    @DisplayName("즐겨찾기 삭제 성공")
+    @Test
+    public void 즐겨찾기_삭제_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        Message message = userService.deleteBookmark(savedUser.getId(), save.getId());
+        //then
+        assertThat(message.getMessage()).isEqualTo("즐겨찾기 삭제 성공");
+    }
+
+    @DisplayName("즐겨찾기 삭제 실패")
+    @Test
+    public void 즐겨찾기_삭제_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("name", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        //then
+        assertThatThrownBy(() -> userService.deleteBookmark(100L, save.getId()))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
+    }
+
+    @DisplayName("즐겨찾기 조회 성공")
+    @Test
+    public void 즐겨찾기_조회_성공() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("맘스터치", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        List<CommonShopResponseDto> commonShopResponseDtos = userService.viewMyBookmark(savedUser.getId());
+        //then
+        assertThat(commonShopResponseDtos.get(0).getName()).isEqualTo("맘스터치");
+    }
+
+    @DisplayName("즐겨찾기 조회 실패")
+    @Test
+    public void 즐겨찾기_조회_실패() {
+        //given
+        Address address = new Address("안산시", "상록구", "성포동", 1.0, 2.0);
+        User user = User.builder()
+                .email("jhnj741@naver.com")
+                .password("123456t")
+                .name("동현")
+                .nickName("DongLee99")
+                .telNumber("010-111-1111")
+                .address(address)
+                .build();
+        User savedUser = userRepository.save(user);
+        Owner owner = Owner.builder()
+                .name("주인")
+                .email("223@naver.com")
+                .password("123")
+                .telNumber("012030123")
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        List<ShopTableRequestDto> list = new ArrayList<>();
+        list.add(new ShopTableRequestDto(2));
+        list.add(new ShopTableRequestDto(4));
+        list.add(new ShopTableRequestDto(4));
+        ShopRequestDto shopRequestDto = new ShopRequestDto("맘스터치", address, "032-888-8888", list, savedOwner.getId());
+        ShopSaveResponseDto save = shopService.save(shopRequestDto);
+        BookmarkRequestDto bookmarkRequestDto = new BookmarkRequestDto(savedUser.getId(), save.getId());
+        userService.addBookmark(bookmarkRequestDto);
+        //when
+        //then
+        assertThatThrownBy(() -> userService.viewMyBookmark(2L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저가 존재하지 않습니다.");
     }
 }

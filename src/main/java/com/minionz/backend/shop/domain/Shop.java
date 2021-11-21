@@ -22,7 +22,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
 @Entity
-public class Shop extends BaseEntity {
+public class Shop extends BaseEntity implements Comparable<Shop> {
+
+    private static final int POSITIVE_NUMBER = 1;
+    private static final int NEGATIVE_NUMBER = -1;
+    private static final int ZERO = 0;
 
     @Column(name = "shop_name", nullable = false)
     private String name;
@@ -30,7 +34,7 @@ public class Shop extends BaseEntity {
     @Embedded
     private Address address;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String telNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -90,7 +94,7 @@ public class Shop extends BaseEntity {
     }
 
     public void updateDegreeOfCongestion() {
-        double ratioOfCongestion = getNumberOfUsingTables() / (double) numberOfTables;
+        double ratioOfCongestion = getRatioOfCongestion();
         if (ratioOfCongestion < 0.3) {
             congestionStatus = CongestionStatus.SMOOTH;
         } else if (ratioOfCongestion >= 0.3 && ratioOfCongestion < 0.7) {
@@ -100,14 +104,55 @@ public class Shop extends BaseEntity {
         }
     }
 
+    public double getRatioOfCongestion() {
+        return getNumberOfUsingTables() / (double) numberOfTables;
+    }
+
+    public int calculateMaxUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .sum();
+    }
+
+    public int calculateUseUser() {
+        return tableList.stream()
+                .mapToInt(ShopTable::getCountUser)
+                .sum();
+    }
+
+    public List<Integer> makeUniqueMaxUserList() {
+        return tableList.stream()
+                .map(ShopTable::getMaxUser)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public int countTablesEqualMaxUser(Integer maxUser) {
+        return (int) tableList.stream()
+                .mapToInt(ShopTable::getMaxUser)
+                .filter(user -> user == maxUser)
+                .count();
+    }
+
+    public int getNumberOfUsingTables() {
+        return (int) tableList.stream()
+                .filter(status -> status.getUseStatus().equals(UseStatus.USING))
+                .count();
+    }
+
     private void setOwner(Owner owner) {
         this.owner = owner;
         owner.getShops().add(this);
     }
 
-    private int getNumberOfUsingTables() {
-        return (int) tableList.stream()
-                .filter(status -> status.getUseStatus() == UseStatus.USING)
-                .count();
+    @Override
+    public int compareTo(Shop shop) {
+        if (this.getRatioOfCongestion() > shop.getRatioOfCongestion()) {
+            return NEGATIVE_NUMBER;
+        }
+        if (this.getRatioOfCongestion() < shop.getRatioOfCongestion()) {
+            return POSITIVE_NUMBER;
+        }
+        return ZERO;
     }
 }
