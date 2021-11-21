@@ -31,7 +31,7 @@ deploy:
     skip_cleanup: true
     acl: private
     local_dir: deploy
-    wait-until-deployed: true
+    wait_until_deployed: true
     on:
       all_branches: true
 
@@ -44,12 +44,11 @@ deploy:
     application: springboot-study-project-qrna
     deployment_group: springboot-study-project-qrna-group
     region: ap-northeast-2
-    wait-until-deployed: true
+    wait_until_deployed: true
     on:
       all_branches: true
 
 notifications:
   email:
     recipients:
-      - piq2255@gamil.com
       - piq2255@naver.com
