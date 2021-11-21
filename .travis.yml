@@ -31,7 +31,7 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     bucket: qrna-springboot-build
     region: ap-northeast-2
-    skip_cleanup: true
+    skip_cleanup: false
     acl: private
     local_dir: deploy
     wait-until-deployed: true
