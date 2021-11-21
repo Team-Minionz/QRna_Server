@@ -14,13 +14,16 @@ cache:
 script: "./gradlew clean build"
 
 before_deploy:
-  - mkdir -p before-deploy
-  - cp scripts/*.sh before-deploy/
-  - cp appspec.yml before-deploy/
-  - cp build/libs/*.jar before-deploy/
-  - cd before-deploy && zip -r springboot-study-project-qrna *
-  - cd ../ && mkdir -p deploy
-  - mv before-deploy/springboot-study-project-qrna.zip deploy/springboot-study-project-qrna.zip
+  - zip -r springboot-study-project-qrna *
+  - mkdir -p deploy
+  - mv springboot-study-project-qrna.zip deploy/springboot-study-project-qrna.zip
+#  - mkdir -p before-deploy
+#  - cp scripts/*.sh before-deploy/
+#  - cp appspec.yml before-deploy/
+#  - cp build/libs/*.jar before-deploy/
+#  - cd before-deploy && zip -r springboot-study-project-qrna *
+#  - cd ../ && mkdir -p deploy
+#  - mv before-deploy/springboot-study-project-qrna.zip deploy/springboot-study-project-qrna.zip
 
 deploy:
   - provider: s3
@@ -28,25 +31,25 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     bucket: qrna-springboot-build
     region: ap-northeast-2
-    skip_cleanup: true
+    skip_cleanup: false
     acl: private
     local_dir: deploy
     wait_until_deployed: true
     on:
       all_branches: true
 
-  - provider: codedeploy
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: qrna-springboot-build
-    key: springboot-study-project-qrna.zip
-    bundle_type: zip
-    application: springboot-study-project-qrna
-    deployment_group: springboot-study-project-qrna-group
-    region: ap-northeast-2
-    wait_until_deployed: true
-    on:
-      all_branches: true
+#  - provider: codedeploy
+#    access_key_id: $AWS_ACCESS_KEY
+#    secret_access_key: $AWS_SECRET_KEY
+#    bucket: qrna-springboot-build
+#    key: springboot-study-project-qrna.zip
+#    bundle_type: zip
+#    application: springboot-study-project-qrna
+#    deployment_group: springboot-study-project-qrna-group
+#    region: ap-northeast-2
+#    wait_until_deployed: true
+#    on:
+#      all_branches: true
 
 notifications:
   email:
