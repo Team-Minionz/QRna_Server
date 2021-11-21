@@ -38,18 +38,18 @@ deploy:
     on:
       all_branches: true
 
-#  - provider: codedeploy
-#    access_key_id: $AWS_ACCESS_KEY
-#    secret_access_key: $AWS_SECRET_KEY
-#    bucket: qrna-springboot-build
-#    key: springboot-study-project-qrna.zip
-#    bundle_type: zip
-#    application: springboot-study-project-qrna
-#    deployment_group: springboot-study-project-qrna-group
-#    region: ap-northeast-2
-#    wait_until_deployed: true
-#    on:
-#      all_branches: true
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: qrna-springboot-build
+    key: springboot-study-project-qrna.zip
+    bundle_type: zip
+    application: springboot-study-project-qrna
+    deployment_group: springboot-study-project-qrna-group
+    region: ap-northeast-2
+    wait_until_deployed: true
+    on:
+      all_branches: true
 
 notifications:
   email:
