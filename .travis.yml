@@ -4,7 +4,7 @@ jdk:
 
 branches:
   only:
-    - main
+    - develop
 
 cache:
   directories:
@@ -14,13 +14,16 @@ cache:
 script: "./gradlew clean build"
 
 before_deploy:
-  - mkdir -p before-deploy
-  - cp scripts/*.sh before-deploy/
-  - cp appspec.yml before-deploy/
-  - cp build/libs/*.jar before-deploy/
-  - cd before-deploy && zip -r before-deploy *
-  - cd ../ && mkdir -p deploy
-  - mv before-deploy/before-deploy.zip deploy/springboot-study-project-qrna.zip
+  - zip -r springboot-study-project-qrna *
+  - mkdir -p deploy
+  - mv springboot-study-project-qrna.zip deploy/springboot-study-project-qrna.zip
+#  - mkdir -p before-deploy
+#  - cp scripts/*.sh before-deploy/
+#  - cp appspec.yml before-deploy/
+#  - cp build/libs/*.jar before-deploy/
+#  - cd before-deploy && zip -r before-deploy *
+#  - cd ../ && mkdir -p deploy
+#  - mv before-deploy/before-deploy.zip deploy/springboot-study-project-qrna.zip
 
 deploy:
   - provider: s3
@@ -33,19 +36,18 @@ deploy:
     local_dir: deploy
     wait-until-deployed: true
 
-  - provider: codedeploy
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: qrna-springboot-build
-    key: springboot-study-project-qrna.zip
-    bundle_type: zip
-    application: springboot-study-project-qrna
-    deployment_group: springboot-study-project-qrna-group
-    region: ap-northeast-2
-    wait-until-deployed: true
+#  - provider: codedeploy
+#    access_key_id: $AWS_ACCESS_KEY
+#    secret_access_key: $AWS_SECRET_KEY
+#    bucket: qrna-springboot-build
+#    key: springboot-study-project-qrna.zip
+#    bundle_type: zip
+#    application: springboot-study-project-qrna
+#    deployment_group: springboot-study-project-qrna-group
+#    region: ap-northeast-2
+#    wait-until-deployed: true
 
 notifications:
   email:
     recipients:
-      - piq2255@gamil.com
       - piq2255@naver.com
