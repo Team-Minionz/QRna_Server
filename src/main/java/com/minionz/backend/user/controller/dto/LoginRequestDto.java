@@ -1,6 +1,5 @@
 package com.minionz.backend.user.controller.dto;
 
-import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,13 +12,9 @@ public class LoginRequestDto {
     private String email;
     private String password;
 
-    @NotNull
-    private Role role;
-
     @Builder
-    public LoginRequestDto(String email, String password, Role role) {
+    public LoginRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
-        this.role = role;
     }
 }

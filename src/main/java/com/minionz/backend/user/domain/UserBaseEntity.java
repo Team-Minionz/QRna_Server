@@ -23,7 +23,7 @@ public class UserBaseEntity extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String telNumber;
 
     public UserBaseEntity(Long id, LocalDateTime createdDate, LocalDateTime modifiedDate, String name, String email, String password, String telNumber) {

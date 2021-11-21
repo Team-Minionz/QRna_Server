@@ -1,20 +1,17 @@
-package com.minionz.backend.visit.service;
+package com.minionz.backend.shop.service;
 
 import com.minionz.backend.common.domain.Address;
 import com.minionz.backend.common.domain.Message;
-import com.minionz.backend.common.exception.NotFoundException;
 import com.minionz.backend.shop.controller.dto.ShopRequestDto;
 import com.minionz.backend.shop.controller.dto.ShopTableRequestDto;
-import com.minionz.backend.shop.domain.Shop;
 import com.minionz.backend.shop.domain.ShopRepository;
-import com.minionz.backend.shop.domain.ShopTable;
 import com.minionz.backend.shop.domain.ShopTableRepository;
-import com.minionz.backend.shop.service.ShopService;
 import com.minionz.backend.user.domain.Owner;
 import com.minionz.backend.user.domain.OwnerRepository;
 import com.minionz.backend.user.domain.User;
 import com.minionz.backend.user.domain.UserRepository;
 import com.minionz.backend.visit.controller.dto.CheckInRequestDto;
+import com.minionz.backend.visit.service.VisitService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +28,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class VisitServiceTest {
+public class ShopTableServiceTest {
+
+    @Autowired
+    private ShopTableRepository shopTableRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,13 +43,10 @@ public class VisitServiceTest {
     private OwnerRepository ownerRepository;
 
     @Autowired
-    private ShopRepository shopRepository;
-
-    @Autowired
-    private ShopTableRepository shopTableRepository;
-
-    @Autowired
     private ShopService shopService;
+
+    @Autowired
+    private ShopTableService shopTableService;
 
     @Autowired
     private VisitService visitService;
@@ -92,27 +92,15 @@ public class VisitServiceTest {
 
     @AfterEach
     void cleanUp() {
+        shopTableRepository.deleteAll();
         shopRepository.deleteAll();
         userRepository.deleteAll();
         ownerRepository.deleteAll();
     }
 
-    @DisplayName("방문 기록 테스트")
+    @DisplayName("테이블 퇴장 성공 테스트")
     @Test
-    public void checkInTest() {
-        // given
-        User user = userRepository.findAll().get(0);
-        ShopTable shopTable = shopRepository.findAll().get(0).getTableList().get(0);
-        CheckInRequestDto checkInRequestDto = new CheckInRequestDto(user.getId(), shopTable.getId());
-        // when
-        Message message = visitService.checkIn(checkInRequestDto);
-        // then
-        assertThat(message.getMessage()).isEqualTo("방문 기록 성공");
-    }
-
-    @DisplayName("혼잡도 변경 테스트")
-    @Test
-    public void changeCongestionStatusTest() {
+    void exitTableTest() {
         // given
         Long userId1 = userRepository.findAll().get(0).getId();
         Long userId2 = userRepository.findAll().get(1).getId();
@@ -120,13 +108,11 @@ public class VisitServiceTest {
         Long tableId2 = shopTableRepository.findAll().get(1).getId();
         CheckInRequestDto checkInRequestDto = new CheckInRequestDto(userId1, tableId1);
         CheckInRequestDto checkInRequestDto1 = new CheckInRequestDto(userId2, tableId2);
-        // when
         visitService.checkIn(checkInRequestDto);
         visitService.checkIn(checkInRequestDto1);
-
-        Shop findShop = shopRepository.findByTelNumber("032-888-8888")
-                .orElseThrow(() -> new NotFoundException("해당 업체가 존재하지 않습니다."));
+        // when
+        Message message = shopTableService.exitTable(tableId1);
         // then
-        assertThat(findShop.getCongestionStatus().getMessage()).isEqualTo("보통");
+        assertThat(message.getMessage()).isEqualTo("테이블 퇴장 성공");
     }
 }
