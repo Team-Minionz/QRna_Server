@@ -32,6 +32,8 @@ deploy:
     acl: private
     local_dir: deploy
     wait-until-deployed: true
+    on:
+      all_branches: true
 
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY
@@ -43,6 +45,8 @@ deploy:
     deployment_group: springboot-study-project-qrna-group
     region: ap-northeast-2
     wait-until-deployed: true
+    on:
+      all_branches: true
 
 notifications:
   email:
