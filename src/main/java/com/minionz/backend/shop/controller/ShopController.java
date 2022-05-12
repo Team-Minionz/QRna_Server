@@ -33,7 +33,7 @@ public class ShopController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable("id") Long id, ShopRequestDto shopRequestDto) {
+    public void update(@PathVariable("id") Long id, @RequestBody ShopRequestDto shopRequestDto) {
         Message message = shopService.update(id, shopRequestDto);
         log.info(message.getMessage());
     }
